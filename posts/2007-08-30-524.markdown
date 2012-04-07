@@ -1,0 +1,73 @@
+---
+layout: post
+title: "puppet-mode.el のパッチ"
+date: 2007-08-30 00:30
+comments: true
+categories: 
+---
+Puppet で同じタイプのリソースを大量に記述する時には、
+
+<pre><code>package { sudo:
+  ensure => latest
+}
+
+package { ntp:
+  ensure => latest
+}
+
+package { ssh:
+  ensure => latest
+}
+</code></pre>
+
+なんて書くのはだるいので、
+
+<pre><code>package {
+  sudo:
+    ensure => latest;
+  ntp:
+    ensure => latest;
+  ssh:
+    ensure => latest;
+}
+</code></pre>
+
+と書きたいのですが、Emacs + "puppet-mode.el":https://reductivelabs.com/svn/puppet/trunk/ext/emacs/puppet-mode.el では、後者みたいな書き方だと、インデントが意図した通りにならなくて、イラっときてパッチ書いた。
+
+<pre><code>=== puppet-mode.el
+==================================================================
+--- puppet-mode.el      (revision 1800)
++++ puppet-mode.el      (local)
+@@ -106,7 +106,9 @@
+                  (progn
+                     (setq cur-indent (- (current-indentation) 2))
+                    (setq not-indented nil))
+-               (setq cur-indent (- (current-indentation) 2))))
++               (setq cur-indent (- (current-indentation) 2)))
++              (if (looking-at "^.*;")
++                  (setq cur-indent (- cur-indent 2))))
+            (if (< cur-indent 0)     ; We can't indent past the left margin
+                (setq cur-indent 0)))
+        (save-excursion
+@@ -125,6 +127,18 @@
+                    (setq cur-indent (+ (current-indentation) 2))
+                    (setq not-indented nil))
+                (if (bobp)
++                   (setq not-indented nil)))
++             (if (looking-at "^.*:\s*$")
++                 (progn
++                   (setq cur-indent (+ (current-indentation) 2))
++                   (setq not-indented nil))
++               (if (bobp)
++                   (setq not-indented nil)))
++             (if (looking-at "^.*;")
++                 (progn
++                    (setq cur-indent (- (current-indentation) 2))
++                   (setq not-indented nil))
++               (if (bobp)
+                    (setq not-indented nil)))))))
+       (if cur-indent
+          (indent-line-to cur-indent) 
+</code></pre>
+
+他にもインデントまわりの動作で微妙なところはあるけど、ちょっとはましになった。インデントまわりの処理で参考になる emacs-lisp って何かないかな？

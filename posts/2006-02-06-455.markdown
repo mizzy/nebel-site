@@ -1,0 +1,34 @@
+---
+layout: post
+title: "coLinux をサービスとして動かすのにはまった"
+date: 2006-02-06 23:56
+comments: true
+categories: 
+---
+<p class="entryBody">
+coLinux をサービスとして登録する場合、
+</p>
+
+<pre class="code">
+C:\colinux&gt; colinux-daemon --install-service -c conf.xml
+</pre>
+
+<p class="entryBody">
+と実行すればいい、みたいな記述はあちこちで見るのですが、自分の環境ではサービス登録後、起動しようとすると以下のようなエラーが出て起動しませんでした。
+</p>
+
+<p class="entryBody">
+<img src="http://mizzy.org/img/colinux_event_log.jpg" />
+</p>
+
+<p class="entryBody">
+で、以下の様にサービスのログオンアカウントを明示的に指定することで、無事起動できるようになりました。
+</p>
+
+<p class="entryBody">
+<img src="http://mizzy.org/img/colinux_logon_setting.jpg" />
+</p>
+
+<p class="entryBody">
+ちなみに、自分用 Windows ログオンアカウントと同じものを指定しています。
+</p>

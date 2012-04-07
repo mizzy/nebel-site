@@ -1,0 +1,316 @@
+---
+layout: post
+title: "perlで人工無脳 #1"
+date: 2005-06-19 21:58
+comments: true
+categories: 
+---
+<p class="entryBody">
+今回はマルコフ連鎖を利用した文章の自動生成について考えてみます。
+</p>
+
+<p class="entryBody">
+A → B → C → D という一連の事象が発生する場合に、ある事象の発生する確率が、直前の事象にのみ依存するような状態を、マルコフ連鎖といいます。つまり、Cという事象が発生する確率は、Bにのみ依存していて、Bの前にAが起こっていることは全く関係ない、ということですね。
+</p>
+
+<p class="entryBody">
+このマルコフ連鎖を利用した文章の自動生成を行うために、まずはマルコフ連鎖に基づいた文章生成用のデータを作成する必要があります。このデータをマルコフ辞書と呼びます。マルコフ辞書の中には、『「A」という単語の後には「B」という単語がつながる』という情報がたくさん入る、というイメージになります。
+</p>
+
+<p class="entryBody">
+マルコフ辞書の生成も、前回のパターン辞書と同様に、予め発言データ用意しておいて、そこから生成することを考えます。
+</p>
+
+<p class="entryBody">
+例えば、「私の息子はカレーパンマンと言うことができず、いつもカレーアンパンマンと言っています。」という文章があった場合、形態素解析を利用して以下の様なデータを作成します。
+</p>
+
+<ul class="entryBody">
+<li>私 → の</li>
+<li>の → 息子</li>
+<li>息子 → は</li>
+<li>は → カレー</li>
+<li>カレー → パン</li>
+<li>パン → マン</li>
+<li>（… 以下続く …）</li>
+</ul>
+
+<p class="entryBody">
+ところが、この様に1対1の関係でデータを作成すると、言葉が細切れ過ぎて、うまいこと文章になってくれない確率が高くなってしまいます。そこで、連鎖の最初の部分（プレフィクスと呼びます）を2つの単語で構成する様にして、以下の様なデータを作成します。
+</p>
+
+<ul class="entryBody">
+<li>「私」「の」 → 「息子」</li>
+<li>「の」「息子」 → 「は」</li>
+<li>「息子」「は」 → 「カレー」</li>
+<li>「は」「カレー」 → 「パン」</li>
+<li>「カレー」「パン」ー → 「マン」</li>
+<li>（… 以下続く …）</li>
+</ul>
+
+<p class="entryBody">
+これを2単語プレフィクスのマルコフ辞書、と呼ぶそうです。これをperlのハッシュを使って表すと、以下の様になります。
+</p>
+
+<pre class="code">
+$data = {
+    '私' => {
+	'の' => ['息子', ... ],
+    },
+    'の' => {
+	'息子' => ['は', ... ],
+    },
+    '息子' => {
+	'は' => ['カレー', ... ],
+    },
+    'は' => {
+	'カレー' => ['パン', ...],
+    },
+    'カレー' => {
+	'パン' => ['マン', ...],
+    },
+    ...
+};
+</pre>
+
+<p class="entryBody">
+各連鎖の最後の部分（サフィクスと呼びます）は配列としておいて、実際に文章を生成する際には、この配列からランダムに選択します。例えば、データ生成用の発言データに、上記のカレー云々という発言の他に「私の特技は手を使わずに、口にくわえたポッキーを鼻の穴に入れることです。」という文章があった場合、以下の様なデータが生成されます。
+</p>
+
+<pre class="code">
+$data = {
+    '私' => {
+	'の' => ['息子', '特技' ],
+    },
+};
+</pre>
+
+<p class="entryBody">
+このデータから文章を自動生成すると、「私の息子」または「私の特技」ではじまる文章が生成される、というわけです。
+</p>
+
+<p class="entryBody">
+では、前回と同様に、1行1発言というデータファイルから、マルコフ辞書を生成するスクリプトをperlで書いてみると、以下の様になります。
+</p>
+
+<pre class="code">
+#!/usr/local/bin/perl
+
+use MeCab;
+use strict;
+use Storable qw(lock_retrieve lock_store);
+
+my $text_file = $ARGV[0];
+open(IN, $text_file) or die $!;
+
+my $markov_dic_file = "markov_dic";
+my $markov_start_file = "markov_start";
+my $markov_dic = {};
+my $markov_start = [];
+
+#eval { $markov_dic = lock_retrieve($markov_dic_file); };
+#eval { $markov_start = lock_retrieve($markov_start_file); };
+
+my @arg = ($0);
+my $m = new MeCab::Tagger(\@arg);
+
+while(&lt;IN&gt;){
+    my $n = $m->parseToNode($_);
+    my @s;
+
+    my $start = 0;
+    while ($n->hasNode) {
+	if($n->getSurface){
+	    if(!$start){
+		push(@$markov_start, $n->getSurface);
+		$start = 1;
+	    }
+	    push(@s, $n->getSurface);
+	    if($#s &lt; 1){
+		if($n->hasNode){
+		    $n = $n->next;
+		    if($n->getSurface){
+			push(@s, $n->getSurface);
+		    }
+		} else {
+		    last;
+		}
+	    }
+	}
+
+	$n = $n->next;
+	if($n->hasNode){
+	    if($#s eq '1' and $n->getSurface){
+		push(@{$markov_dic->{$s[0]}->{$s[1]}}, $n->getSurface);
+		shift(@s);
+	    }
+	} else {
+	    last;
+	}
+    }
+}
+
+lock_store($markov_dic, $markov_dic_file);
+lock_store($markov_start, $markov_start_file);
+
+exit;
+</pre>
+
+<p class="entryBody">
+マルコフ辞書とともに、各発言の最初の単語を抜き出して配列にしたものを、別ファイルとして保存しています。</p>
+
+<p class="entryBody">
+マルコフ辞書の生成はこれでOKなので、次はこの辞書から文章を生成する方法を考えてみます。
+</p>
+
+<p class="entryBody">
+まずは文章の書き出しの単語を決める必要があるわけですが、これはマルコフ辞書生成時に、発言の最初の単語を抜き出して配列にしていますので、この配列からランダムに選択します。
+</p>
+
+<p class="entryBody">
+書き出しの単語さえ決まってしまえば、あとはマルコフ辞書のハッシュを順番に辿っていって、文章を作っていきます。例えば、書き出しが「息子」の場合に、上のサンプルハッシュデータを利用すると、「息子はカレー」という連鎖が得られます。次に「はカレー」を元にしてまたハッシュを辿ると、「はカレーパン」という連鎖を引き出すことができ、さらに「カレーパン」を元にハッシュを辿ると、「カレーパンマン」という連鎖が引き出せます。こうして得られた連鎖を繋ぎ合わせると、「息子はカレーパンマン」という文章になります。これを繰り返していって、文章を作っていきます。
+</p>
+
+<p class="entryBody">
+発言データが豊富にあれば、連鎖は一本道ではなく複数に枝分かれするはずですので、その場合はランダムに枝を選択していくことになり、生成される文章も様々なバリエーションを持つようになります。
+</p>
+
+<p class="entryBody">
+これをコードで表すと、以下の様になります。
+</p>
+
+<pre class="code">
+package bot;
+
+use base qw(CGI::Application);
+use strict;
+use Storable qw(lock_retrieve);
+
+my $pattern_dic_file = 'pattern_dic';
+my $markov_dic_file = 'markov_dic';
+my $markov_start_file = 'markov_start';
+
+sub setup {
+    my $self = shift;
+    $self->mode_param('rm');
+    $self->start_mode('bot');
+    $self->run_modes ( bot => 'bot');
+    $self->param(
+		 pattern_dic => lock_retrieve($pattern_dic_file),
+		 markov_dic => lock_retrieve($markov_dic_file),
+		 markov_start => lock_retrieve($markov_start_file),
+		 );
+
+    $self->header_props(
+			-type => 'text/html',
+			-charset => 'euc-jp',
+			);
+    $self->tmpl_path('/home/miya/html/www.mizzy.org/chat');
+    
+}
+
+sub bot {
+    my $self = shift;
+    my $input = $self->query->param('input');
+
+    my @responder = ('pattern_responder', 'markov_responder');
+    my $responder = $responder[int(rand($#responder+1))];
+
+    my $output = $self->$responder($input);
+
+    my $template = $self->load_tmpl('bot.html', die_on_bad_params => 0);
+    $template->param(
+		     input => $input,
+		     output => $output,
+		     );
+    return $template->output;
+}
+
+sub markov_responder {
+    my $self = shift;
+    my $input = shift;
+    my $markov_dic = $self->param('markov_dic');
+    my $markov_start = $self->param('markov_start');
+
+    my @words;
+    my $p1 = $markov_start->[int(rand($#{$markov_start}+1))];
+
+    my @p2;
+    foreach (keys %{$markov_dic->{$p1}}){
+	push(@p2, $_);
+    }
+
+    my $p2 = $p2[int(rand($#p2 + 1))];
+
+    push(@words, $p1, $p2);
+
+    my $cnt;
+    while($cnt &lt; 20){
+	my $s = $markov_dic->{$p1}->{$p2}->[int(rand($#{$markov_dic->{$p1}->{$p2}} + 1))];
+	push(@words, $s);
+	if($s =~ /。/){
+	    last;
+	}
+	$p1 = $p2;
+	$p2 = $s;
+	$cnt++;
+    }
+
+    return join('', @words);
+}
+
+sub pattern_responder {
+    my $self = shift;
+    my $input = shift;
+
+    my $pattern_dic = $self->param('pattern_dic');
+
+    my $output;
+    foreach (keys %$pattern_dic){
+	if($input =~ /$_/ig){
+	    my $num = $#{$pattern_dic->{$_}};
+	    $output = $pattern_dic->{$_}->[int(rand($num+1))];
+	    last;
+	}
+    }
+
+    if(!$output){
+	$output = "何それ？";
+    }
+
+    return $output;
+}
+
+1;
+</pre>
+
+<p class="entryBody">
+マルコフ辞書を利用して応答を返すルーチンをmarkov_responser()、パターン辞書を利用して応答を返すルーチンをpattern_responder()として、ランダムにレスポンダを切り替える様にしています。
+</p>
+
+<p class="entryBody">
+今回は<a href="http://mizzy.org/archives/bot/bot.cgi" target="_blank">サンプルを公開します</a>。発言データは前と同様、ごく私的なチャットなのですが、発言そのままではないのでまあいいか、と。（公開してるものはmarkov_responser()だけ使ってます。）
+</p>
+
+<p class="entryBody">
+わりと日本語っぽくなってますね。
+</p>
+
+<p class="entryBody">
+前回のパターン辞書と、今回のマルコフ辞書の特徴を整理してみると、以下の様な感じでしょうか。
+</p>
+
+<dl class="entryBody">
+<dt>パターン辞書</dt>
+<dd>特定のインプットに対するアウトプットを設定できるので、比較的会話になりやすい。</dd>
+<dd>設定した文章どおりに返すので、ちゃんとした日本語になる。</dd>
+<dd>決められたパターンでしか応答しないので、バリエーションに乏しい。</dd>
+<dt>マルコフ辞書</dt>
+<dd>文章を適当に組み立てるので、会話にならない。</dd>
+<dd>ちゃんとした日本語にならないことが多い。</dd>
+<dd>単語をばらして再構成するので、バリエーションは豊富。</dd>
+</dl>
+
+<p class="entryBody">
+それぞれに欠点はありますが、単に発言するという目的であれば、そんなに悪くないのではないかと。なので、後はいかにして会話が成立するようにするか、といったところですね。特にマルコフ辞書の方は、バリエーション豊富なのが魅力的ですが、会話を成立させるのが難しそう。今後はそのあたりを重点的に考えてみよう。
+</p>

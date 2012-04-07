@@ -1,0 +1,27 @@
+---
+layout: post
+title: "Catalyst Tips #0 Catalystでファイルのアップロード"
+date: 2005-09-08 22:05
+comments: true
+categories: 
+---
+<p class="entryBody">
+業務で使うウェブアプをCatalystで作っているのですが、ファイルのアップロード処理でちょっとだけはまったのでメモ。
+</p>
+
+<p class="entryBody">
+最初、 <a href="http://search.cpan.org/~mramberg/Catalyst-5.33/lib/Catalyst/Request/Upload.pm" target="_blank">Catalyst::Request::Upload</a> の説明を読んだのですが、これだけだとさっぱり使い方が分からない。で、 <a href="http://search.cpan.org/~mramberg/Catalyst-5.33/lib/Catalyst/Request.pm" target="_blank">Catalyst::Request</a> を併せて読むことで、ようやくわかりました。こんな感じです。
+</p>
+
+<pre class="code">
+for my $upload (values $c->request->uploads){
+    if($upload->filename){
+        $upload->copy_to('/path/to/' . $upload->filename);
+    }
+    unlink $upload->tempname;
+}
+</pre>
+
+<p class="entryBody">
+注意点としては、&lt;input type="file" /&gt; の入力フォームが空の状態でpostしても、$c->request->uploadsは空にはならないので、 $upload->filename が空かどうかチェックすること。それと、 $upload->tempname で示されるパスにテンポラリファイルが作られる（しかもファイル入力フォームが空の状態でも）ので、ちゃんと消しておかないとうざい、といったあたりでしょうか。
+</p>

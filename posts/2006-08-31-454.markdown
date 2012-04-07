@@ -1,0 +1,32 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::FFmpeg #4"
+date: 2006-08-31 12:37
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/ffmpeg03.html#comments"><span class="icon"></span>こちらのエントリのコメント</a> にて、sumikawa さんより Filter::FFmpeg の PSP での動作報告や、パッチなどを頂きました。ありがとうございます！
+</p>
+<p>
+早速頂いたパッチをとりこんで、rewrite_filename オプションでファイル名の書き換えができるようにしたのですが、Publish::Feed のような形でファイル名を指定できるほうがいいかな、と思い <a class="ext-link" href="http://trac.mizzy.org/public/changeset/253"><span class="icon"></span>修正してみました</a>。
+</p>
+<pre class="wiki">
+  - module: Filter::FFmpeg
+    config:
+      dir: /home/miya/mov
+      filename: %t.m4v
+</pre>
+<p>
+といった形で指定すると、ffmpeg を通した後のファイル名が "entry title.m4v" といった形になります。filename が指定されていると、ext オプションで指定した拡張子は無視しますので、filename オプションには拡張子も入れてください。
+</p>
+<p>
+<del> このオプションのための gen_filename() や safe_filename() などは、Publish::Feed からコピペしてるのですが、ファイルに Publish する系統の他のいくつかプラグインでも、同様にコピペされてて DRY じゃないので、Plagger::Util あたりで実装するといいんじゃないかな、と思いました。（irc#plagger-ja でも同様のことを書いたのですが、宮川さんが見てない可能性もあるので、ここでも書いときます。）</del>
+</p>
+<p>
+また、entry は enclosure を複数持てるのですが、そこを考慮していないつくりになっていたので、複数の enclosure に対応できるようにもしました。（enclosure 変換のための hook を追加予定らしいので、そうなるとプラグイン側はこの辺り考慮しなくてよくなると思いますが。）
+</p>
+<p>
+<strong>追記</strong><br />
+gen_filename() ですが、Plagger::Util::filename_for() というものがある、と 33rpm さんより教えていただきました。ありがとうございます！というわけで、<a class="ext-link" href="http://trac.mizzy.org/public/changeset/254"><span class="icon"></span>対応させてみました</a>。
+</p>

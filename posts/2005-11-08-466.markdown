@@ -1,0 +1,18 @@
+---
+layout: post
+title: "blosxom のエントリを OpenID でアクセス制限"
+date: 2005-11-08 22:10
+comments: true
+categories: 
+---
+<p class="entryBody">
+単なるテスト目的の実装ではおもしろくないので、OpenID の応用例として、blosxom のエントリに OpenID でアクセス制限をかけるプラグインを作ってみました。<a href="/archives/auth_openid" target="_blank">auth_openid プラグイン</a>
+</p>
+
+<p class="entryBody">
+これが見えているということは、認証成功ですね。おめでとうございます。
+</p>
+
+<p class="entryBody">
+meta プラグインと組み合わせて、meta-access: private と記述してあるエントリのみ制限するようにしています。OpenID の認証が通ってしまえば、誰でも見られる状態になってますが、FOAF と組み合わせて「友達にはOK」とか「友達の友達までOK」みたいなことをやると、SNS っぽくなりますね。
+</p>

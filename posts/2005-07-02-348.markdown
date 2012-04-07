@@ -1,0 +1,36 @@
+---
+layout: post
+title: "Javascriptの皮を被ったXML #0"
+date: 2005-07-02 14:50
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://johnvey.com/features/deliciousdirector/" target="_blank">del.icio.us direc.tor</a>を見て、「APIが提供するXMLに、JavascriptでUIを被せるのはアリだな。」と思った方は多いのではないでしょうか。この辺りについては、ma.laさんが<a href="http://la.ma.la/blog/diary_200506291043.htm" target="_blank">「XMLはメタデータというより...」</a>というエントリでご指摘されている通りで、俺なんかから言うことは何もなかったりするのですが、この「del.icio.us direc.torメソッド」が普及、発展するためには、以下の2点がクリアになる必要があるのではないかな、と、名古屋出張帰りの新幹線の中で考えていました。
+</p>
+
+<ol class="entryBody">
+<li>JavascriptとHTMLの分離。言い換えるとテンプレートエンジンの実装。これにより開発がより容易に。</li>
+<li>様々なXML形式への対応。ma.laさんが上記エントリで、「はてなブックマークがdel.icio.usと同じ形式で出力するAPIを備えていれば」といったお話をされているのですが、逆に異なる形式であっても、外部XSLTファイルを各サービスごとに用意しておいて、Javascript側でXSLT変換して形式をそろえてあげればいんじゃないかと。これにより、ひとつのUIを様々なサービスに適用可能になる。</li>
+</ol>
+
+<p class="entryBody">
+とはいうものの、これを実装するのは技術的に結構難しそう。まず、1に関しては、現在いくつかのJavascriptテンプレートエンジンが存在しますが、どれもHTMLからscriptタグを呼び出して、テンプレート処理させるものになってます。それに対し、direc.torメソッドはまずはJavascriptありきなので、JavascriptからHTMLを呼び出して、テンプレート処理する必要があります。ところが、クロスドメインの問題により、HTMLテンプレートをxmlHttpRequestで呼び出すことができません。そうすると、document.createElementによるscript呼び出し、という案が考えられるのですが、呼び出す対象がHTMLであってJavascriptではないため、エラーになるでしょう。
+</p>
+
+<p class="entryBody">
+2も同様に、クロスドメインの問題でxmlHttpRequestでは外部XSLTファイルが取得できないですし、script呼び出ししようにも、やはりJavascriptではないためエラー。
+</p>
+
+<p class="entryBody">
+そうなると妥協点としては、サーバ側での処理もやはり必要かなぁ、ということになるのですが、できるならpure javascriptで実現したいですよね。
+</p>
+
+<p class="entryBody">
+<strong>2005/06/30追記</strong><br />
+pure javascriptで実現したい理由は、プログラムをJavascriptに一本化した方が楽だから、というのもあるのですが、認証情報が第三者のサーバを経由しない、ってところも重要なポイントですね。
+</p>
+
+<p class="entryBody">
+と、ここまで考えたところで、これ以上アイデアが出てこなくなってしまいました。中途半端ですみませんが、これを読んだ頭の良い方が、「こうすればいいんじゃね？」とか「そもそもこの考え方はだめ。こっちの方がいい。」とか言ってくれるのを期待して、晒しておきます。
+</p>

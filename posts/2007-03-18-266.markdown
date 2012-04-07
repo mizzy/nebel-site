@@ -1,0 +1,46 @@
+---
+layout: post
+title: "puppet の node 設定ではまる"
+date: 2007-03-18 22:10
+comments: true
+categories: 
+---
+<ul><li><a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/InstallationGuide"><span class="icon"></span>http://reductivelabs.com/trac/puppet/wiki/InstallationGuide</a></li>
+<li><a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/TestingGuide"><span class="icon"></span>http://reductivelabs.com/trac/puppet/wiki/TestingGuide</a></li>
+<li><a class="ext-link" href="http://people.redhat.com/dlutter/puppet-app.html"><span class="icon"></span>http://people.redhat.com/dlutter/puppet-app.html</a></li></ul>
+<p>
+といったあたりを読みながら puppet を試していたのですが、node の設定ではまったのでメモ。
+</p>
+<p>
+pueppt では、
+</p>
+<pre class="wiki">
+node nag.example.com {
+  include yum-rawhide
+  include horde-db-pg
+  include horde-nag
+}
+</pre>
+<p>
+といった設定でターゲットとなるホストと、そのホストでどのようなタスクを実行するかを定義できるのですが、これで puppetmasterd を実行すると、
+</p>
+<pre class="wiki">
+Syntax error at '.' at /etc/puppet/manifests/site.pp:5 
+</pre>
+<p>
+と怒られます。そこで、
+</p>
+<pre class="wiki">
+node 'nag.example.com' {
+  include yum-rawhide
+  include horde-db-pg
+  include horde-nag
+}
+</pre>
+<p>
+とクォートしてあげると OK でした。最初に挙げた URL にあるチュートリアルの例ではクォートされておらず、そのままやるとはまりますのでご注意を。
+</p>
+<p>
+<strong>追記</strong><br />
+<a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/LanguageStructures"><span class="icon"></span>Language Structures</a> を読んだら、「You can specify fully-qualified node names, but you have to single-quote the names:」ってちゃんと書いてあった。
+</p>

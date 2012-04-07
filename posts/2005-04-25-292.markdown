@@ -1,0 +1,22 @@
+---
+layout: post
+title: "このサイトについて"
+date: 2005-04-25 23:28
+comments: true
+categories: 
+---
+<p class="entryBody">
+特にコンセプトとか目的とかはないです。なんとく「俺」が滲み出てる、そんなサイトであればいいな、と。
+</p>
+
+<p class="entryBody">
+<a href="http://www.blosxom.com/">blosxom</a>つかってます。カスタマイズしやすいのが魅力的。まだカスタマイズ不十分なところがあるので、ちょくちょくいじることになるかと。そのせいで、エラーで見られなくことがあるかもしれませんが、そんな時は「ああ、あいつカスタマイズ失敗してやがんの。」と笑ってやってください。
+</p>
+
+<p class="entryBody">
+インデックスページではajax使って、ページ遷移なしにコメントとトラックバックを表示したり、コメントの投稿ができるようになっています。（asynchronousじゃないけど。）Javascriptオフの場合や、xmlHttpRequestに対応していないブラウザでは、ページ遷移する様にしています。
+</p>
+
+<p class="entryBody">
+Win IE6, Win Mozilla Firefox, Mac Camino, Mac Safariで表示確認してます。Mac IEお断り。表示が崩れます。
+</p>

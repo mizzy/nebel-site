@@ -1,0 +1,26 @@
+---
+layout: post
+title: "blosxomでtagging #2"
+date: 2005-04-13 22:32
+comments: true
+categories: 
+---
+<p class="entryBody">
+taggingプラグインをアップデート。タグで絞り込んで表示することができるようになりました。ファイルはここ。<a href="/archives/tagging">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+サイドメニューのタグリストで、各タグ毎のリンクを表示してます。
+</p>
+
+<p class="entryBody">
+QUERY_STRINGやPOSTパラメータで、tag=tag1,tag2,...と指定することにより複数タグでの絞込みができます。（ANDで絞込み。）
+</p>
+
+<p class="entryBody">
+でも、毎回エントリファイルの中を見てタグとマッチするか調べる、ってことをやるので、ファイルが増えるととんでもないことになるなぁ…何か方法考えなきゃ。タグとファイルを対応付けるインデックスファイルをキャッシュとして作成する、って感じかな。キャッシュは任意のタイミングで更新できるようにして。
+</p>
+
+<p class="entryBody">
+blosxom 3.0+3iのTag.pmを参考にしようかと思ったら、ファイル名にタグを入れちゃってるから、あんまり美しくないしなぁ…
+</p>

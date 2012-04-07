@@ -1,0 +1,61 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::FFmpeg #0"
+date: 2006-07-27 02:35
+comments: true
+categories: 
+---
+<p>
+前のエントリの <a class="ext-link" href="http://mizzy.org/program/ffmpeg00.html"><span class="icon"></span>FFmpeg::Command</a> を利用して、<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FFmpeg.pm"><span class="icon"></span>Plagger::Plugin::Filger::FFmpeg</a> 書いてみた。（っていうか、このために FFmpeg::Command つくったわけですが。）
+</p>
+<p>
+とりあえず形にして動くことを確認したかったので、変換パラメータが固定だったり、適当すぎるつくりになってますが、おいおい改善していくということで。
+</p>
+<p>
+以下の様な設定で、YouTube の My Favorite 動画をダウンロード ⇒ mpeg4 へ変換 ⇒ enclosure url を rewrite ⇒ Publish::Feed で podcast、ってところまで確認済み。 
+</p>
+<p>
+<strong> 2006/07/27 03:23:30 追記</strong><br />
+miyagawa さんからの指摘で、URL の書き換えは Filter::RewriteEnclosureURL を使うようにしました。このプラグインの存在をすっかり見落としてました…
+</p>
+<pre class="wiki">
+global:
+  user_agent:
+    cookies: /home/miya/plagger/cookies.txt
+  log:
+    level: info
+
+plugins:
+  - module: Subscription::Config
+    config:
+      feed:
+        - http://www.youtube.com/my_favorites
+
+  - module: Filter::TruePermalink
+  - module: Filter::FindEnclosures
+  - module: Filter::EntryFullText
+  - module: Filter::HEADEnclosureMetadata
+  - module: Filter::FetchEnclosure
+    config:
+      dir: /home/miya/mov
+
+  - module: Filter::FFmpeg
+    config:
+      output_dir: /home/miya/mov
+      ext: mp4
+
+  - module: Filter::RewriteEnclosureURL
+    config:
+      rewrite:
+        - local: /home/miya/mov/
+          url:   http://mizzy.org/mov/
+
+  - module: Publish::Feed
+    config:
+      format: RSS
+      dir: /home/miya/plagger
+      filename: %t.rss
+</pre>
+<p>
+これに合わせて、FFmpeg::Command で ffmpeg を exec で呼び出してたのを、system に変更しました。exec だと Publish::Feed が動いてくれなかったので。おそらく exec はプロセスをフォークした後 wait しないのが原因かな、と。
+</p>

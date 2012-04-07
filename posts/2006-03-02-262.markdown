@@ -1,0 +1,26 @@
+---
+layout: post
+title: "Trac で Browse Source 時にハングする現象の解決法(trac tips #0)"
+date: 2006-03-02 11:00
+comments: true
+categories: 
+---
+<p class="entryBody">
+trac で Browse Source しようとするとハングしてしまう現象が発生していました。strace で tracd の状態を見てみると、
+</p>
+
+<pre class="code">
+select(0, NULL, NULL, NULL, {0, 25000}) = 0 (Timeout)
+</pre>
+
+<p class="entryBody">
+というエラーが大量に出てきます。もしかすると HDD がやばいのかなー、と syslog などを見てみるも、その様な痕跡は見つからず。で、上のエラーの内容でググってみたら、あっさり解決方法が見つかりました。
+</p>
+
+<pre class="code">
+$ svnadmin recover svn_repos
+</pre>
+
+<p class="entryBody">
+で OK でした。svn checkout とか commit とかは普通にできてたので、subversion の問題だとは全然思わなかった。
+</p>

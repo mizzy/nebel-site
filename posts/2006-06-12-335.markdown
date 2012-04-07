@@ -1,0 +1,390 @@
+---
+layout: post
+title: "catlxom の プラグイン機構を plagger ライクに #1 (catlxom メモ #6)"
+date: 2006-06-12 22:23
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/catlxom_memo_05.html" target="_blank">昨日のエントリ</a>の続き。filter もちゃんと実装して、ついでにプラグインも全て新しいプラグイン機構に対応させてみた。
+</p>
+
+<p class="entryBody">
+<a href="http://catlxom.org/trac" target="_blank">本家</a> の Rev.23 との全差分です。
+</p>
+
+<pre class="code">
+Index: plugins/Entry/Blosxom.pm
+===================================================================
+--- plugins/Entry/Blosxom.pm	(revision 23)
++++ plugins/Entry/Blosxom.pm	(working copy)
+@@ -9,6 +9,15 @@
+ 
+ __PACKAGE__-&gt;classdata-&gt;{entries} = [];
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'setup'  =&gt; 'setup',
++        'update' =&gt; 'update',
++    );
++}
++
+ sub setup {
+     my ( $self, $c ) = @_;
+ 
+@@ -49,15 +58,11 @@
+         }
+     );
+ 
+-    $self-&gt;entries-&gt;add( __PACKAGE__ );
+-
+-    $self-&gt;NEXT::setup($c);
++    $c-&gt;catlxom-&gt;entries-&gt;add( __PACKAGE__ );
+ }
+ 
+ sub update {
+     my ( $self, $c ) = @_;
+-
+-    $self-&gt;NEXT::update($c);
+ }
+ 
+ 1;
+Index: plugins/Filter/Path.pm
+===================================================================
+--- plugins/Filter/Path.pm	(revision 23)
++++ plugins/Filter/Path.pm	(working copy)
+@@ -4,6 +4,14 @@
+ 
+ our $VERSION = '0.01';
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'filter' =&gt; 'filter',
++    );
++}
++
+ sub filter {
+     my ( $self, $c, $entry ) = @_;
+ 
+Index: plugins/Filter/Date.pm
+===================================================================
+--- plugins/Filter/Date.pm	(revision 23)
++++ plugins/Filter/Date.pm	(working copy)
+@@ -6,6 +6,14 @@
+ 
+ our $VERSION = '0.01';
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'filter' =&gt; 'filter',
++    );
++}
++
+ sub filter {
+     my ( $self, $c, $entry ) = @_;
+ 
+Index: plugins/Format/Textile.pm
+===================================================================
+--- plugins/Format/Textile.pm	(revision 23)
++++ plugins/Format/Textile.pm	(working copy)
+@@ -3,29 +3,33 @@
+ use warnings;
+ use base qw/Catlxom::Plugin/;
+ 
+-use NEXT;
+ use Text::Textile;
+ 
+ our $VERSION = '0.01';
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'setup'   =&gt; 'setup',
++        'fixedup' =&gt; 'fixedup',
++    );
++}
++
+ sub setup {
+     my ( $self, $c ) = @_;
+ 
+     $self-&gt;classdata-&gt;{textile} = Text::Textile-&gt;new;
+     $self-&gt;classdata-&gt;{textile}-&gt;charset('utf-8');
+-
+-    $self-&gt;NEXT::setup($c);
+ }
+ 
+ sub fixedup {
+     my ( $self, $c ) = @_;
+ 
+-    for my $entry ( @{ $self-&gt;entries-&gt;filtered } ) {
++    for my $entry ( @{ $c-&gt;catlxom-&gt;entries-&gt;filtered } ) {
+         $entry-&gt;content(
+             $self-&gt;classdata-&gt;{textile}-&gt;process( $entry-&gt;content ) );
+     }
+-
+-    $self-&gt;NEXT::fixedup($c);
+ }
+ 
+ 1;
+Index: plugins/Paginate/Simple.pm
+===================================================================
+--- plugins/Paginate/Simple.pm	(revision 23)
++++ plugins/Paginate/Simple.pm	(working copy)
+@@ -1,27 +1,32 @@
+ package Catlxom::Plugin::Paginate::Simple;
+ use strict;
+ use warnings;
+-use NEXT;
+ 
+ use Data::Page;
+ use Data::Page::Navigation;
+ 
+ our $VERSION = '0.01';
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'paginate' =&gt; 'paginate',
++    );
++}
++
+ sub paginate {
+     my ( $self, $c ) = @_;
+ 
+     my $page = int( $c-&gt;req-&gt;params-&gt;{page} || 1 );
+     $page = 1 unless $page &gt;= 1;
+ 
+-    my $pager = $self-&gt;stash-&gt;{pager}
+-        = Data::Page-&gt;new( scalar @{ $self-&gt;entries },
++    my $pager = $c-&gt;catlxom-&gt;stash-&gt;{pager}
++        = Data::Page-&gt;new( scalar @{ $c-&gt;catlxom-&gt;entries },
+         $c-&gt;config-&gt;{num_entries} ||= 20, $page, );
+ 
+-    $self-&gt;entries-&gt;filtered(
+-        [ $pager-&gt;splice( $self-&gt;entries-&gt;filtered ) ] );
+-
+-    $self-&gt;NEXT::paginate($c);
++    $c-&gt;catlxom-&gt;entries-&gt;filtered(
++        [ $pager-&gt;splice( $c-&gt;catlxom-&gt;entries-&gt;filtered ) ] );
+ }
+ 
+ 1;
+Index: plugins/Template/TT.pm
+===================================================================
+--- plugins/Template/TT.pm	(revision 23)
++++ plugins/Template/TT.pm	(working copy)
+@@ -6,19 +6,27 @@
+ use Catlxom::Util;
+ use List::Util qw/first/;
+ use Template;
+-use NEXT;
+ 
+ our $VERSION = '0.01';
+ 
++my $template_dir = Catlxom::Util::load_dir('template');
++my $path_root    = join '/', $template_dir-&gt;dir_list;
++
+ __PACKAGE__-&gt;classdata-&gt;{templates} = {};
+-__PACKAGE__-&gt;classdata-&gt;{tt}        = Template-&gt;new;
++__PACKAGE__-&gt;classdata-&gt;{tt}        = Template-&gt;new( INCLUDE_PATH =&gt; $path_root );
+ 
++sub register {
++    my ($class, $c) = @_;
++    $c-&gt;catlxom-&gt;register_hook(
++        $class,
++        'setup'       =&gt; 'setup',
++        'interpolate' =&gt; 'interpolate',
++    );
++}
++
+ sub setup {
+     my ( $self, $c ) = @_;
+ 
+-    my $template_dir = Catlxom::Util::load_dir('template');
+-    my $path_root    = join '/', $template_dir-&gt;dir_list;
+-
+     $template_dir-&gt;recurse(
+         callback =&gt; sub {
+             my $file = shift;
+@@ -48,8 +56,6 @@
+             };
+         }
+     );
+-
+-    $self-&gt;NEXT::setup($c);
+ }
+ 
+ sub interpolate {
+@@ -78,16 +84,14 @@
+             \$template-&gt;{template},
+             {
+                 name =&gt; $c-&gt;config-&gt;{name},
+-                %{ $self-&gt;stashall },
+-                entries =&gt; $self-&gt;entries-&gt;filtered,
++                %{ $c-&gt;catlxom-&gt;stashall },
++                entries =&gt; $c-&gt;catlxom-&gt;entries-&gt;filtered,
+ 
+                 c =&gt; $c,
+             },
+             \$c-&gt;res-&gt;{body},
+-        );
++        ) or $c-&gt;error( $self-&gt;classdata-&gt;{tt}-&gt;error );
+     }
+-
+-    $self-&gt;NEXT::interpolate($c);
+ }
+ 
+ 1;
+Index: lib/Catlxom/Context/Base.pm
+===================================================================
+--- lib/Catlxom/Context/Base.pm	(revision 23)
++++ lib/Catlxom/Context/Base.pm	(working copy)
+@@ -5,7 +5,6 @@
+ 
+ use Catlxom::Plugins;
+ use Catlxom::Entries;
+-use NEXT;
+ 
+ __PACKAGE__-&gt;mk_classdata( plugin  =&gt; Catlxom::Plugins-&gt;new );
+ __PACKAGE__-&gt;mk_classdata( entries =&gt; Catlxom::Entries-&gt;new );
+@@ -14,50 +13,56 @@
+ 
+ sub setup {
+     my ($self, $c) = @_;
++    $self-&gt;plugin-&gt;load($c);
++    $self-&gt;run_hook($c, 'setup');
++}
+ 
+-    $self-&gt;plugin-&gt;load($c);
+-    {
+-        # plugin setup
+-        no warnings 'redefine';
+-        local *setup = sub { };
+-        $self-&gt;setup($c);
++sub register_hook {
++    my ($self, $plugin, @hooks) = @_;
++    while (my($hook, $callback) = splice @hooks, 0, 2) {
++        push @{ $self-&gt;{hooks}-&gt;{$hook} }, {
++            callback  =&gt; $callback,
++            plugin    =&gt; $plugin,
++        };
+     }
+ }
+ 
+-sub initialize {
+-    my ( $self, $c ) = @_;
+-
+-    $self-&gt;_stash( {} );
++sub run_hook {
++    my($self, $c, $hook, $args) = @_;
++    for my $action (@{ $self-&gt;{hooks}-&gt;{$hook} }) {
++        my $plugin   = $action-&gt;{plugin};
++        my $callback = $action-&gt;{callback};
++        no strict 'refs';
++        $plugin-&gt;$callback($c, $args);
++    }
+ }
+ 
+-sub start       { }
+-sub update      { }
+-sub sort        { }
+-sub paginate    { }
+-sub fixedup     { }
+-sub interpolate { }
+-sub end         { }
+-
+ sub dispatch {
+     my ( $self, $c ) = @_;
+ 
+-    $self-&gt;initialize($c);
++    $self-&gt;_stash( {} );
++    $self-&gt;run_hook($c, 'initialize');
+ 
+-    $self-&gt;start($c);
+-    $self-&gt;update($c);
++    $self-&gt;run_hook($c, 'start');
++    $self-&gt;run_hook($c, 'update');
+ 
+-    $self-&gt;entries-&gt;filter($c);
+-    $self-&gt;sort($c);
+-    $self-&gt;paginate($c);
++    $self-&gt;entries-&gt;filtered( [] );
++    for my $entry ( @{ $self-&gt;entries } ){
++        $self-&gt;run_hook($c, 'filter', $entry);
++        push @{ $self-&gt;entries-&gt;filtered }, $entry-&gt;clone;
++    }
++    $self-&gt;run_hook($c, 'sort');
++    $self-&gt;run_hook($c, 'paginate');
+ 
+-    $self-&gt;fixedup($c);
+-    $self-&gt;interpolate($c);
+-    $self-&gt;end($c);
++    $self-&gt;run_hook($c, 'fixedup');
++    $self-&gt;run_hook($c, 'interpolate');
++    $self-&gt;run_hook($c, 'end');
+ }
+ 
+ sub stash {
+     my $self   = shift;
+-    my $caller = caller(0);
++    ( my $caller = lc caller(0) ) =~ s/Catlxom::Plugin:://i;
++    $caller =~ s/::/_/g;
+ 
+     if (@_) {
+         my $stash = @_ &gt; 1 ? {@_} : $_[0];
+Index: lib/Catlxom/Entries.pm
+===================================================================
+--- lib/Catlxom/Entries.pm	(revision 23)
++++ lib/Catlxom/Entries.pm	(working copy)
+@@ -4,7 +4,6 @@
+ use base qw/Class::Accessor::Fast Class::Data::Inheritable/;
+ 
+ use Catalyst::Exception;
+-use NEXT;
+ 
+ use Catlxom::Entry;
+ 
+@@ -30,21 +29,4 @@
+     \@entries;
+ }
+ 
+-sub filter {
+-    my ( $self, $c ) = @_;
+-
+-    $self-&gt;filtered( [] );
+-
+-    my @plugins = grep { $_-&gt;can('filter') } @{ $c-&gt;catlxom-&gt;plugin };
+-
+-FILTER:
+-    for my $entry ( @{ $self-&gt;entries } ) {
+-        for my $plugin (@plugins) {
+-            next FILTER unless $plugin-&gt;filter( $c, $entry );
+-        }
+-        push @{ $self-&gt;filtered }, $entry-&gt;clone;
+-    }
+-}
+-
+ 1;
+-
+Index: lib/Catlxom/Plugins.pm
+===================================================================
+--- lib/Catlxom/Plugins.pm	(revision 23)
++++ lib/Catlxom/Plugins.pm	(working copy)
+@@ -51,7 +51,7 @@
+         ( my $plugin = 'Catlxom::Plugin::' . join( '::', @path ) . $file-&gt;basename )
+             =~ s/\.pm$//;
+ 
+-        unshift @Catlxom::Context::ISA, $plugin;
++        $plugin-&gt;register($c);
+     }
+ 
+     if ( $c-&gt;debug ) {
+</pre>

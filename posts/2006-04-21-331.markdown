@@ -1,0 +1,30 @@
+---
+layout: post
+title: "JugemKey リリース"
+date: 2006-04-21 17:32
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://jugemkey.jp" target="_blank">JugemKey</a> がリリースされました。現在はペパボの一部サービスのみ対応ですが、今後認証 API を実装してサードパーティアプリから利用できるようにすることを目論んでます。たぶん Flickr ライクな API になると思います。
+</p>
+
+<p class="entryBody">
+サービス名は TypeKey インスパイヤです。もともとは Jugem 1iD という名称だったのですが大人の事情により使えない、また、パスポートという名称も使えない、ということで「似たようなサービスで ID もパスポートも使ってないものだと、TypeKey がありますね。」とボソっと言ったところ、JugemKey に決まってしまいました。パクリではなくオマージュということでご理解頂けると幸いです。
+</p>
+
+<p class="entryBody">
+今後認証 API を実装ということで、JugemKey の管理画面に、開発者向けの APIキーや shared secret の発行/管理ページ、ユーザが利用するサードパーティアプリの管理ページなどが増えることになるかと思います。また、認証 API をうまく利用して、シングルサインオン的なこともできるようにしたいと考えています。
+</p>
+
+<p class="entryBody">
+そして、PAIPO READER 再構築も視野にいれつつ、フィード API の公開も予定しています。もうほとんど実装は済んでいるので、認証 API の実装と社内でのテスト完了後にリリースすることになるかと思います。
+</p>
+
+<p class="entryBody">
+ちなみに認証やフィードの API は、Perl + Catalyst で開発しています。
+</p>
+
+<p class="entryBody">
+あと、PAIPO READER の方も、Plagger と組み合わせておもしろいことができるんじゃないかな、と目論んでたりします。
+</p>

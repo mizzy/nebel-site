@@ -1,0 +1,210 @@
+---
+layout: post
+title: "catlxom の プラグイン機構 (catlxom メモ #4)"
+date: 2006-06-04 18:47
+comments: true
+categories: 
+---
+<p class="entryBody">
+typester さんが
+</p>
+
+<blockquote>
+NEXT やめやめ。<br />
+なんもうれしいことない。<br />
+plagger の hook 機構をぱくろう。そうしよう。<br />
+<cite>from: <a href="http://unknownplace.org/memo/2006/05/04#e001" target="_blank">CLON - 2006/05/04 - Plugin</a></cite>
+</blockquote>
+
+<p class="entryBody">
+とおっしゃっていたので、plagger の hook 機構を catlxom に組み込むとどんな感じになるのかなー、といきなりコードを書こうとしたら混乱してきたので、catlxom の動作の流れを、特にプラグイン機構に注目して整理してみることにした。
+</p>
+
+<h3>起動時の流れ</h3>
+
+<h4>Catlxom の基底クラス設定</h4>
+
+<p class="entryBody">
+まずは以下の2箇所のコードで、Catlxom の基底クラスを @Catlxom::ISA につっこむ。
+</p>
+
+<pre class="code">
+use Catalyst qw(
+    ConfigLoader
+    Flavour
+);
+</pre>
+
+<pre class="code">
+__PACKAGE__-&gt;setup(
+    do {
+        my @plugin = qw/+Catlxom::Base/;
+        push @plugin, 'Static::Simple'
+            if ( $ENV{CATALYST_ENGINE} || '' ) =~ /^HTTP/;
+        push @plugin, 'DebugScreen' if $ENV{CATALYST_DEBUG};
+
+        @plugin;
+    }
+);
+</pre>
+
+<p class="entryBody">
+これで @Catlxom::ISA は以下の様な感じになる。
+</p>
+
+<pre class="code">
+@Catlxom::ISA = qw(
+    <strong>Catlxom::Base</strong>
+    Catalyst::Plugin::Static::Simple
+    Catalyst::Plugin::ConfigLoader
+    Catalyst::Plugin::Flavour
+    Catalyst
+    Catalyst::Controller
+);
+</pre>
+
+<p class="entryBody">
+catlxom 固有なのは、Catlxom::Base があるところ。
+</p>
+
+<h4>@Catlxom::ISA 中の基底クラスの setup を順に実行</h4>
+
+<p class="entryBody">
+Catlxom::Base::setup が実行される。実際のコードは以下の通り。
+</p>
+
+<pre class="code">
+sub setup {
+    my $class = shift;
+    $class-&gt;NEXT::setup(@_);
+
+    $class-&gt;catlxom-&gt;setup($class);
+}
+</pre>
+
+<p class="entryBody">
+$class-&gt;catlxom は、Class::Data::Inheritable を使ってこんな感じで定義されてる。
+</p>
+
+<pre class="code">
+__PACKAGE__-&gt;mk_classdata( catlxom =&gt; Catlxom::Context-&gt;new );
+</pre>
+
+<p class="entryBody">
+というわけでこの setup では、 Catlxom::Context の setup メソッドが実行される。
+</p>
+
+<h4>Catlxom::Context::setup の実行により catlxom プラグインをロード</h4>
+
+<p class="entryBody">
+Catlxom::Context は Catlxom::Context::Base を基底クラスとしていて、setup メソッドもこの基底クラスにある。こんな感じ。
+</p>
+
+<pre class="code">
+sub setup {
+    my ($self, $c) = @_;
+
+    $self-&gt;plugin-&gt;load($c);
+    {
+        # plugin setup
+        no warnings 'redefine';
+        local *setup = sub { };
+        $self-&gt;setup($c);
+    }
+}
+</pre>
+
+<p class="entryBody">
+$self-&gt;plugin は Calss::Data::Inheritable でこんな風に定義されてる。
+</p>
+
+<pre class="code">
+__PACKAGE__-&gt;mk_classdata( plugin  =&gt; Catlxom::Plugins-&gt;new );
+</pre>
+
+<p class="entryBody">
+なのでこの setup メソッド中の $self-&gt;plugin-&gt;load($c) では、Catlxom::Plugins の load メソッドが実行される。このメソッドでは、@Catlxom::Context::ISA に catlxom プラグインクラスを基底クラスとしてつっこむ。@Catlxom::Context::ISA はこんな感じになる。
+</p>
+
+<pre class="code">
+@Catlxom::Context::ISA = qw(
+    Catlxom::Plugin::Entry::Blosxom
+    Catlxom::Plugin::Filter::Path
+    Catlxom::Plugin::Filter::Date
+    Catlxom::Plugin::Format::Textile
+    Catlxom::Plugin::Paginate::Simple
+    Catlxom::Plugin::Template::TT
+    Catlxom::Context::Base
+);
+</pre>
+
+<p class="entryBody">
+更におなじく setup メソッド中の
+</p>
+
+<pre class="code">
+        # plugin setup
+        no warnings 'redefine';
+        local *setup = sub { };
+        $self-&gt;setup($c);
+</pre>
+
+<p class="entryBody">
+で、Catlxom::Context の基底クラス中の setup メソッドを NEXT で順に実行していく。つまり、各プラグインの setup メソッドを順次実行する。
+</p>
+
+<p class="entryBody">
+ちなみに、各プラグインメソッド中の $self は Catlxom::Context クラスのインスタンスであって、各プラグインクラスのインスタンスではないので注意。$c は Catlxom クラス。
+</p>
+
+<p class="entryBody">
+これで起動時のプラグインロード、セットアップが完了。
+
+</p>
+
+<h3>アクセス時の流れ</h3>
+
+<h4>Catlxom::default を実行</h4>
+
+<p class="entryBody">
+ブラウザからアクセスすると Catlxom::default が実行される。実際のコードはこんな感じ。
+</p>
+
+<pre class="code">
+sub default : Private {
+    shift-&gt;catlxom-&gt;dispatch(shift);
+}
+</pre>
+
+<p class="entryBody">
+これで Catlxom::Context::dispatch が実行される。
+</p>
+
+<h4>Catlxom::Context::dispatch の実行</h4>
+
+<p class="entryBody">
+Catlxom::Context::dispatch の実体は Catlxom::Context::Base::dispatch であり、以下の様なコードになっている。
+</p>
+
+<pre class="code">
+sub dispatch {
+    my ( $self, $c ) = @_;
+
+    $self-&gt;initialize($c);
+
+    $self-&gt;start($c);
+    $self-&gt;update($c);
+
+    $self-&gt;entries-&gt;filter($c);
+    $self-&gt;sort($c);
+    $self-&gt;paginate($c);
+
+    $self-&gt;fixedup($c);
+    $self-&gt;interpolate($c);
+    $self-&gt;end($c);
+}
+</pre>
+
+<p class="entryBody">
+これにより Catlxom::Context の基底クラス、つまり 各 catlxom プラグインの initialize, start などが NEXT で順次実行されていく。
+</p>

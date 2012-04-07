@@ -1,0 +1,14 @@
+---
+layout: post
+title: "blosxom + Template Toolkit #1"
+date: 2005-05-03 13:51
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/archives/tt" target="_blank">ttプラグイン</a>を修正。
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/program/blosxomTT.html" target="_blank">前回のエントリ</a>で「複雑なデータ構造のものをFOREACHでまわしたりするのは、正常に動作しないと思う」と書いていたのですが、複雑どころが単純なFOREACHでも動作しないというまぬけな状態だったので、修正しました。とりあえず、単一のFOREACHであれば動作するようになりました。入れ子になってるとどうなるか分かりません。今のところ必要がないので、確認する気もなし。必要になってから考えます。
+</p>

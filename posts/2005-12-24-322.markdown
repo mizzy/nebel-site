@@ -1,0 +1,34 @@
+---
+layout: post
+title: "fixture のインスタンス化ではまる（Rails 勉強中 #2）"
+date: 2005-12-24 20:57
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Agile Web Development With Rails</a> の Chapter 12. Task T: TESTING でまたはまる。
+</p>
+
+<p class="entryBody">
+P148 にある test_read_with_hash と test_read_with_fixture_variable が通らない。 @products や @version_control_book とかで fixture の内容が参照できる、って書いてあるんだけど、どうやら @products も @version_control_book も nil のようだ。
+</p>
+
+<p class="entryBody">
+なんか見落としているのかなぁ、と思って、Chapter 12 を最初から読み返してみたり、google 先生に尋ねたりしても、よくわからない。
+</p>
+
+<p class="entryBody">
+で、test/test_helper.rb を覗いてみると、以下のような記述が。
+</p>
+
+<pre class="code">
+self.use_instantiated_fixtures  = false
+</pre>
+
+<p class="entryBody">
+これを true にしてやることで、 @products や @version_control_book で fixture の内容が参照できるようになり、無事にテストが通りました。
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/program/learningRails01.html" target="_blank">前エントリ</a>の Transactional Fixtures の件といいこの件といい、デフォルトの挙動が本の執筆時点とは変更されているようです。で、調べてみると、1.0RC2 あたりからこのようにデフォルトが変更されている、と <a href="http://clarkware.com/cgi/blosxom/2005/10/24" target="_blank">Mike Clark's Weblog</a> に書いてありました。
+</p>

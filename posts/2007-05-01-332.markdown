@@ -1,0 +1,24 @@
+---
+layout: post
+title: "SVN::TracWiki #2"
+date: 2007-05-01 00:30
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/SVN-TracWiki"><span class="icon"></span>SVN::TracWiki</a> (<a class="ext-link" href="http://svn.mizzy.org/public/SVN-TracWiki/"><span class="icon"></span>svn repos</a>) をアップデート。以下の機能を実現するパッチを、Assurer の開発にも参加してくれている <a class="ext-link" href="http://search.cpan.org/~franckc/"><span class="icon"></span>franck</a> が送ってくれました。
+</p>
+<ul><li>Plugin::Extract::Pod で Perl プログラムのコミット時に、pod を自動で抽出して Wiki にアップ。</li>
+<li>xmlrpc プラグインがなくても Wiki ポストができる。</li></ul>
+<p>
+Trac はソースコード自体の検索ができないので、当然 pod の内容も検索することができないのですが、このプラグインにより、pod の検索ができるようになります。
+</p>
+<p>
+また、検索だけではなく、<a class="ext-link" href="http://trac.mizzy.org/public/wiki/SVN-TracWiki/lib/SVN/TracWiki.pm"><span class="icon"></span>こんな感じ</a> で pod を Trac の Wiki フォーマットに変換してキレイに表示してくれます。
+</p>
+<p>
+試しに手元にあった XML::Atom をつっこんでみると、<a class="ext-link" href="http://trac.mizzy.org/public/wiki/XML-Atom-0.22/lib/XML/Atom/Server.pm"><span class="icon"></span>こんな感じ</a> になります。
+</p>
+<p>
+あと、File::Extract 内部で利用している File::MMagic::XS が謎の Segmentation Fault で落ちるので、File::MMagic を使うように強引に書き換えたり。
+</p>

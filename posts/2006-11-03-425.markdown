@@ -1,0 +1,16 @@
+---
+layout: post
+title: "空前の use Perl; ブーム"
+date: 2006-11-03 02:04
+comments: true
+categories: 
+---
+<p>
+今 Perler の間では、<a class="ext-link" href="http://use.perl.org/"><span class="icon"></span>use Perl;</a> に英語で Perl ネタを書くのがアツイ、というわけで、自分もそのブームに<a class="ext-link" href="http://use.perl.org/~mizzy/journal/"><span class="icon"></span>便乗することにしました</a>。まだ何も書いてませんが。
+</p>
+<p>
+今後 Perl ネタはそっちの方に書くことにします。
+</p>
+<p>
+あと、Yappo さんが <a class="ext-link" href="http://subtech.g.hatena.ne.jp/yappo/20061102"><span class="icon"></span>use Perl; 一覧を XOXO で提供</a> してくれてますので、Perler な人は Plagger::Plugin::Subscription::XOXO で購読しない手はないでしょう。
+</p>

@@ -1,0 +1,146 @@
+---
+layout: post
+title: "Atom Threading Extensions"
+date: 2006-07-02 13:49
+comments: true
+categories: 
+---
+<p>
+IRC で miyagawa さんが貼っていた URL 経由で見つけたのですが、<a class="ext-link" href="http://www.ietf.org/internet-drafts/draft-snell-atompub-feed-thread-12.txt"><span class="icon"></span>Atom Threading Extensions</a> なんてものがあったのですね。
+</p>
+<p>
+要するに、Atom Syndication Format で、メーリングリストや掲示板の様なスレッドを表現するための仕組みです。
+</p>
+<p>
+コメントやトラックバックの関連を視覚化、というアイデアは色んな人達が考えていると思うのですが、それをサポートするような規格が既にあったとは知りませんでした。
+</p>
+<p>
+ここではざっと要点だけご紹介します。詳細知りたい方は原文をお読みください。そんなにボリュームないですし。（このエントリも間違っている可能性があるので、できれば原文読んで頂いた方が良いかと。）
+</p>
+<h3 id="in-reply-to拡張要素">'in-reply-to' 拡張要素</h3>
+<p>
+entry 要素の子要素として指定するもので、そのエントリが、どのエントリに対する reply なのかを示す要素です。
+</p>
+<pre class="wiki">
+&lt;feed xmlns="http://www.w3.org/2005/Atom"
+    xmlns:thr="http://purl.org/syndication/thread/1.0"&gt;
+    &lt;id&gt;http://www.example.org/myfeed&lt;/id&gt;
+    &lt;title&gt;My Example Feed&lt;/title&gt;
+    &lt;updated&gt;2005-07-28T12:00:00Z&lt;/updated&gt;
+    &lt;link href="http://www.example.org/myfeed" /&gt;
+    &lt;author&gt;&lt;name&gt;James&lt;/name&gt;&lt;/author&gt;
+    &lt;entry&gt;
+        &lt;id&gt;tag:example.org,2005:1&lt;/id&gt;
+        &lt;title&gt;My original entry&lt;/title&gt;
+        &lt;updated&gt;2006-03-01T12:12:12Z&lt;/updated&gt;
+        &lt;link
+          type="application/xhtml+xml"
+          href="http://www.example.org/entries/1" /&gt;
+        &lt;summary&gt;This is my original entry&lt;/summary&gt;
+    &lt;/entry&gt;
+    &lt;entry&gt;
+        &lt;id&gt;tag:example.org,2005:1,1&lt;/id&gt;
+        &lt;title&gt;A response to the original&lt;/title&gt;
+        &lt;updated&gt;2006-03-01T12:12:12Z&lt;/updated&gt;
+        &lt;link href="http://www.example.org/entries/1/1" /&gt;
+        <strong>&lt;thr:in-reply-to
+          ref="tag:example.org,2005:1"
+          type="application/xhtml+xml"
+          href="http://www.example.org/entries/1"/&gt;</strong>
+        &lt;summary&gt;This is a response to the original entry&lt;/summary&gt;
+    &lt;/entry&gt;
+&lt;/feed&gt;
+</pre>
+<p>
+この例では、2番目の entry が最初の entry に対する reply となっています。各属性の意味は以下の通りです。
+</p>
+<dl>
+<dt>ref</dt>
+<dd>
+元エントリの atom:id 要素。
+</dd>
+<dt>href</dt>
+<dd>
+元エントリの IRI。
+</dd>
+<dt>type</dt>
+<dd>
+元エントリのメディアタイプ。
+</dd>
+<dt>source</dt>
+<dd>
+元エントリが含まれる Atom Feed または Entry の IRI。
+</dd>
+</dl>
+<h3 id="replieslinkrelation">'replies' link relation</h3>
+<p>
+link 要素の rel 属性として replies を指定することで、その entry に対する reply が含まれている（かもしれない）リソースを参照します。
+</p>
+<pre class="wiki">
+&lt;feed xmlns="http://www.w3.org/2005/Atom"
+      xmlns:thr="http://purl.org/syndication/thread/1.0"&gt;
+    &lt;id&gt;http://www.example.org/myfeed&lt;/id&gt;
+    &lt;title&gt;My Example Feed&lt;/title&gt;
+    &lt;updated&gt;2005-07-28T12:00:00Z&lt;/updated&gt;
+    &lt;link href="http://www.example.org/myfeed" /&gt;
+    &lt;author&gt;&lt;name&gt;James&lt;/name&gt;&lt;/author&gt;
+    &lt;entry&gt;
+        &lt;id&gt;tag:entries.com,2005:1&lt;/id&gt;
+        &lt;title&gt;My original entry&lt;/title&gt;
+        &lt;updated&gt;2006-03-01T12:12:12Z&lt;/updated&gt;
+        &lt;link href="http://www.example.org/entries/1" /&gt;
+        <strong>&lt;link rel="replies"
+              type="application/atom+xml"
+              href="http://www.example.org/mycommentsfeed.xml"
+              thr:count="10" thr:updated="2005-07-28T12:10:00Z" /&gt;</strong>
+        &lt;summary&gt;This is my original entry&lt;/summary&gt;
+    &lt;/entry&gt;
+&lt;/feed&gt;
+</pre>
+<p>
+この link 要素は thr:count 属性と thr:updated 属性を持つことができます。各属性の意味は以下の通りです。
+</p>
+<dl>
+<dt>thr:count</dt>
+<dd>
+href で示されるリソースに含まれている reply の数。
+</dd>
+<dt>thr:updated</dt>
+<dd>
+href で示されるリソース内の reply の最終更新日時。
+</dd>
+</dl>
+<p>
+どちらの属性も補助的なものであって、正確な数値でなくとも良い、という点には注意が必要です。
+</p>
+<h3 id="total拡張要素">'total' 拡張要素</h3>
+<p>
+entry に対する reply の総数です。ドラフトにはサンプルがなかったので、以下の例は適当です。間違ってたらごめんなさい。
+</p>
+<pre class="wiki">
+&lt;feed xmlns="http://www.w3.org/2005/Atom"
+    xmlns:thr="http://purl.org/syndication/thread/1.0"&gt;
+    &lt;id&gt;http://www.example.org/myfeed&lt;/id&gt;
+    &lt;title&gt;My Example Feed&lt;/title&gt;
+    &lt;updated&gt;2005-07-28T12:00:00Z&lt;/updated&gt;
+    &lt;link href="http://www.example.org/myfeed" /&gt;
+    &lt;author&gt;&lt;name&gt;James&lt;/name&gt;&lt;/author&gt;
+    &lt;entry&gt;
+        &lt;id&gt;tag:example.org,2005:1&lt;/id&gt;
+        &lt;title&gt;My original entry&lt;/title&gt;
+        &lt;updated&gt;2006-03-01T12:12:12Z&lt;/updated&gt;
+        &lt;link
+          type="application/xhtml+xml"
+          href="http://www.example.org/entries/1" /&gt;
+        &lt;summary&gt;This is my original entry&lt;/summary&gt;
+        <strong>&lt;thr:total&gt;10&lt;/thr:total&gt;</strong>
+    &lt;/entry&gt;
+    &lt;/entry&gt;
+&lt;/feed&gt;
+</pre>
+<p>
+これもやはり補助的な数値なので、正確な数値だと期待してはいけないようです。
+</p>
+<p>
+thr:count, thr:updated, total の数値が正確なものでなくて良い理由については、ドラフトの「6.  Considerations for using thr:count, thr:updated and total」について書かれていますので、ここでは省略します。（書くのめんどくさくなった。）
+</p>

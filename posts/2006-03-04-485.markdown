@@ -1,0 +1,14 @@
+---
+layout: post
+title: "apache2 って最初から LDAP 認証用モジュールが含まれてるのね"
+date: 2006-03-04 18:14
+comments: true
+categories: 
+---
+<p class="entryBody">
+subversion を WebDAV と合わせて使おうと思い、apache2 をインストールして、認証は LDAP でやりたいので、apache1 と同じ感覚で modules.apache.org で見つけた mod_auth_ldap とか modXLdapAuth とかを入れてみようと思っても、make が通らない。
+</p>
+
+<p class="entryBody">
+で、いくら頑張っても make が通らないので諦めかけていたところ、なんとなく apache2 のソースディレクトリ以下を find してみたら、mod_authnz_ldap.c とかいうものを発見。ドキュメントを読んでみたらまさにこれが LDAP 認証のためのモジュールでした。これで2時間無駄にした…
+</p>

@@ -1,0 +1,18 @@
+---
+layout: post
+title: "CustomFeed::DAAP と Filter::FetchDAAP #0"
+date: 2006-09-11 11:59
+comments: true
+categories: 
+---
+<p>
+思いつきで YAPC::NA 2006 での宮川さんのプレゼン 『 <a class="ext-link" href="http://blog.bulknews.net/mt/archives/iTunesHacks-YAPCNA.pdf"><span class="icon"></span>Hacking iTunes from Perl(PDF)</a> 』の 「 Hack <a class="ticket" href="/ticket/5">#5</a> Download songs from iTunes share 」を Plagger プラグインとして実装してみた。
+</p>
+<ul><li><a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/DAAP.pm"><span class="icon"></span>CustomFeed::DAAP</a></li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FetchDAAP.pm"><span class="icon"></span>Filter::FetchDAAP</a></li></ul>
+<p>
+黒い気がするので説明は省略。
+</p>
+<p>
+enclosure と絡めるべきなんだろうけど、url をどうしようか悩み、とりあえず後で考えることにしました。
+</p>

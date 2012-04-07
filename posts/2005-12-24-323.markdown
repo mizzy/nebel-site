@@ -1,0 +1,51 @@
+---
+layout: post
+title: "Rails + MySQL では InnoDB か BDBを（Rails 勉強中 #1）"
+date: 2005-12-24 20:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Agile Web Development With Rails</a> の Chapter 12. Task T: TESTING ではまる。
+</p>
+
+<p class="entryBody">
+本の通りにプログラムを書いていって、テストを実行するも、テストが通らない。P146 に「テストメソッドは他のテストメソッドがテーブルに加えた変更の影響は受けない」みたいなことが書かれているんだけど、影響受けまくっているようにしか見えない。
+</p>
+
+<p class="entryBody">
+で、「影響を受けない」ってことは、1つのテストメソッドを実行するたびに、テーブルへの変更をクリアしてるんだろうけど、どうやって実現してるんだろう、と思って MySQL のログを見ると、 ROLLBACK を実行してる。あれ、MyISAM って ROLLBACK できるんだっけ、と思って調べてみると、やはり対応してない…
+</p>
+
+<p class="entryBody">
+うちはいまだに 3.23.58 で、しかも --with-innodb なしでビルドしてるので、ソースからコンパイルをやりなおすはめに。でもやっぱり 3.23.58。（一度 4.1 にあげて痛い目にあったので、MySQL をアップグレードするのは怖いっす。）
+</p>
+
+<p class="entryBody">
+ビルドしなおして再起動後、テーブルを InnoDB にすることで無事テストが通りました。トランザクションをサポートしていればいいはずなので、BDB でもいいんでしょうね。これって Rails 使いには常識ですか？
+</p>
+
+<p class="entryBody">
+その後本を読みすすめていくと、P177 に「InnoDB じゃないとだめよ」って書いてあった。でも、俺がはまったのは P147 なんすよね。そういうことはこの章の最初の方で言ってくれよ…
+</p>
+
+<p class="entryBody">
+いままで個人で利用するような小規模なプログラムしか書いてなかったので、トランザクションとかいらないから MyISAM だけつかってたけど、これを機会に InnoDB つかってトランザクションを意識したプログラムとか書いてみよう。
+</p>
+
+<p class="entryBody">
+<strong>2005/12/24 20:17 追記</strong><br />
+test/test_helper.rb を覗いてみると、
+</p>
+
+<pre class="code">
+self.use_transactional_fixtures = true
+</pre>
+
+<p class="entryBody">
+なんて記述が。こいつを false にしてやると、ROLLBACK を使わずに、DELETE FROM TABLE と INSERT を使ってテーブルへの変更をクリアして元の状態に戻してくれます。なので、トランザクションをサポートしてない MyISAM でも OK になります。
+</p>
+
+<p class="entryBody">
+で、あらためて P177 を読んでみると、Transactional Fixtures を利用する場合には、 テストスクリプトに self.use_transactional_fixtures = true を記述すればいい、みたいなことが書いてある。ってことは、この本が書かれた時点では、self.use_transactional_fixtures = false がデフォルトだったってことなのかな？
+</p>

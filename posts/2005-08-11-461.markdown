@@ -1,0 +1,31 @@
+---
+layout: post
+title: "blosxomをAccount Auto-Discoveryに対応させるプラグイン #0"
+date: 2005-08-11 16:37
+comments: true
+categories: 
+---
+<p class="entryBody">
+せっかくなので、このブログもAccount Auto-Discoveryに準拠した、はてなブックマークのポイント送信機能に対応させてみようと考え、「フレーバいじればいいんだろ。楽勝。」とか思っていたら、headフレーバでpermalinkを表示させる方法がわからない…
+</p>
+
+<p class="entryBody">
+で、permalinkじゃなくてもいいんだけど、それだと勝ち負けでいうと負けな気がするし、調べれば方法はあるかもしれないけど、プラグイン書いちゃった方が早い、というわけで、書いてみました。<a href="/archives/account_auto_discovery" target="_blank">account_auto_discoveryプラグイン</a>。
+</p>
+
+<p class="entryBody">
+完全オリジナルではなく、antipopのけんたろさん作 <a href="http://antipop.gs/mt/2005/08/09/201256" target="_blank">Movable Type を Account Auto-Discovery に対応させるプラグイン</a>をblosxom用に移植（パクリ）したものとなっています。
+</p>
+
+<p class="entryBody">
+使い方ですが、pluginsディレクトリに置いて、$account_name, $is_xhtmlを適宜修正、headフレーバの表示したい部分に、$account_auto_discovery::rdf と記述して下さい。
+</p>
+
+<p class="entryBody">
+blosxomの場合、permalinkのフォーマットは様々なため、環境変数HTTP_HOSTとREQUEST_URIを組み合わせてpermalinkを構成しています。（要はクライアントがアクセスしているURIをpermalinkとしている。）なので、permalinkとは呼べないようなURIがrdf:aboutに設定される可能性もありますが、特に実害はないと思いますので、とりあえずはこの実装にしておきます。
+</p>
+
+<p class="entryBody">
+<strong>2005/08/11 8:20追記</strong><br />
+<a href="http://niiyan.s8.xrea.com/blosxom/blosxom/20050811_hatenapoint_for_blosxom.htm" target="_blank">にーやんのブログ :: 「はてなポイント」の受け取りに対応しました</a> 経由 <a href="http://hail2u.net/blog/blosxom/hatena_point_getter_in_blosxom.html" target="_blank">hail2u.net - Weblog - blosxomではてなポイントゲッター</a>で知ったのですが、$urlと$path_infoの組み合わせででpermalinkを表現できるようです。覚えとこ。
+</p>

@@ -1,0 +1,115 @@
+---
+layout: post
+title: "PPerl と plagger"
+date: 2006-06-25 18:19
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://www.amazon.co.jp/exec/obidos/ASIN/0596526741/httshemizorg-22/ref=nosim"><span class="icon"></span>Perl Hacks</a> に載ってた Hack <a class="ticket" href="/ticket/81">#81</a> の <a class="ext-link" href="http://search.cpan.org/dist/PPerl/"><span class="icon"></span>PPerl</a> を plagger で試してみよう、と思ったら <a class="ext-link" href="http://d.hatena.ne.jp/odz/20060524/1148529647"><span class="icon"></span>既に試していらっしゃる方</a> がおりました。
+</p>
+<p>
+というわけで、PPerl が何なのかは <a class="ext-link" href="http://d.hatena.ne.jp/odz/"><span class="icon"></span>id:odz さん</a> の上記エントリを見てください。
+</p>
+<p>
+と、これだけでも何なので、PPerl について気になって調べたことをメモ。まず、global セクションだけ書いた config.yaml で plagger を起動して、ps コマンドで仮想メモリ容量を見てみると、こんな感じになってます。
+</p>
+<pre class="wiki">
+$ pperl plagger                                           [~/plagger]
+Plagger [info] plugin Plagger::Plugin::Aggregator::Simple loaded.
+$ ps -eo pid,ppid,vsz,args|grep plagger|grep -v grep           [~/plagger]
+ 6470     1 10772 plagger
+ 6471  6470 <strong>18592</strong> plagger
+ 6472  6470 10772 plagger
+ 6473  6470 10772 plagger
+ 6474  6470 10772 plagger
+ 6475  6470 10772 plagger
+</pre>
+<p>
+さらにもう2回ほど pperl plagger を実行すると、
+</p>
+<pre class="wiki">
+$ pperl plagger                                           [~/plagger]
+Plagger [info] plugin Plagger::Plugin::Aggregator::Simple loaded.
+$ pperl plagger                                           [~/plagger]
+Plagger [info] plugin Plagger::Plugin::Aggregator::Simple loaded.
+$ ps -eo pid,ppid,vsz,args|grep plagger|grep -v grep           [~/plagger]
+ 6470     1 10772 plagger
+ 6471  6470 <strong>18592</strong> plagger
+ 6472  6470 <strong>18582</strong> plagger
+ 6473  6470 <strong>18582</strong> plagger
+ 6474  6470 10772 plagger
+ 6475  6470 10772 plagger
+</pre>
+<p>
+さらにもう何回か実行してみる。
+</p>
+<pre class="wiki">
+$ ps -eo pid,ppid,vsz,args|grep plagger|grep -v grep      [~/plagger]
+ 6470     1 10772 plagger
+ 6471  6470 <strong>18592</strong> plagger
+ 6472  6470 <strong>18592</strong> plagger
+ 6473  6470 <strong>18592</strong> plagger
+ 6474  6470 <strong>18592</strong> plagger
+ 6475  6470 <strong>18592</strong> plagger
+</pre>
+<p>
+こんな感じで、プロセス ID 6470 が大元の親プロセスになって、他の plagger プロセスをフォークしていて、 親プロセスの仮想メモリ容量が 10772KB、他の子プロセスの仮想メモリ容量との差分である 7820KB が plagger 関連モジュールが確保している仮想メモリ容量なんだろうなぁ、ということが分かります。
+</p>
+<p>
+で、今度は普段使っているコンフィグで起動してみます。
+</p>
+<pre class="wiki">
+$ pperl plagger --config=gmail.yaml
+Plagger [info] plugin Plagger::Plugin::Subscription::Bloglines loaded.
+Plagger [info] plugin Plagger::Plugin::Subscription::Config loaded.
+Plagger [info] plugin Plagger::Plugin::CustomFeed::Simple loaded.
+Plagger [info] plugin Plagger::Plugin::CustomFeed::YajiumaWatch loaded.
+Plagger [info] plugin Plagger::Plugin::CustomFeed::KotonohaInbox loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::EntryFullText loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::TruePermalink loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::StripRSSAd loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::BloglinesContentNormalize loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::HatenaDiaryKeywordUnlink loaded.
+Plagger [info] plugin Plagger::Plugin::Filter::Rule loaded.
+Plagger [info] plugin Plagger::Plugin::Widget::Delicious loaded.
+Plagger [info] plugin Plagger::Plugin::Widget::BloglinesSubscription loaded.
+Plagger [info] plugin Plagger::Plugin::Publish::Gmail loaded.
+... snip ...
+$ ps -eo pid,ppid,vsz,args|grep plagger|grep -v grep      [~/plagger]
+ 6470     1 10772 plagger
+ 6471  6470 18592 plagger
+ 6472  6470 18592 plagger
+ 6473  6470 18592 plagger
+ 6474  6470 18592 plagger
+ 6475  6470 <strong>37388</strong> plagger
+</pre>
+<p>
+と、こんな感じで、ID 6475 のプロセスが大きくなってます。これがこのコンフィグで増えた Plagger Plugin モジュールのメモリ容量みたいですね。
+</p>
+<p>
+といったように、pperl を最初に起動した時のモジュールだけをメモリ上に確保するだけではなく、その後新たに読み込まれたモジュールもちゃんとメモリ上に確保してくれているようです。当たり前っちゃ当たり前の気もしますが、何となく気になったので。 
+</p>
+<p>
+他に気になった点として、起動するプロセスの数を増やしたり、制限したりできるのかな、と思ったところ、以下の様なオプションがあるので、この辺りも制御できるようですね。
+</p>
+<pre class="wiki">
+$ pperl --help                                            [~/plagger]
+pperl version 0.25
+Usage: pperl [options] filename
+perl options are passed to your perl executable (see the perlrun man page).
+pperl options control the persistent perl behaviour
+
+PPerl Options:
+  -k  or --kill      Kill the currently running pperl for that script
+  -h  or --help      This page
+  --prefork          The number of child processes to prefork (default=5)
+  --maxclients       The number of client connections each child
+                       will process (default=100)
+  -z  or --anyuser   Allow any user (after the first) to access the socket
+                       WARNING: This has severe security implications. Use
+                       at your own risk
+  --no-cleanup       Skip the cleanup stage at the end of running your script
+                       this may make your code run faster, but if you forget
+                       to close files then they will remain unflushed and unclosed
+</pre>

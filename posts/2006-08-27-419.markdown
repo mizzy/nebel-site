@@ -1,0 +1,40 @@
+---
+layout: post
+title: "Filter::Audio #0"
+date: 2006-08-27 17:38
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://subtech.g.hatena.ne.jp/miyagawa/20060827/1156610704"><span class="icon"></span>Convert Apache index to Podcasts</a> とか <a class="ext-link" href="http://www.hsbt.org/diary/20060827.html#p03"><span class="icon"></span>RubyKaigi2006の音声ファイルをPlaggerで色々</a> を見て、音声ファイル変換用のプラグインがあれば便利かな、と思い、<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/Audio.pm"><span class="icon"></span>Filter::Audio</a> をつくってみました。
+</p>
+<p>
+宮川さんの設定に以下の様な内容を追加すれば、ローカルにダウンロード、mp3 へ変換して PodCasting できます。
+</p>
+<pre class="wiki">
+  - module: Filter::FetchEnclosure
+    config:
+      dir: /home/miya/audio
+  - module: Filter::Audio
+    config:
+      dir: /home/miya/audio
+      from: ogg
+      to: mp3
+  - module: Filter::RewriteEnclosureURL
+    config:
+      rewrite:
+        - local: /home/miya/audio/
+          url:   http://mizzy.org/audio/
+</pre>
+<p>
+Filter::Audio は <a class="ext-link" href="http://search.cpan.org/~mhooreman/Audio-ConvTools-0.06/lib/Audio/ConvTools.pm"><span class="icon"></span>Audio::ConvTools</a> に依存しているのですが、ogg -> mp3 への変換は oggenc と lame が必要です。oggenc はともかく、lame はライセンス的に微妙なんですよね。（詳しくはよく知らないのですが。）
+</p>
+<p>
+<strong>追記</strong><br />
+ffmpeg が --enable-libogg と --ebale-mp3lame つきでコンパイルされていれば、<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FFmpeg.pm"><span class="icon"></span>Filter::FFmpeg</a> でも ogg -> mp3 変換できそう。なのでわざわざ Filter::Audio つくらなくてもよかった。うちの環境では。
+</p>
+<p>
+<strong>TODO</strong><br />
+</p>
+<ul><li><a class="ext-link" href="http://search.cpan.org/~dbp/Ogg-Vorbis-Header-0.03/Header.pm"><span class="icon"></span>Ogg::Vorbis::Header</a> とか <a class="ext-link" href="http://search.cpan.org/~daniel/MP3-Info-1.20/Info.pm"><span class="icon"></span>MP3::Info</a> とか使って、メタ情報の取得やセットができるようになると更に良さそう。</li>
+<li>config: from は設定しなくても、拡張子とかから自動判断させるようにするといいかな。</li></ul>

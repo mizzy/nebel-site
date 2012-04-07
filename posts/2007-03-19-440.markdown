@@ -1,0 +1,57 @@
+---
+layout: post
+title: "puppet でファイルが変更されたら指定したコマンドを実行するレシピ"
+date: 2007-03-19 21:02
+comments: true
+categories: 
+---
+<p>
+puppet で <a class="ext-link" href="http://mizzy.org/linux/puppet03.html"><span class="icon"></span>ファイルの配布</a> ができたので、次はファイルが変更されたら特定のコマンドを実行、にチャレンジ。これは <a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/FrequentlyAskedQuestions#how-do-i-run-a-command-whenever-a-file-changes"><span class="icon"></span>FAQ</a> にやり方書いてました。
+</p>
+<p>
+puppet サーバで管理している /etc/httpd/conf.d/ 以下のファイルが変更されたら、puppet クライアント上のファイルを更新して httpd を再起動するレシピはこんな感じ。
+</p>
+<pre class="wiki">
+class web {
+  define httpd {
+    $path = '/etc/httpd/conf.d'
+    file { $path:
+      source  => 'puppet://mizzy.org/files/etc/httpd/conf.d',
+      recurse => 'true',
+    }
+    exec { 'httpd restart':
+      command     => '/etc/init.d/httpd restart',
+      subscribe   => File[$path],
+      refreshonly => true
+    }
+  }
+
+  httpd { 'httpd settings': }
+}
+
+node 'www.mizzy.org' {
+  include web
+}
+</pre>
+<p>
+/etc/httpd/cond.d/perl.conf を変更して puppet クライアント上で puppetd --test を実行するとこんな感じに。
+</p>
+<pre class="wiki">
+$ sudo /usr/sbin/puppetd --server mizzy.org --test
+info: Caching configuration at /var/lib/puppet/localconfig.yaml
+notice: Starting configuration run
+info: //www.mizzy.org/web/httpd[httpd settings]/file=/etc/httpd/conf.d/perl.conf: Removing old backup of type file
+notice: //www.mizzy.org/web/httpd[httpd settings]/file=/etc/httpd/conf.d/perl.conf/source: source changed '{md5}b78c3e53dd7fef842c99f105e9e4204f' to '{md5}a28770c2cdfc4c23faa2ea41b2e67397'
+info: //www.mizzy.org/web/httpd[httpd settings]/file=/etc/httpd/conf.d/perl.conf: Scheduling refresh of exec[httpd restart]
+notice: //www.mizzy.org/web/httpd[httpd settings]/exec=/etc/init.d/httpd restart: Triggering 'refresh' from 1 dependencies
+notice: Finished configuration run in 7.42 seconds    
+</pre>
+<p>
+ファイルが更新されてない場合はこうなる。
+</p>
+<pre class="wiki">
+$ sudo /usr/sbin/puppetd --server mizzy.org --test
+info: Caching configuration at /var/lib/puppet/localconfig.yaml
+notice: Starting configuration run
+notice: Finished configuration run in 6.80 second
+</pre>

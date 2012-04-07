@@ -1,0 +1,22 @@
+---
+layout: post
+title: "same_topicプラグイン #1"
+date: 2005-06-04 22:18
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://ext3.jp.land.to/blosxom/customize10.html" target="_blank">Extension3 - blosxomのカスタマイズ#10</a>にて、same_topicプラグインのバグフィックス情報を頂きましたので、こちらのものに反映してみました。download: <a href="/archives/same_topic" target="_blank">same_topicプラグイン</a>
+</p>
+
+<p class="entryBody">
+<a href="http://ext3.jp.land.to/index.html" target="_blank">Extension3</a>のshelaさん、ありがとうございます!
+</p>
+
+<p class="entryBody">
+shelaさんのご指摘通り、pagingプラグインを併用していると、ソートがらみでおかしくなるので、デフォルトではsortサブルーチンでは何もしないようにしました。（自分の環境では複数ページになるトピックがなかったので、気づきませんでした。）
+</p>
+
+<p class="entryBody">
+ただ、プラグインをつくった目的が、「同一のトピックについて最初から順に追いたい時に使う」なので、古い順に並べたいんですよね。どうしよっかな。できれば各プラグインの独立性は保ちたいので、pagingプラグインはいじりたくないしなぁ。
+</p>

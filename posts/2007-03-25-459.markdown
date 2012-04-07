@@ -1,0 +1,19 @@
+---
+layout: post
+title: "puppet 日本語 Wiki はじめました"
+date: 2007-03-25 03:02
+comments: true
+categories: 
+---
+<p>
+略して <a class="ext-link" href="http://trac.mizzy.org/puppet"><span class="icon"></span>パペウィキ</a> 。<a class="ext-link" href="http://www.paperboy.co.jp/"><span class="icon"></span>弊社</a> の社内ウィキはペパウィキですが、一切関係ありません。
+</p>
+<p>
+やはりブログは情報整理に向いてないので、ウィキで整理してみることにしました。
+</p>
+<p>
+このブログで書いたことも、順次移していきます。（元々このブログは Trac Wiki Formatting で書いてるので、移すのが楽。）
+</p>
+<p>
+どなたでも編集できますので、お気づきの点などあれば、直接編集しちゃってくださいませ。
+</p>

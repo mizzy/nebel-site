@@ -1,0 +1,18 @@
+---
+layout: post
+title: "blosxom + Rast #1"
+date: 2005-04-17 14:26
+comments: true
+categories: 
+---
+<p class="entryBody">
+blosxomのエントリを<a href="http://www.netlab.jp/rast/" target="_blank">Rast</a>で検索するためのプラグインを作ってみました。download: <a href="/archives/rast" target="_blank">rastプラグイン</a>
+</p>
+
+<p class="entryBody">
+使い方の説明とかはまったく書いていませんので、使いたいという方がいらっしゃれば、ご連絡下さい。
+</p>
+
+<p class="entryBody">
+こんな少ないエントリのブログで、検索なんか必要ないだろう、と思われるかもしれませんが、検索が目的ではなくて、Rastをいじることが目的ですので。
+</p>

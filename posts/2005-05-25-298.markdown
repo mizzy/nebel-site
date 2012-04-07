@@ -1,0 +1,22 @@
+---
+layout: post
+title: "blosxomでtagging #10"
+date: 2005-05-25 22:49
+comments: true
+categories: 
+---
+<p class="entryBody">
+このブログではタグづけなんかをしてるわけですが、ひとりでタグづけしてても、なんか虚しいんですよね。
+</p>
+
+<p class="entryBody">
+なので、タグをdel.icio.usやtechnorati.comと繋げてみることにしました。各エントリの下の方で、タグごとにdel.icio.usやtechnorati.comにリンクしてます。なんか見づらい気がするけど、あとで考えよう。
+</p>
+
+<p class="entryBody">
+ここを見てくださっている方が、更に関連情報を辿りたい、って時には便利になるような気がしないでもないです。
+</p>
+
+<p class="entryBody">
+それから、Blog Hackers Conference 2005に行きます。このエントリとは関係ないですが、独立したエントリ立てるほどでもないので。
+</p>

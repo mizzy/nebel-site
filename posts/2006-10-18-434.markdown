@@ -1,0 +1,108 @@
+---
+layout: post
+title: "HTML::Widget::Kwalify #0"
+date: 2006-10-18 00:55
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/HTML-Widget-Kwalify"><span class="icon"></span>HTML::Widget::Kwalify</a> というものをつくってます。まだプロトタイプにもなってない感じだけど。
+</p>
+<p>
+これで <a class="ext-link" href="http://www.kuwata-lab.com/kwalify/"><span class="icon"></span>Kwalify</a> スキーマから <a class="ext-link" href="http://search.cpan.org/~cfranks/HTML-Widget/lib/HTML/Widget.pm"><span class="icon"></span>HTML::Widget</a> オブジェクトを自動生成して、Plagger のウェブインターフェースを簡単につくっちゃおう、という目論見です。
+</p>
+<pre class="wiki">
+use HTML::Widget::Kwalify;
+
+my $w = HTML::Widget::Kwalify->create_from( file => 'schema.yaml' );
+print $w->process;
+</pre>
+<p>
+みたいな感じで、schema.yaml から HTML フォームを一発で生成できます。
+</p>
+<p>
+CGI::Application ベースでサンプルをつくると、こんな感じになります。
+</p>
+<p>
+まずはディスパッチする index.cgi 。
+</p>
+<pre class="wiki">
+#!/usr/local/bin/perl
+
+use strict;
+use warnings;
+use lib './lib';
+
+use WidgetKwalify;
+
+my $w = WidgetKwalify->new;
+$w->run;
+</pre>
+<p>
+本体の lib/WidgetKwalify.pm 。
+</p>
+<pre class="wiki">
+package WidgetKwalify;
+
+use strict;
+use warnings;
+use base qw( CGI::Application );
+use HTML::Widget::Kwalify;
+use CGI::Application::Plugin::TT;
+
+our $TEMPLATE_OPTIONS = {
+    INCLUDE_PATH => '/path/to/template',
+};
+
+sub setup {
+    my $self = shift;
+
+    $self->start_mode('top');
+    $self->run_modes(
+        top => 'top',
+    );
+
+    $self->tt_config( TEMPLATE_OPTIONS => $TEMPLATE_OPTIONS );
+}
+
+sub top {
+    my $self = shift;
+
+    my $q = $self->query;
+    my $w = HTML::Widget::Kwalify->create_from( file => 'schema.yaml' );
+    return $self->tt_process(
+        'index.html',
+        { widget => $q ? $w->process($q) : $w->process }
+    );
+}
+
+1;
+</pre>
+<p>
+HTML テンプレート template/index.html 。
+</p>
+<pre class="wiki">
+&lt;table&gt;
+&#91;% FOREACH element = widget.elements %&#93;
+  &lt;tr&gt;
+    &lt;td&gt;&#91;% element.label.content.0 %&#93;:&lt;/td&gt;
+    &lt;td&gt;&#91;% element.element.as_XML %&#93;&lt;/td&gt;
+  &lt;/tr&gt;
+&#91;% END %&#93;
+&lt;/table&gt;
+</pre>
+<p>
+Plagger の example にある <a class="ext-link" href="http://plagger.org/trac/browser/trunk/plagger/examples/schema.yaml"><span class="icon"></span>schema.yaml</a> の global セクションを使ってこのサンプルを動かすと、<a class="ext-link" href="http://mizzy.org/widget/index.cgi"><span class="icon"></span>こんな感じ</a>になります。まだ type:seq の処理をちゃんとしてないので、plugin_path が変ですが、他は良い感じ。log-level もちゃんと select になってるし。
+</p>
+<p>
+これで、Plagger ホスティングウェブアプリつくれば、bloglines2gmail とか youtube2podcast とか、目的別にスキーマファイルつくるだけで、設定用フォームが自動で生成できるし、プラグイン毎にスキーマファイル用意しておいて、利用したいプラグインを選択すると、そのプラグイン用の設定フォームが自動で生成できる、といったことが可能になりますね。
+</p>
+<p>
+あと、
+</p>
+<pre class="wiki">
+$widget->process($query)->save_to( file => 'config.yaml' );
+</pre>
+<p>
+な感じで POST したフォームの内容を YAML にしてファイルに保存、とかできるようにする予定です。（他にも type: seq の処理とか、フォームバリデーション対応とか、やること山積みですが。）
+</p>

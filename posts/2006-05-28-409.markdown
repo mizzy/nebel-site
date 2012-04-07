@@ -1,0 +1,26 @@
+---
+layout: post
+title: "catlxom メモ #2"
+date: 2006-05-28 02:11
+comments: true
+categories: 
+---
+<p class="entryBody">
+catlxom の Template::TT プラグイン で、$self-&gt;classdata-&gt;{tt}-&gt;process() がエラーになっても、真っ白な画面が表示されるだけで、エラーログにも何も出なくてかなり悩む羽目になったので patch 。
+</p>
+
+<pre class="code">
+Index: plugins/Template/TT.pm
+===================================================================
+--- plugins/Template/TT.pm      (revision 23)
++++ plugins/Template/TT.pm      (working copy)
+@@ -84,7 +84,7 @@
+                 c =&gt; $c,
+             },
+             \$c-&gt;res-&gt;{body},
+-        );
++        ) or $c-&gt;error( $self-&gt;classdata-&gt;{tt}-&gt;error );
+     }
+
+     $self-&gt;NEXT::interpolate($c);
+</pre>

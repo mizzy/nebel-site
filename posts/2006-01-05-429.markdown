@@ -1,0 +1,22 @@
+---
+layout: post
+title: "zsh の キーバインドではまる"
+date: 2006-01-05 21:51
+comments: true
+categories: 
+---
+<p class="entryBody">
+最近、〜にはまった系のエントリが多いですが、今日もまたはまりました。
+</p>
+
+<p class="entryBody">
+普段 linux や cygwin では zsh を使ってるのですが、急に emacs キーバインドが使えなくなってしまいました。というか、今まで特に emacs キーバインド ということを意識しないで使っていたのですが、Ctrl + A を押すと、カーソルが行頭に戻らずに、^A がそのまま表示されてしまう、という現象が。（Ctrl + A 以外も同様。）
+</p>
+
+<p class="entryBody">
+で、最近 zsh まわりで何かいじったかなー、と思い返してみると、svn コマンド実行時に起動するエディタを指定するために、.zshenv に export EDITOR=vi を設定していて、これが原因でした。この設定をすると、勝手に vi キーバインドになってしまうんですね。
+</p>
+
+<p class="entryBody">
+というわけで、.zshrc に bindkey -e を記述して、emacs キーバインドを明示的に指定することで解決。
+</p>

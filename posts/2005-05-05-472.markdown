@@ -1,0 +1,22 @@
+---
+layout: post
+title: "blosxomでtagging #8"
+date: 2005-05-05 16:42
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/archives/tagging" target="_blank">taggingプラグイン</a>をアップデート。させざきさんのご要望により、storyフレーバでtag毎のリンクを表示できるようにしました。
+</p>
+
+<p class="entryBody">
+リンクを表示したい位置に、$tagging::tags_in_this と入れてください。各エントリの右下にある、「tags: ...」の様な感じで表示されます。（「tags:」という文字はプラグインは出力しないので、自分で好きな文字を入れてください。）
+</p>
+
+<p class="entryBody">
+おそらく、metaプラグインよりも前に読み込まれないと、うまく動作しないと思いますので、「01tagging」みたいなファイル名にして、metaよりも先に読み込まれるようにして下さい。
+</p>
+
+<p class="entryBody">
+させざきさん、ご要望どおりのものになってますでしょうか？「思ってたのと違う」とか「ここはこうしてほしい」とかありましたら、お知らせ下さい。
+</p>

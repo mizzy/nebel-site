@@ -1,0 +1,83 @@
+---
+layout: post
+title: "Pushmi つかってます & 技術者募集中 at 福岡"
+date: 2007-08-03 01:52
+comments: true
+categories: 
+---
+"弊社":http://www.paperboy.co.jp/ は東京と福岡にオフィスがあり、それぞれの拠点に Subversion + Trac 環境を構築し、"OpenVPN":http://openvpn.net/ により VPN 接続してお互いの開発状況を公開しています。サービス絡みの開発は基本的に、東京は東京、福岡は福岡で完結しているので、この方式で問題はないのですが、サーバ管理関連のスクリプトなんかは、東京と福岡で共通するものが多いため、別々の SVN リポジトリで管理されてると不便なんですよね。かといって、どちらかの拠点だけしかリポジトリがないと、VPN の障害発生時に、リポジトリのない拠点からはまったくアクセスができない、という困ったことになってしまいます。
+
+そこで、SVN リポジトリレプリケーションツール "Pushmi":http://search.cpan.org/dist/Pushmi/lib/Pushmi.pm を導入してみました。詳細は "YAPC::Asia での 作者 Cl Kao によるスピーチ動画":http://video.google.com/videoplay?docid=-7181301487103062288&q=yapc+asia+2007&total=46&start=0&num=50&so=1&type=search&plindex=13 を見て頂くとして、ここでは行った設定についてメモを残しておきます。ほとんど perldoc Pushmi の内容と同じですが。
+
+まず当然 Pushmi のインストールが必要です。これの手順は省略。また、より良いアトミックロック実現のために "memcached":http://www.danga.com/memcached/ を利用している、ということなのでインストールしておきます。これも手順は省略。
+
+memcached を起動します。
+
+<pre><code>$ sudo /usr/bin/memcached -p 8123 -dP /var/run/memcached.pid -u nobody
+</code></pre>
+
+/etc/pushmi.conf を設定します。弊社の環境では memcached のポートのみ指定してます。
+
+<pre><code>authproxy_port: 8123
+</code></pre>
+
+ミラーリポジトリを作成します。
+
+<pre><code>$ pushmi mirror /var/db/my-local-mirror http://master.repository/svn
+Mirror initialized.
+</code></pre>
+
+ミラーリポジトリとマスターリポジトリを同期します。
+
+<pre><code>$ pushmi sync /var/db/my-local-mirror
+Retrieving log information from 1 to 62
+</code></pre>
+
+ミラーリポジトリは、svnadmin create で作成するのと同様なディレクトリ、ファイル構造になってますが、Pushmi 用の pre-commit スクリプトと post-commit スクリプトが置かれている、というところが異なります。
+
+pre-commit では以下の様なコマンドが実行され、ミラーリポジトリにコミットされた内容を、マスターリポジトリにコミットしに行きます。
+
+<pre><code>/usr/bin/pushmi runhook $1 --txnname $2
+</code></pre>
+
+post-commit では以下の様なコマンドが実行され、ミラーとマスターの整合性を確認しています。
+
+<pre><code>/usr/bin/pushmi verify $1 --revision $2
+</code></pre>
+
+Apache + WebDAV で SVN リポジトリにアクセスするために、以下の様な設定を Apache で行います。
+
+<pre><code><Location /svn/server>
+  PerlSetVar SVNPath /var/db/my-local-mirror
+  PerlSetVar Pushmi /usr/bin/pushmi
+  PerlSetVar PushmiConfig /etc/pushmi.conf
+  <LimitExcept GET PROPFIND OPTIONS REPORT>
+    AuthName "mirrored private area"
+    AuthType Basic
+    Require valid-user
+    AuthLDAPURL ldap://localhost:389/ou=people,o=paperboy?uid?sub?(objectclass=*)
+    PerlAuthenHandler Pushmi::Apache::AuthCommit
+  </LimitExcept>
+</Location>
+</code></pre>
+
+設定見て分かると思いますが、mod_perl を利用していて、Apche2 + mod_perl の環境が必要です。Apache は 2.0 系でも 2.2 系でも大丈夫なようです。弊社では 2.0 系を利用しています。
+
+特にポイントとなるのは、
+
+<pre><code>PerlAuthenHandler Pushmi::Apache::AuthCommit
+</code></pre>
+
+の部分で、認証で渡されたユーザ名、パスワードをこのモジュールで memcached にキャッシュしておき、マスタリポジトリへのコミット時の認証に利用します。Apache 2.2 系の場合には、以下の様に設定します。
+
+<pre><code>AuthBasicProvider Pushmi::Apache::RelayProvider
+</code></pre>
+
+この状態では、ミラーへのコミットは即マスターに反映されますが、マスターへのコミットはミラーに反映されませんので、以下の様な cron 設定を行い、5分おきにマスターとミラーを同期するようにします。
+
+<pre><code>*/5 * * * * /usr/bin/pushmi sync --nowait /var/db/my-local-mirror
+</code></pre>
+
+今のところこれで問題なく動いています。
+
+話変わりまして、弊社福岡支社では、"プログラマ":http://tenshoku.mynavi.jp/jobset/index.cfm?fuseaction=mrjt_Jobinfo_form&client_id=87984&plan_id=1&contract_id=1&job_seq_no=1&ty=0&rm=0 と "サーバエンジニア":http://tenshoku.mynavi.jp/jobset/index.cfm?fuseaction=mrjt_Jobinfo_form&client_id=87984&plan_id=1&contract_id=1&job_seq_no=2&ty=0&rm=0 を募集しています。Pushmi を実戦で使ってみたい！という方はぜひ。メガネ女子プログラマもいますよ。（東京本社にもいます。人妻ですが。）

@@ -1,0 +1,54 @@
+---
+layout: post
+title: "puppet file server"
+date: 2007-03-19 19:22
+comments: true
+categories: 
+---
+<p>
+puppet サーバ上のファイルをクライアントに配布するには、file server 機能を利用するらしい。というわけで、ドキュメント <a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/FileServingConfiguration"><span class="icon"></span>File Serving Configuration</a> から要点を抜き出してみる。
+</p>
+<h3 id="/etc/puppet/fileserver.confの設定">/etc/puppet/fileserver.conf の設定</h3>
+<pre class="wiki">
+[module]
+    path /path/to/files
+    allow *.domain.com
+    deny *.wireless.domain.com
+</pre>
+<p>
+こう設定すると、
+</p>
+<pre class="wiki">
+/path/to/files/sudoers
+</pre>
+<p>
+というファイルを
+</p>
+<pre class="wiki">
+puppet://server/module/sudoers
+</pre>
+<p>
+で取得できるようになる。
+</p>
+<h3 id="manifestの設定">manifest の設定</h3>
+<p>
+"the Puppet language" が記述される設定ファイルを manifest と呼ぶらしい。要は puppet クライアントをどう管理するか、が記述された設定ファイルですね。（上の /etc/puppet/fileserver.conf は manifest ではない。）
+</p>
+<p>
+puppet file server 上のファイルを配布するには、以下の様な設定を manifest に記述。
+</p>
+<pre class="wiki">
+# copy a remote file to /etc/sudoers
+file { "/etc/sudoers":
+    mode   => 440,
+    owner  => root,
+    group  => root,
+    source => "puppet://server/module/sudoers"
+}
+</pre>
+<p>
+source がポイント。
+</p>
+<p>
+詳細は <a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/FileServingConfiguration"><span class="icon"></span>File Serving Configuration</a> を参照。
+</p>

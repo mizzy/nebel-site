@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Catalyst で Atom API テストツール #3"
+date: 2006-02-20 23:11
+comments: true
+categories: 
+---
+<p class="entryBody">
+またもやパッチを送って頂いたので、Atom API テストツール 「A2T2」 をアップデート。Thanks agin, Brian!
+</p>
+
+<p class="entryBody">
+エラーハンドリングをちゃんとしていなくて、エラーが発生すると Catalyst のエラー画面が下の方にそのまま表示されてしまい、画面がおかしなことになっていたのを修正してくれました。これはやらなきゃいけないな、と思っていたので、大助かり。
+</p>
+
+<p class="entryBody">
+例によってソースは <a href="http://trac.mizzy.org/public/browser/atom_client/trunk" target="_blank">trac</a> または svn://mizzy.org/public/atom_client/trunk からどぞ。
+</p>

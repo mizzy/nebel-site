@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Catalyst で Atom API テストツール #4"
+date: 2006-02-22 23:10
+comments: true
+categories: 
+---
+<p class="entryBody">
+無事 XML::LibXML の make が通った（パッチあてた）ので、<a href="http://mizzy.org/atom/" target="_blank">Atom API テストツール 「A2T2」のデモを公開します</a>。好きに使っちゃってください。
+</p>
+
+<p class="entryBody">
+それにともなって、見た目をほんのちょっとだけいじってみました。背景画像に gorouさん作 <a href="http://lab.rails2u.com/bgmaker/" target="_blank">Background Image Maker</a> で作った画像を使わせて頂いたり、アクセス中のインジケータとして、<a href="http://blog.nomadscafe.jp/archives/000610.html" target="_blank">かぜぶろさんのとこ</a>で知った <a href="http://www.sanbaldo.com/wordpress/1/ajax_gif/" target="_blank">SanBaldo &#187; Blog Archive &#187; Ajax loading animated gif</a> から GIF アニメ画像を頂いたり。感謝感謝。
+</p>
+
+<p class="entryBody">
+デモといっても、テストツールとしてガンガン使ってくださって構いません。ご要望などありましたら、コメントください。
+</p>

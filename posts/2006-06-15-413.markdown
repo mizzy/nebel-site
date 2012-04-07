@@ -1,0 +1,22 @@
+---
+layout: post
+title: "catlxom 本家に mizzy ブランチができたよ (catlxom メモ #8)"
+date: 2006-06-15 22:12
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://catlxom.org/repos/" target="_blank">catlxom 本家の svn リポジトリ</a> に、<a href="http://catlxom.org/repos/branches/mizzy/catlxom/" target="_blank">mizzy ブランチ</a> ができました。<a href="http://catlxom.org/trac/browser/branches/mizzy/catlxom" target="_blank">trac から見る場合はこちら。</a> <a href="http://catlxom.org/trac" target="_blank">trac トップページ</a> の Authors にも名前いれてもらっちゃいました。typester さん、ありがとうございます！
+</p>
+
+<p class="entryBody">
+今までこのブログで書いてきた catlxom の修正は、このブランチに反映させてありますので、ご興味のある方は今後こちらからご参照/ご取得ください。
+</p>
+
+<p class="entryBody">
+微力ながら、catlxom の発展に貢献させてもらえればなぁと思います。
+</p>
+
+<p class="entryBody">
+次はプラグインづくりに入ろうかと思います。まずは今 blosxom で利用しているプラグインの移植から。本家本元 catlxom のプラグイン機構が今後どうなるかは分かりませんが、そんなに大きく修正しなくても対応できると思うので、今からちまちま作っていきます。
+</p>

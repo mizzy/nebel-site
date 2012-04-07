@@ -1,0 +1,67 @@
+---
+layout: post
+title: "daapdでAACのメタデータを扱う"
+date: 2005-09-26 23:23
+comments: true
+categories: 
+---
+<p class="entryBody">
+2004年初めに<a href="http://mizzy.org/linux/itunes.xhtml" target="_blank">こんなページを</a>書いたものの、家では子供がうるさくてゆっくり音楽聴くことができないため、せっかく構築した環境がほったらかしになってました。
+</p>
+
+<p class="entryBody">
+ところが、嫁が珍しく「聞きたい音楽がある」と言うので、久々にiTunesサーバを復活させることに。で、1年半前に入れた <a href="http://www.deleet.de/projekte/daap/daapd/" target="_blank">daapd</a> では、おそらく iTunes5 には対応してないだろうし、 iTMS-J で購入した AAC のメタデータを扱うことはできないだろう、ということで、環境再構築することにしました。
+</p>
+
+<p class="entryBody">
+まず最初に、 daapd よりも <a href="http://www.mt-daapd.org/" target="_blank">mt-daapd</a> の方がよさげな感じなので、こちらを入れてみた（うちは Slackware なのでソースからコンパイル）ものの、HTTPリクエストを受け取るとSIGSEGVでダウン。straceで追っかけてみたものの、自分のスキルでは原因分からず。
+</p>
+
+<p class="entryBody">
+なので、次は daapd にトライ。が、make が通らない…ので、gcc を 2.95.3 から 3.4.4 にアップグレードして再トライ。これで make が通って、ちゃんと iTunes サーバとして機能するようになった。が、このままでは AAC のメタデータが扱えないので、iTMS-J で購入した曲が聴けない。で、結局は以下の手順で環境構築することで、AAC もばっちりになりました。
+</p>
+
+<h3>SDLの入手とインストール</h3>
+
+<p class="entryBody">
+<a href="http://www.libsdl.org/index.php" target="_blank">SDL (Simple Directmedia Layer)</a> を入手してインストールします。これは、次に述べるmpeg4ipのために必要です。
+</p>
+
+<p class="entryBody">
+俺は <a href="http://www.libsdl.org/download-1.2.php" target="_blank">SDL-1.2 のダウンロードサイト</a>からソースを持ってきてコンパイルしました。
+</p>
+
+<h3>mepg4ipの入手とインストール</h3>
+
+<p class="entryBody">
+AACのメタデータハンドリングのために、 <a href="http://mpeg4ip.sourceforge.net/" target="_blank">mpeg4ip</a> を入手してインストールします。全てインストールする必要はなく、mp4v2 だけインストールすれば良いです。手順は daapd に付属の README.mpeg4ipに記述されていますが、実際のパスと異なる部分が一部あるので、修正したものを以下に記します。
+</p>
+
+<pre class="code">
+tar xvfz mpeg4ip-1.3.tar.gz
+cd mpeg4ip-1.3/
+./bootstrap --disable-server
+cp mpeg4ip_config.h /usr/local/include/
+cp include/mpeg4ip_version.h /usr/local/include
+cp include/mpeg4ip.h /usr/local/include/
+cd lib/mp4v2/
+edit Makefile:
+    replace the line "SUBDIRS = . test util"
+    with "SUBDIRS = ."
+make
+make install
+</pre>
+
+<h3>daapdの入手とインストール</h3>
+
+<p class="entryBody">
+で、本命の <a href="http://www.deleet.de/projekte/daap/daapd/" target="_blank">daapd</a> の入手とインストールです。
+</p>
+
+<p class="entryBody">
+俺が入れたのは 0.2.4a というバージョンなのですが、このバージョンは configure スクリプトがなくて、いきなりmakeを実行するようになっています。ただし、ソースから展開してそのまま make しても、 mpeg4ip は利用しないようになっているので、makefile の「MPEG4_ENABLE = 0」を「MPEG4_ENABLE = 1」に書き換えてから、make; make install します。
+</p>
+
+<p class="entryBody">
+これで完了です。daapdを起動してiTunesからアクセスしたところ、mp3ファイルだけではなく、iTMS-Jで購入したAACファイルのメタデータもしっかりとiTunes上に表示されています。日本語もOKだしアートワークもちゃんと表示されてる。よしよし。
+</p>

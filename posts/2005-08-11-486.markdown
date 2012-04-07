@@ -1,0 +1,27 @@
+---
+layout: post
+title: "blosxomをAccount Auto-Discoveryに対応させるプラグイン #1"
+date: 2005-08-11 16:53
+comments: true
+categories: 
+---
+<p class="entryBody">
+blosxom用<a href="http://mizzy.org/archives/account_auto_discovery" target="blank">account_auto_discoveryプラグイン</a>を修正しました。account_nameとaccount_service_homepageを、以下の様な感じで複数設定できるようにしています。
+</p>
+
+<pre class="code">
+my @accounts = (
+		{
+		    account_name =&gt; "gosukenator",
+		    account_service_homepage =&gt; "http://www.hatena.ne.jp/",
+		},
+		{
+		    account_name =&gt; "other_account",
+		    account_service_homepage =&gt; "http://www.xxx.ne.jp/",
+		},
+		);
+</pre>
+
+<p class="entryBody">
+こうしておけば、今後はてな以外にもAccount Auto-Discoveryに対応したサービスを提供するところが出てきた場合に、フレーバをいじることなく対応できるので良いのではないかと。
+</p>

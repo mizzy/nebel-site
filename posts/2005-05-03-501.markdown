@@ -1,0 +1,21 @@
+---
+layout: post
+title: "blosxom + Rast #2"
+date: 2005-05-03 19:24
+comments: true
+categories: 
+---
+<p class="entryBody">
+blosxomのエントリを<a href="http://www.netlab.jp/rast/" target="_blank">Rast</a>で検索するためのプラグイン、<a href="/archives/rast" target="_blank">rastプラグイン</a>を修正しました。修正点は以下の通りです。
+</p>
+
+<ul class="entryBody">
+<li>検索インデックスを作る際、ファイルの内容からタグを消去するようにした。</li>
+<li>Rast->createでpreserve_text => 1を指定する様にした。</li>
+<li>検索結果表示の際、今まではヒットしたエントリの内容を全て表示していたが、検索語の周辺のテキストのみ表示する様にした。（これはRastが元々持っている機能を使ってます。）</li>
+<li>検索結果表示の際、検索語を強調表示するようにした。</li>
+</ul>
+
+<p class="entryBody">
+どんな感じで表示されるかご覧になりたい方は、左メニューの「search」から検索してみて下さい。これでだいぶ実用的になってきた気がする。
+</p>

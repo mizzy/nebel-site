@@ -1,0 +1,19 @@
+---
+layout: post
+title: "blosxomでtagging #6"
+date: 2005-04-21 08:17
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/archives/tagging">taggingプラグイン</a>、以下のバグ修正と仕様変更を行う。
+</p>
+
+<ul class="entryBody">
+<li>個別エントリの表示の際に、タグの絞込み動作がおかしかったのを修正。</li>
+<li>個別エントリ表示時は、タグリストは全エントリに含まれるタグを表示していたのを、エントリが属するカテゴリのタグのみ表示する様に変更。</li>
+</ul>
+
+<p class="entryBody">
+それに合わせて、Javascriptやフレーバも修正。
+</p>

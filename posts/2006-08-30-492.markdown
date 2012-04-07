@@ -1,0 +1,25 @@
+---
+layout: post
+title: "FFmpeg::Command - A wrapper class for ffmpeg command line utility #3"
+date: 2006-08-30 02:39
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://search.cpan.org/~mizzy/FFmpeg-Command-0.04/"><span class="icon"></span>FFmpeg-Command-0.04</a> を CPAN にアップしました。（これ書いてる時点ではまだ反映されてませんが。）
+</p>
+<p>
+デフォルトで ffmpeg に渡す -vcodec オプションの値は h264 にしてたのですが、これで変換すると iTunes には取り込めるけど iPod には取り込めない、という報告があったので、デフォルトを h264 から mpeg4 に変更しました。mpeg4 であれば問題なく取り込めた、とのことです。
+</p>
+<p>
+おそらく、携帯動画変換君付属の ffmpeg なら h264 でも大丈夫だと思うのですが、Linux 上で自前ビルドした ffmpeg ではだめなようです。
+</p>
+<p>
+<a class="ext-link" href="http://lists.mplayerhq.hu/pipermail/ffmpeg-user/2006-January/001997.html"><span class="icon"></span>この辺りが関係あるのかな？</a>
+</p>
+<p>
+あと、PSP は再生できるのかどうかすらもわかりません。動作報告求む。
+</p>
+<p>
+<a class="ext-link" href="http://www.konami.jp/kojima_pro/e3_2006/"><span class="icon"></span>METAL GEAR SOLID PORTABLE OPS</a> が出ることだし、PSP 買っちゃおうかなー…
+</p>

@@ -1,0 +1,256 @@
+---
+layout: post
+title: "puppet の言語構造"
+date: 2007-03-19 13:34
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/InstallationGuide"><span class="icon"></span>Installation Guide</a> を読めば、とりあえず puppet を動かすことはできるけど、やりたいことをやろうと思ってもすぐにできるわけでもない。というわけで、ドキュメントをちゃんと読んでみることにした。
+</p>
+<p>
+まずは puppet の設定ファイルで使われている内部言語の理解から、ということで、<a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/LanguageStructures"><span class="icon"></span>Language Structures</a> を超意訳してみる。
+</p>
+<h3 id="Types">Types</h3>
+<p>
+puppet 設定の基本構成単位。管理されるコンピュータ上のオブジェクト（ファイルとかパッケージとか）を表すもので、あらかじめ用意されたビルトインタイプ以外にも、自ら定義することも可能。
+</p>
+<pre class="wiki">
+file { "/etc/passwd": owner => root, mode => 644 } 
+package { apache: install => true }
+</pre>
+<p>
+詳しくは <a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/TypeReference"><span class="icon"></span>Type Reference</a> を参照。
+</p>
+<h3 id="Assignment">Assignment</h3>
+<p>
+変数が利用できる。
+</p>
+<pre class="wiki">
+$variable = value
+</pre>
+<pre class="wiki">
+$x = foo
+$y = bar
+$z = "$x$y"
+</pre>
+<h3 id="BringingConfigfilestogether">Bringing Config files together</h3>
+<p>
+設定ファイルに、別の設定ファイルをインポートできる。
+</p>
+<pre class="wiki">
+import "filename"
+</pre>
+<p>
+正規表現も利用可能。
+</p>
+<pre class="wiki">
+import "classes/*"
+import "packages/[a-z]*"
+</pre>
+<h3 id="Scope">Scope</h3>
+<p>
+{ } によってスコープが形成される。
+</p>
+<p>
+変数は一度割り当てられると、同一スコープ内では変更できないが、サブスコープ内では同一名の変数を割り当てることができる。
+</p>
+<pre class="wiki">
+$var = value
+
+# override $var
+define testing {
+    $var = othervalue
+}
+</pre>
+<h3 id="Components">Components</h3>
+<p>
+ここでいう Components とは、自分で定義する Type のことっぽい。Components の定義と利用は以下の様な感じ。
+</p>
+<pre class="wiki">
+define svnserve($source, $path, $user = false, $password = false) {
+    file { $path:
+        create => directory,
+        owner => root,
+        group => root
+    }
+    $svncmd = $user ? {
+        false => "/usr/bin/svn co --non-interactive $source/$name .",
+        default => "/usr/bin/svn co --non-interactive --username $user --password '$password' $source/$name ."
+    }   
+    exec { $svncmd: 
+        cwd => $path,
+        require => file[$path],
+        creates => "$path/.svn"
+    }   
+}
+
+svnserve { dist:
+    source => "https://reductivelabs.com/svn",
+    path => "/dist",
+    user => "puppet",
+    password => "password"
+}
+
+svnserve { "dist/config/apps/puppet":
+    source => "https://reductivelabs.com/svn",
+    path => "/etc/puppet",
+    user => "puppet",
+    password => "password"
+}
+</pre>
+<p>
+利用する時はビルトインタイプと構文上の違いはない。
+</p>
+<h3 id="ServerClasses">Server Classes</h3>
+<p>
+Class を定義してインクルードすることができる。
+</p>
+<pre class="wiki">
+class <class_name> [inherits <super_class_name>] { ... }
+</pre>
+<p>
+継承も可能。
+</p>
+<pre class="wiki">
+# really simple example
+class solaris {
+    file {
+        "/etc/passwd": owner => root, group => root, mode => 644;
+        "/etc/shadow": owner => root, group => root, mode => 440
+    }
+}
+
+class solworkstation inherits solaris {
+    file {
+        "/etc/sudoers": owner => root, group => root, mode => 440;
+        "/bin/sudo": owner => root, group => root, mode => 4111
+    }
+}
+
+include solworkstation
+</pre>
+<p>
+以下の例だと、$operatingsystem の値と同名の Class と、$hostname に応じた Class がインクルードされる。
+</p>
+<pre class="wiki">
+include $operatingsystem, $hostname ? {
+    myhost => classA, default => classB
+}
+</pre>
+<p>
+$operatingsystem とか $hostname とかは、<a class="ext-link" href="http://reductivelabs.com/projects/facter/"><span class="icon"></span>Facter</a>というライブラリを使ってプリセットされているみたい。
+</p>
+<h3 id="Classesvs.Components">Classes vs. Components</h3>
+<p>
+Classes と Components の違いは以下の通り。
+</p>
+<ul><li>Classes はシングルトンなので、ホスト上でひとつしかないものを定義するのに利用する（OSの種類とか、特定のパッケージとかサービスとか。）</li>
+<li>Components はホスト上で複数あるオブジェクト（バーチャルホストなど）を定義するのに利用する。</li></ul>
+<p>
+あと、Classes は引数を受け取れない、という違いもある。
+</p>
+<h3 id="Subclssing">Subclssing</h3>
+<p>
+Class は継承ができる。
+</p>
+<pre class="wiki">
+class unix {
+    file { "/etc/sudoers":
+        owner => root,
+        group => root,
+        mode => 440
+    }
+}
+
+class bsd inherits unix {
+    File["/etc/sudoers"] {
+        group => wheel
+    }
+}
+</pre>
+<h3 id="UsingClassesOutsideofPuppet">Using Classes Outside of Puppet</h3>
+<p>
+puppet サーバで設定された Class 名が、puppet クライアントの /etc/puppet/classes.txt に保存されるので、それを外部プログラムなどから読み込んで利用したりできるよ、とうことらしい。
+</p>
+<p>
+FC4 で yum insall した puppet の場合は、/var/lib/puppet/classes.txt に保存されていた。
+</p>
+<h3 id="Nodes">Nodes</h3>
+<pre class="wiki">
+node <hostname> { ... }
+</pre>
+<p>
+特定のホストに適用する設定を割り当てる。
+</p>
+<p>
+以下の例だと、file type はすべてのホストに割り当てられるけど、webserver class と dbserver class の中に書かれた設定は、それぞれ特定のホストにのみ割り当てられる。
+</p>
+<pre class="wiki">
+class webserver { ... }
+class dbserver { ... }
+
+file { "/etc/sudoers": mode => 440 } # apply to everyone
+
+node host1, host2 {
+    include webserver
+}
+node host3, host4 {
+    include dbserver
+}
+</pre>
+<p>
+node は継承することも可能。
+</p>
+<pre class="wiki">
+node base {
+    include $operatingsystem
+}
+
+node kirby inherits base {
+    include webserver
+}
+</pre>
+<p>
+FQDN で指定する時は、シングルクォートで囲む。
+</p>
+<pre class="wiki">
+node 'host.domain.com' {
+    ...
+}
+</pre>
+<h3 id="Conditionals">Conditionals</h3>
+<p>
+条件指定が可能。
+</p>
+<p>
+以下の例は $os が何かによって、 $owner に入る値が変わる。
+</p>
+<pre class="wiki">
+define testing(os) {
+    $owner = $os ? {
+        sunos => adm,
+        redhat => bin,
+        default => root
+    }
+    file { "/some/file": owner => $owner }
+}
+</pre>
+<p>
+以下の例は $operatingsystem が何かによって、適用する class が変わる。
+</p>
+<pre class="wiki">
+case $operatingsystem {
+    sunos:      { solaris {} } # apply the solaris class
+    redhat:     { redhat  {} } # apply the redhat class
+    default:    { generic {} } # apply the generic class
+}
+</pre>
+<h3 id="Reservedwords">Reserved words</h3>
+<p>
+true, define, inherits, class は予約語。
+</p>
+<h3 id="Comments">Comments</h3>
+<p>
+sh スタイルのコメントが利用可。
+</p>

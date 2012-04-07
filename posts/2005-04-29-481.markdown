@@ -1,0 +1,74 @@
+---
+layout: post
+title: "blosxom + Template Toolkit"
+date: 2005-04-29 16:45
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.blosxom.com/downloads/plugins/interpolate_fancy" target="_blank">interpolate_fancyプラグイン</a>は便利なのですが、<a href="http://html-template.sourceforge.net/" target="_blank">HTML::Template</a>や<a href="http://www.template-toolkit.org/" target="_blank">Template Toolkit</a>に慣れているとなんか物足りないし、やはり慣れた記法で記述したいですよね。
+</p>
+
+<p class="entryBody">
+で、探してみるとblosxomで<a href="http://torus.jp/doc/blosxom/html_template.html" target="_blank">HTML::Templateを使うためのプラグイン</a>を見つけましたが、Template Toolkitに対応したものはないようです。
+</p>
+
+<p class="entryBody">
+個人的にはHTML::Templateもシンプルで好きなのですが、Template Toolkitの柔軟性も捨てがたいので、Template Toolkit対応プラグインを作ってみました。<a href="/archives/tt" target="_blank">ttプラグイン</a>
+</p>
+
+<p class="entryBody">
+通常であれば、
+</p>
+
+<pre class="code">
+$plugin::variable
+</pre>
+
+<p class="entryBody">
+と記述するところを、
+</p>
+
+<pre class="code">
+&#x5b;% plugin.variable %&#x5d;
+</pre>
+
+<p class="entryBody">
+と記述します。package blosxomの変数であれば、
+</p>
+
+<pre class="code">
+&#x5b;% blosxom.variable %&#x5d;
+</pre>
+
+<p class="entryBody">
+でも、
+</p>
+
+<pre class="code">
+&#x5b;% variable %&#x5d;
+</pre>
+
+<p class="entryBody">
+でもOKです。
+</p>
+
+<p class="entryBody">
+blosxom.cgi中のinterpolateサブルーチンの内容もこのプラグインに含まれてますので、本来の
+</p>
+
+<pre class="code">
+$plugin::variable
+</pre>
+
+<p class="entryBody">
+という記述でもちゃんと処理します。
+</p>
+
+<p class="entryBody">
+IF, UNLESSはちゃんと動作してるようですが、他のディレクティブはどうなるか試していません。
+</p>
+
+<p class="entryBody">
+HTML::Templateであれば、paramメソッドを利用して、テンプレートで使われているパラメータリストを取得できるのですが、Template Toolkitでは同様のことができるメソッドがないようで、Template::Parserのtokenise_directiveメソッドで分解したtokenを正規表現で処理してパラメータを取得しています。IF, UNLESS以外のディレクティブがちゃんと動作するかどうかは、ここの処理にかかってるわけですが、たぶん、複雑なデータ構造のものをFOREACHでまわしたりするのは、正常に動作しないと思う。
+</p>

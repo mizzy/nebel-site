@@ -1,0 +1,175 @@
+---
+layout: post
+title: "perlで人工無脳 #0"
+date: 2005-06-18 23:42
+comments: true
+categories: 
+---
+<p class="entryBody">
+ちょっと興味と必要があって、人工無脳に手を出してみることになりました。まあ、人工無脳なんて今更って気もしますが、とりあえずやってみたことはどんなにしょぼくても公開する、というポリシーですので、<a href="http://www.amazon.co.jp/exec/obidos/ASIN/4839917299/httshemizorg-22/ref=nosim" target="_blank">恋するプログラム―Rubyでつくる人工無脳</a>を参考にしながら、perlで実装していく過程をここに載せていきたいと思います。
+</p>
+
+<p class="entryBody">
+といっても、この本の流れに沿っていくわけではなく、俺の思いつきのままにやっていきますので、そこんとこよろしくです。
+</p>
+
+<p class="entryBody">
+で、今回は人工無脳のパターン辞書を、何らかのデータから自動生成することを考えてみます。
+</p>
+
+<p class="entryBody">
+パターン辞書というのは、人工無脳への問いかけの中に、「A」という言葉がある場合に、「B」という応答を返す、というパターンが記述された辞書です。これをひとつひとつ設定していくのではなく、自動的に生成するにはどうすればいいのか、という話ですね。
+</p>
+
+<p class="entryBody">
+これは形態素解析を利用して、以下の様な処理を行います。
+</p>
+
+<ul class="entryBody">
+<li>まず、何らかの発言データファイルを用意する。俺はとあるチャットのログから、1行1発言のテキストファイルを生成しています。</li>
+<li>発言データを1行づつ形態素解析で処理して、名詞を抜き出す。</li>
+<li>抜き出した名詞と発言データを関連づけて、それを辞書データとする。例えば、「私の息子はカレーパンマンと言うことができず、いつもカレーアンパンマンと言っています。」という発言データの場合、「カレー」という名詞に、「私の息子はカレーパンマンと言うことができず、いつもカレーアンパンマンと言っています。」という発言を関連づける。</li>
+<li>これにより、人工無脳への問いかけの中に、「カレー」という言葉が含まれていれば、「私の息子はカレーパンマンと言うことができず、いつもカレーアンパンマンと言っています。」と応答するようになる。</li>
+</ul>
+
+<p class="entryBody">
+perlで実装してみるとこんな感じです。形態素解析にはMeCabを利用しています。（たまたまインストールされていたので。）
+</p>
+
+<pre class="code">
+#!/usr/local/bin/perl
+
+use MeCab;
+use strict;
+use Storable qw(lock_retrieve lock_store);
+
+my $text_file = $ARGV[0];
+open(IN, $text_file) or die $!;
+
+my $pattern_dic_file = "pattern_dic";
+
+my $pattern_dic = {};
+eval { $pattern_dic = lock_retrieve($pattern_dic_file); };
+
+my @arg = ($0);
+my $m = new MeCab::Tagger(\@arg);
+while(&lt;IN&gt;){
+    my $n = $m->parseToNode($_);
+
+    while ($n->hasNode () != 0) {
+	my $s = $n->getSurface;
+	my $f = $n->getFeature;
+
+	if($f =~ /名詞/ and ($f =~ /一般/ or $f =~ /固有/ or $f =~ /サ変/ or $f =~ /形容動詞語幹/)){
+	    push(@{$pattern_dic->{$s}}, $_);
+	}
+
+	$n = $n->next ();
+    }
+}
+
+lock_store($pattern_dic, $pattern_dic_file);
+
+exit;
+</pre>
+
+<p class="entryBody">
+辞書を作っただけではおもしろくないので、実際に辞書データをもとに応答してくれる簡単な人工無脳ボットbot.pmを作ってみます。
+</p>
+
+<pre class="code">
+package bot;
+
+use base qw(CGI::Application);
+use strict;
+use Storable qw(lock_retrieve);
+
+my $pattern_dic_file = 'pattern_dic';
+
+sub setup {
+    my $self = shift;
+    $self->mode_param('rm');
+    $self->start_mode('bot');
+    $self->run_modes ( bot => 'bot');
+    $self->param(
+		 pattern_dic => lock_retrieve($pattern_dic_file),
+		 );
+
+    $self->header_props(
+			-type => 'text/html',
+			-charset => 'euc-jp',
+			);
+    $self->tmpl_path('/path/to/template');
+    
+}
+
+sub bot {
+    my $self = shift;
+    my $pattern_dic = $self->param('pattern_dic');
+    my $input = $self->query->param('input');
+    my $output;
+    foreach (keys %$pattern_dic){
+	if($input =~ /$_/ig){
+	    my $num = $#{$pattern_dic->{$_}};
+	    $output = $pattern_dic->{$_}->[int(rand($num+1))];
+	    last;
+	}
+    }
+
+    if(!$output){
+	$output = "何それ？";
+    }
+
+    my $template = $self->load_tmpl('bot.html', die_on_bad_params => 0);
+    $template->param(
+		     input => $input,
+		     output => $output,
+		     );
+    return $template->output;
+}
+
+1;
+</pre>
+
+<p class="entryBody">
+こいつをCGIとして呼び出すコードbot.cgiです。
+</p>
+
+<pre class="code">
+#!/usr/local/bin/perl
+
+use bot;
+use strict;
+
+my $bot = bot->new;
+$bot->run;
+</pre>
+
+<p class="entryBody">
+あと、HTMLファイルbot.htmlですね。
+</p>
+
+<pre class="code">
+&lt;form method="post" action="bot.cgi"&gt;
+&lt;input type="text" name="input" size="50" id="input" value="&lt;!-- TMPL_VAR NAME=input --&gt;"&gt;
+&lt;input type="submit" value="submit"&gt;
+&lt;/form&gt;
+
+&lt;!-- TMPL_VAR NAME=output --&gt;
+
+&lt;script type="text/javascript"&gt;
+document.getElementById('input').select();
+&lt;/script&gt;
+</pre>
+
+<p class="entryBody">
+試しに、「最近おもしろいゲームある？」と聞いてみたところ、「MGS3もおまけゲームが魅力的です。」という答えが返ってきました。どうやらこの人工無脳、メタルギアソリッド3のおまけゲームであるサルゲッチュが好きなようです。といっても、この様に会話になることはまだ稀で、もう一度同じ質問をしたところ、「セガとサミーがくっつくわ、ファルコムは韓国からゲーム買うようになっちまったわ」とか「今日横断歩道で プーさんの格好でスクーターに乗った人を見かけたけど、その人もバツゲームかなあ。」なんて返してきました。
+</p>
+
+<p class="entryBody">
+こんな感じで、まだまだお馬鹿ではありますが、発言データさえ豊富にあれば、簡単なコードでも十分楽しいもんですね。本当は今回作った人工無脳ボット、実際に動いているものを公開したいのですが、なにしろ発言データをすごくプライベートなチャットから採っているものですから、勘弁して頂きたいと思います。
+</p>
+
+<p class="entryBody">
+これをベースに、今後少しづつ改良していって、より自然な文章が作れるものを目指したいと思います。
+</p>

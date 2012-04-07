@@ -1,0 +1,22 @@
+---
+layout: post
+title: "LinuxをiTunesのServerにする"
+date: 2005-04-13 11:29
+comments: true
+categories: 
+---
+<p class="entryBody">
+もう1年以上前に書いたものですが、いまだに結構アクセスがあるので、一応ここからリンクしておきます。<a href="http://mizzy.org/linux/itunes.xhtml">http://mizzy.org/linux/itunes.xhtml</a>
+</p>
+
+<p class="entryBody">
+ここで紹介しているソフトウェアはバージョンも上がり、セットアップ方法なども現在は異なっているようですので、セットアップしようと思う方は、付属のドキュメントをよく読んで下さい。（って言っちゃうと、このコンテンツの存在意義がなくなるけど。）
+</p>
+
+<p class="entryBody">
+または、他の方がここよりも新しい情報載せてますので、Google等でより新しい情報を探すのも良いでしょう。
+</p>
+
+<p class="entryBody">
+はっきり言って、「iTunes Serverについてはじめて日本語で紹介した」という以外には能のないコンテンツですので、見る価値ないっすよ。更新してねえし。
+</p>

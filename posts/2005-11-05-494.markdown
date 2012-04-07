@@ -1,0 +1,114 @@
+---
+layout: post
+title: "perlでOpenID Consumerを実装してみる"
+date: 2005-11-05 21:02
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://openid.net/" target="_blank">OpenID</a> を理解するために、OpenID Consumerをperlで実装してみることにした。といっても、 <a href="http://search.cpan.org/perldoc?Net::OpenID::Consumer" target="_blank">Net::OpenID::Consumer</a> モジュールを利用しているわけで、いちから自分で実装しているわけではないです。「モジュールがあるから楽勝」と思っていたら、意外とてこずってしまいました。<a href="/openid/" target="_blank">動作サンプル</a>。<a href="/archives/openid.tar.gz">ソース</a>。
+</p>
+
+<p class="entryBody">
+認証時の流れについては、「<a href="http://www.banana-fish.com/~piro/20051021.html" target="_blank">ぴろ日記 - OpenID: Specs , OpenID認証サーバ , OpenIDにおける認証って奴</a>」が詳しいです。今回実装しているのは、ぴろ日記さんで「とりあえずわかりやすい」と言われている、「dumb + setup モード」です。
+
+</p>
+
+<!-- more -->
+
+<p class="entryBody">
+以下、簡単に説明を。
+</p>
+
+<p class="entryBody">
+<a href="/openid/" target="_blank">動作サンプル</a>にアクセスすると、以下の部分が実行されます。
+</p>
+
+<pre class="code">
+sub login {
+    my $self = shift;
+
+    if($self->query->param('openid.sig')){
+	my $csr = $self->_create_csr;
+	my $vident = $csr->verified_identity or die $!;
+	return 'You are &lt;strong&gt;' . $vident->url . '&lt;/strong&gt; !';
+    }
+    else {
+	my $template = $self->load_tmpl('login.html');
+	return $template->output;
+    }
+}
+</pre>
+
+<p class="entryBody">
+openid.sig パラメータが渡されていると、Open ID Serverに対して認証情報の正当性を確認しに行きますが、まだ最初のアクセスで認証していませんので、else 以下が実行されて、ログインフォームを表示します。
+</p>
+
+
+<p class="entryBody">
+ログインフォームに、自分のIDとなるURLを入力、サブミットすると以下のコードが実行されます。
+</p>
+
+<pre class="code">
+sub do_login {
+    my $self = shift;
+    
+    my $csr = $self->_create_csr;
+    my $claimed_identity = $csr->claimed_identity($self->query->param('openid_url'));
+    my $check_url = $claimed_identity->check_url(
+				       return_to      => 'http://mizzy.org/openid/',
+				       trust_root     => 'http://mizzy.org/',
+				       delayed_return => 1,
+						 );
+
+    $self->header_type('redirect');
+    $self->header_props(-url => $check_url);
+    return;
+}
+
+sub _create_csr {
+    my $self = shift;
+    my $csr = Net::OpenID::Consumer->new(
+					 args            => $self->query,
+					 consumer_secret => '012345',
+					 );
+
+    return $csr;
+}
+</pre>
+
+<p class="entryBody">
+ここでは、ぴろ日記さんの説明にある、1), 2)の処理が実行され、OpenID Serverへリダイレクトされます。この処理は、<a href="http://openid.net/specs.bml" target="_blank">OpenID: Specs</a> の <a href="http://openid.net/specs.bml#mode-checkid_setup" target="_blank">checkid_setup</a> にあたります。
+</p>
+
+<p class="entryBody">
+OpenID Server上での認証が完了すると、QUERY_STRINGに様々なパラメータをセットした状態で、http://mizzy.org/openid/ へ戻ってき、最初と同様以下のサブルーチンが実行されます。
+</p>
+
+<pre class="code">
+sub login {
+    my $self = shift;
+
+    if($self->query->param('openid.sig')){
+	my $csr = $self->_create_csr;
+	my $vident = $csr->verified_identity or die $!;
+	return 'You are &lt;strong&gt;' . $vident->url . '&lt;/strong&gt; !';
+    }
+    else {
+	my $template = $self->load_tmpl('login.html');
+	return $template->output;
+    }
+}
+</pre>
+
+<p class="entryBody">
+今度はopenid.sigパラメータ（と他のOpenID関連パラメータ）が QUERY_STRINGにより渡されていますので、 $csr->verified_identity を実行して、ぴろ日記さんの説明4)にあたる、認証情報の正当性確認を OpenID Server に対して行います。この処理は、<a href="http://openid.net/specs.bml" target="_blank">OpenID: Specs</a> の <a href="http://openid.net/specs.bml#mode-check_authentication" target="_blank">check_authentication</a> にあたります。
+</p>
+
+<p class="entryBody">
+正当性が確認できると、「You are あなたのURL !」 と表示されます。
+</p>
+
+<p class="entryBody">
+username.videntity.org と livejournal.com/users/username/ はIDとして正常に動作することが確認できましたが、profile.typekey.com/username/ はなぜか openid.mode=cancel となってしまい、認証できません。videntity.org のログインに profile.typekey.com/username/ を利用しても認証できないので、typekey 側の問題なのかなぁ…
+</p>

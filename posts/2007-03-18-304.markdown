@@ -1,0 +1,28 @@
+---
+layout: post
+title: "cfengine よりも puppet がよさげ"
+date: 2007-03-18 21:33
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trombik.mine.nu/~cherry/w/index.php/2007/02/06/845/links-roundup-159"><span class="icon"></span>I, newbie &raquo; Links Roundup</a> 経由で puppet というシステム管理ツールを知って以来ずっと気になっていたのですが、このエントリの著者さんが <a class="ext-link" href="http://dev.gentoo.gr.jp/~trombik/pub/OSC2007/OSC2007.pdf"><span class="icon"></span>OSC2007 の発表資料(PDF)</a>で「Puppet is so sexy.」と書かれているのを見て、本気で触ってみることにしました。
+</p>
+<p>
+puppet がどんなものかは、上記資料とか <a class="ext-link" href="http://www.madoro.org/nikki/entry/8"><span class="icon"></span>だ！日記さんのエントリ</a> にも書かれているのですが、<a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/CfengineVsPuppet"><span class="icon"></span>本家の Cfengine vs. Puppet</a> というエントリから cfengine との違いを一部適当に意訳してみると、こんな感じです。
+</p>
+<ul><li>next-generation version of cfengine ということで、cfengine をベースとしながらも、より良いものを目指している。</li>
+<li>リソース抽象化レイヤーにより、OS やディストリビューションの違いを意識しなくても良い。</li>
+<li>タスクの実行順序を制御できる。（cfengine ではできないor難しいらしい。）</li>
+<li>設定ファイルで記述する内部言語が強力になっている。</li>
+<li>type の拡張が簡単。</li>
+<li>Ruby でできている。</li></ul>
+<p>
+というわけで、cfengine の導入を検討して、<a class="ext-link" href="http://mizzy.org/linux/cfengine00.html"><span class="icon"></span>こんなエントリ</a> を書いたりしてたのですが、cfengine は捨てて puppet でいこうかな、と思ってます。
+</p>
+<p>
+<a class="ext-link" href="http://reductivelabs.com/trac/puppet/browser/trunk/ext/emacs"><span class="icon"></span>emacs 用のヘルパーモード</a> なんかも提供されているのがさらに好印象です。<a class="ext-link" href="http://reductivelabs.com/trac/puppet/browser/trunk/ext/vim"><span class="icon"></span>vim 用もあるし</a>。
+</p>
+<p>
+それから、まだ Experimental ですが、<a class="ext-link" href="http://reductivelabs.com/trac/puppetshow"><span class="icon"></span>puppetshow</a> という Rails でできたウェブインターフェースもあるようです。
+</p>

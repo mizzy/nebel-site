@@ -1,0 +1,40 @@
+---
+layout: post
+title: "ajaxでdel.icio.usを使いやすく #0"
+date: 2005-04-24 15:51
+comments: true
+categories: 
+---
+<p class="entryBody">
+話的には<a href="/program/rss2xbel01.html" target="_blank">前回</a>の続きなんだけど、もはやRSSは関係ないのでタイトル変えます。
+</p>
+
+<p class="entryBody">
+<a href="http://del.icio.us" target="_blank">del.icio.us</a>はソーシャルブックマークとしてはともかく、自分用ブックマークとしてはいまいち使いづらいんですよね。なので、最近は<a href="http://www.spurl.net" target="_blank">Spurl</a>ばかり使っています。Spurlには自分用ブックマークとして使うのにとても便利な、Spurl Barというものがあるので。
+</p>
+
+<p class="entryBody">
+じゃあ、del.icio.usにも似たようなサイドバーがあれば、もっと使いやすくなるのでは、ということで、del.icio.us barを作ってみました。以下がサンプルとソースです。（Firefoxでしか動作確認してません。IEではJavascriptエラーになります。）
+</p>
+
+<ul class="entryBody">
+<li><a href="/delside/index.html" target="_blank">サイドバーに入れずにdel.icio.us barを試す。</a></li>
+<li><a href="javascript:sidebar.addPanel('del.icio.us bar','http://mizzy.org/delside/index.html','')">サイドバーに入れてdel.icio.us barを試す。(Firefox用）</a></li>
+<li><a href="/archives/delside.tar.gz">ソース</a></li>
+</ul>
+
+<p class="entryBody">
+Spurl Barの劣化コピーです。アイコンも拝借してしまいました。（ほんとは良くないんだろうけど…）tagフォームに文字を入れると、tagリストが絞り込まれていきます。タグをクリックすると、そのタグを持つリンクを表示します。サンプルのブックマークは俺がdel.icio.usにポストしたものを、<a href="http://del.icio.us/doc/api" target="_blank">API</a>経由で取得しています。
+</p>
+
+<p class="entryBody">
+技術的には、API経由で取得したデータをperl CGIで<a href="http://www.crockford.com/JSON/index.html" target="_blank">json</a>形式に整形し、それをJavascriptのxmlHttpRequestで取得してevalでオブジェクトに変換、ってことをやってます。
+</p>
+
+<p class="entryBody">
+現在は単一のタグだけしか対応していません。複数タグでの絞込みができるといいのですが、それは次の機会に。
+</p>
+
+<p class="entryBody">
+相変わらず適当に作ってるので、色々問題はありますが、改良していけば結構いいものになりそうな気が。
+</p>

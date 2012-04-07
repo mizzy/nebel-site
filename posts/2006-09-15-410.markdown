@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Deduped::SDBM_File と Deduped::GDBM_File"
+date: 2006-09-15 19:08
+comments: true
+categories: 
+---
+<p>
+CustomFeed::AmazonWebService で検索キーワードをたくさん指定すると、なぜか Deduped の部分でハングする。もう少し正確に言うと、新着エントリが多い場合にハングするようです。同じエントリ数でも、Deduped によって検知される重複エントリが多い場合にはハングしません。
+</p>
+<p>
+で、strace で追ってみても原因がわからないため、違う実装を試してみることに。
+</p>
+<p>
+まず試したのは <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Rule/Deduped/SDBM_File.pm"><span class="icon"></span>Deduped::SDBM_File</a> 。でもこれでもハングする。
+</p>
+<p>
+次に試したのは <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Rule/Deduped/GDBM_File.pm"><span class="icon"></span>Deduped::GDBM_File</a> 。これでもハング、と思いきや、strace で追うと断続的に write が出て、DB ファイルに書き込みが行われている。遅いけど。なので、しばらく待ってみると正常終了した。
+</p>
+<p>
+SDBM の方も、ハングしている様に見えて、DB ファイルのタイムスタンプは更新されていたので、GDBM と同じくしばらく待っていれば終わったかも。
+</p>
+<p>
+ただ、DB_File の方はファイルタイムスタンプは変わらないし、ファイルサイズもずっと 0 のままだった。
+</p>
+<p>
+しばらくは GDBM を使って様子を見てみます。
+</p>

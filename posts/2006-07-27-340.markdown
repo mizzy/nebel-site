@@ -1,0 +1,80 @@
+---
+layout: post
+title: "FFmpeg::Command - A wrapper class for ffmpeg command line utility #0"
+date: 2006-07-27 01:17
+comments: true
+categories: 
+---
+<p>
+perl で ffmpeg を扱うモジュールには、<a class="ext-link" href="http://search.cpan.org/~allenday/FFmpeg-5704/FFmpeg.pm"><span class="icon"></span>FFmpeg</a> というものがあるのですが、XS モジュールで make するのに ffmpeg 本体のソースが必要だし、使い方よくわかんないし、ポータビリティ考えるとコマンドラッパーの方がいいよね、という miyagawa さんの意見があったりで、じゃあラッパー作ろうと思ったら、ボンヌさんも作っているということで待っていたのですが、音沙汰がないのと、早急に必要なのもあって、とりあえず作ってみました。
+</p>
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/FFmpeg-Command/lib/FFmpeg/Command.pm"><span class="icon"></span>FFmpeg::Command</a>
+</p>
+<p>
+まだ pod が不完全ですが、とりあえず YouTube から拾った flv 動画を mpeg4 に変換して iTunes で観たり、サムネイルを JPEG で切り出したり、といったことができることを確認しました。
+</p>
+<p>
+使い方は SYNOPSYS にも書いてますが、動画の変換であればこんな感じで。
+</p>
+<pre class="wiki">
+my $ffmpeg = FFmpeg::Command->new('/usr/local/bin/ffmpeg');
+
+$ffmpeg->input_options({
+    file => 'nba.flv',
+});
+
+$ffmpeg->output_options({
+    file                => 'nba.mp4',
+    format              => 'mp4',
+    video_codec         => 'mpeg4',
+    bitrate             => '640',
+    size                => '320x240',
+    audio_codec         => 'aac',
+    audio_sampling_rate => '44100',
+    audio_bit_rate      => '128',
+});
+
+$ffmpeg->exec();
+</pre>
+<p>
+サムネイルの切り出しはこんな感じ。（任意のオプションで実行する機能。）
+</p>
+<pre class="wiki">
+my $ffmpeg = FFmpeg::Command->new('/usr/local/bin/ffmpeg');
+
+$ffmpeg->input_file('nba.flv');
+$ffmpeg->output_file('nba.mp4');
+
+$ffmpeg->options(
+    '-y',
+    '-f'       => 'image2',
+    '-pix_fmt' => 'jpg',
+    '-vframes' => 1,
+    '-ss'      => 30,
+    '-s'       => '320x240',
+    '-an',
+);
+
+$ffmpeg->exec();
+</pre>
+<p>
+これから実装したいと思っている機能は、以下の様な指定をすれば、iPod や PSP に適切なパラメータを勝手に設定して変換してくれる、というもの。もちろん、自分の好きな値でパラメータを上書きすることも可能な感じで。
+</p>
+<pre class="wiki">
+my $ffmpeg = FFmpeg::Command->new('/usr/local/bin/ffmpeg');
+
+$ffmpeg->input_options({
+    file => 'nba.flv',
+});
+
+$ffmpeg->output_options({
+    file   => 'nba.mp4',
+    <strong>device => 'ipod' or 'psp',</strong>
+});
+
+$ffmpeg->exec();
+</pre>
+<p>
+ボンヌさんが作られているものと統合して、いいものになるといいな。
+</p>

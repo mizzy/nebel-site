@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Plagger::Plugin::CustomFeed::iTMS #1"
+date: 2006-05-22 21:38
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/iTMS.pm" target="_blank">CustomFeed::iTMS</a> は内部で <a href="http://search.cpan.org/~billh/LWP-UserAgent-iTMS_Client/" target="_blank">LWP::UserAgent::iTMS_Client</a> を利用しているのですが、コンストラクタで国名を指定してもちゃんとハンドリングしてくれないので、パッチ書いた。ついでにモジュール作者にパッチ送っておいた。
+</p>
+
+<pre class="code">
+--- iTMS_Client.pm.org  2006-05-22 16:06:46.000000000 +0900
++++ iTMS_Client.pm      2006-05-22 16:11:27.000000000 +0900
+@@ -466,7 +466,7 @@
+         'X-Apple-Tz'          => msec_since_epoch(),
+         'X-Apple-Validation'  => $self->compute_validator( $url, $agent_name ),
+         'Accept-Encoding'     => "gzip, x-aes-cbc",
+-        'X-Apple-Store-Front' => $self->store_front,
++        'X-Apple-Store-Front' => $self->store_front($self->{protocol}->{country}),
+     );
+     $hdr->header( 'X-Token' => $self->{protocol}->{password_token} )
+       if $self->{protocol}->{password_token};       
+</pre>
+
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/iTMS.pm" target="_blank">CustomFeed::iTMS</a> も修正して、国を指定できるようにし、pod も追加しました。これで日本の iTMS からも検索できます。query も UTF-8 であれば日本語も大丈夫。
+</p>

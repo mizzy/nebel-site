@@ -1,0 +1,62 @@
+---
+layout: post
+title: "javascript tips #0"
+date: 2005-07-23 13:22
+comments: true
+categories: 
+---
+<p class="entryBody">
+Javascriptでプログラム書いててはまったので、忘れないようにメモ。「関数を呼び出すときは引数なしでも()をつけること!」
+</p>
+
+<p class="entryBody">
+perlでは引数なしの場合には()を省略しても、特に動作は変わらないのですが、Javascriptでは動作が変わってしまいます。基礎中の基礎だと思いますが、だからこそはまりやすいと思うので、注意が必要かと。
+</p>
+
+<p class="entryBody">
+たとえば、以下の様な単純な関数が定義されているとします。
+</p>
+
+<pre class="code">
+function func(){
+  return 'test';
+}
+</pre>
+
+<p class="entryBody">
+で、こいつを以下の様に()つきで呼び出します。
+</p>
+
+<pre class="code">
+var str = func();
+</pre>
+
+<p class="entryBody">
+すると、変数strには期待通りtestという文字列がセットされます。つぎに、()なしで呼び出してみます。
+</p>
+
+<pre class="code">
+var str = func;
+</pre>
+
+<p class="entryBody">
+すると、変数strには関数の定義全部が入ってしまいます。つまり、alert(str)とかすると、以下の内容が表示されます。
+</p>
+
+<pre class="code">
+function func(){
+  return 'test';
+}
+</pre>
+
+<p class="entryBody">
+なんでこんな動作になるのかというと、()なしの場合には、関数が実行されずに、関数のリファレンスが渡される、ということらしいです。
+</p>
+
+<p class="entryBody">
+俺みたいに普段perlを使っていて、引数なしの場合には()なしで関数呼び出している様な方は、ご注意下さい。「そんなんではまるマヌケはオマエだけだよ」とか言われるかもしれませんが、こういう基本的な部分の方が、見落としていることが多いですし、はまると原因が特定しづらいんですよね。
+</p>
+
+<p class="entryBody">
+Javascript、基礎からちゃんと勉強しなおそう…
+</p>

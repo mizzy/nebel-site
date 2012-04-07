@@ -1,0 +1,26 @@
+---
+layout: post
+title: "feedbringerをremixin' #1"
+date: 2005-11-23 18:30
+comments: true
+categories: 
+---
+<p class="entryBody">
+greasemonkeyによるfeedbringer remix用のcssを色々いじってみました。cssを適用した<a href="/img/feedbringer.jpg" target="_blank">スクリーンショット</a>。オリジナルのものと見比べてもらえれば、違いは一目瞭然だと思います。
+</p>
+
+<p class="entryBody">
+オリジナルから一番大きく変えた点は、ツリーメニュー表示欄とコンテンツ表示欄をfixにして、別々にスクロールできるようしたことですね。これだけでだいぶ使いやすくなる気がします。
+</p>
+
+<p class="entryBody">
+あとは多少レイアウトを変えたり、見やすいように色を変えたりしてますが、まだまだ調整は必要な感じ。というか、自分色のセンスがないので、誰か代わりにやってくんないかなぁ…
+</p>
+
+<p class="entryBody">
+このremixによる弊害としては、スペースキーでのスクロールができなくなることですね。どうもfirefoxだと、heightを固定してoverflow: autoでスクロールさせるようにすると、スペースキーがきかなくなるようです。
+</p>
+
+<p class="entryBody">
+が、そこはgreasemonkeyなので、Javascriptでなんとでもできるでしょう。今後はその辺りに手を入れていこうと思ってます。
+</p>

@@ -1,0 +1,77 @@
+---
+layout: post
+title: "デブサミ出張 Shibuya イベントの補足"
+date: 2007-02-17 20:57
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/archives/assurer_devsumi.pdf"><span class="icon"></span>デブサミ発表資料</a>中に、テストプラグインがどういうコードなのかを書いていたのですが、時間がなくてまったく説明できなかったので、ここで補足しておきます。
+</p>
+<p>
+テストプラグインのコードはこの様になっています。
+</p>
+<pre class="wiki">
+package Assurer::Plugin::Test::SMTP;
+
+use strict;
+use warnings;
+<span style="color: blue;">use base qw( Assurer::Plugin::Test ); #(A)</span>
+<span style="color: blue;">use Assurer::Test; #(B)</span>
+use Net::SMTP;
+<div style="color: blue;">
+sub register {
+    my $self = shift;
+    $self->register_tests( qw/ connect / );          #(C)
+}
+</div>
+sub connect {
+    my ( $self, $context, $args ) = @_;
+
+    my $conf = $self->conf;
+
+    my $host     = $conf->{host}     || $context->conf->{host};
+    my $timeout  = $conf->{timeout}  || 10;
+
+    my $smtp = Net::SMTP->new(Host => $host, Timeout => $timeout);
+    <span style="color: blue;">ok($smtp, "smtp ok $host"); #(D)</span>
+}
+
+1;
+</pre>
+<p>
+青字の部分が、プラグインを書く際のお約束というかポイントとなる部分なので、順に説明していきます。
+</p>
+<p>
+(A) では Assurer::Plugin::Test を継承しているわけですが、テストプラグイン共通の処理はすべて Assurer::Plugin::Test に記述することにより、各プラグインでのコード量を減らそうという目論見になってます。
+</p>
+<p>
+(B) で Assurer::Test を use することより、ok(), is(), like() といったテスト用メソッドをインポートしています。
+</p>
+<p>
+(C) ではテストを行うメソッドを登録しています。複数登録する場合には、
+</p>
+<pre class="wiki">
+$self->register_tests( qw/ test1 test2 test3 / ); 
+</pre>
+<p>
+といった記述をします。この場合、test1(), test2(), test3() の順で実行されます。
+</p>
+<p>
+(D) が実際にテストを行っているところで、Test::More の ok() と同じ動作をします。この ok() は上で書いたように、Assurer::Test からインポートしたメソッドです。このような組み込みのテストメソッドを使うことで、if 文で結果を判断して適切なステータスを返す、といった処理を書く必要がなくなります。
+</p>
+<p>
+<a class="ext-link" href="http://blog.nomadscafe.jp/archives/000713.html"><span class="icon"></span>kazeburo さんの発表</a>にある、Nagios プラグインと対比してみると、Nagios は exit 時のステータスコードだけ気にすればいい、というのに対して、Assurer では、上のコード (A), (B), (C) の様に、Assurer 特有のお約束を守る必要があるものの、exit コードは気にしなくていい、といった特徴があります。また、お約束を守ることによってコード量も減らせます。（特に結果判定で if を書かなくていい。）
+</p>
+<p>
+Nagios の場合、ステータスコードだけ気にすればいい、とは言っても、ステータスが OK, Warning, Crtitical, Unknown とあるわけで、OK はまだしも、どういった場合が Warning でどういった場合が Critical なのか、ということを気にするのは、ちょっと面倒な気もします。
+</p>
+<p>
+また、結果を受け取る側も、Warning とか Unknown とか受け取ると、それって問題あるの？ないの？って迷ったりしないのかな、とか、Warning と Critical の解釈って、人によって違うんじゃないかな、って思ったりします。（Nagios使ったことないんで、変なこと言ってるかもしれませんが。）
+</p>
+<p>
+そういった曖昧さをなくしたくて、Assurer では OK か NOT OK かの2種類の結果しか返さない、というポリシーにしました。
+</p>
+<p>
+とは言っても、Nagios の様にステータスが何種類かある方が便利だという場面はあるんでしょうね。その辺りは Assurer では、エラーメッセージでフィルタリングできるようにして、「こういったエラーメッセージの場合は、問題ないから OK にする」といった設定ができるような形にして、結果の解釈を利用者に委ねられるようにしようと考えています。
+</p>

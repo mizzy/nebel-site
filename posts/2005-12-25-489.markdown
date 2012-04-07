@@ -1,0 +1,65 @@
+---
+layout: post
+title: "test_helper.rb の Rails 本と Rails 1.0 の違い（Rails 勉強中 #3）"
+date: 2005-12-25 00:28
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Agile Web Development With Rails</a> の内容と、最新バージョンである Rails 1.0 の食い違いにより、何度かはまっているわけなのですが、同じようにはまる人がいるかもしれないので、気づいた点はここにメモしていくことにします。
+</p>
+
+<p class="entryBody">
+P153 では、test_helper.rb の内容が以下の様に記述されています。
+</p>
+
+<pre class="code">
+ENV["RAILS_ENV"] = "test"
+require File.dirname(__FILE__) + "/../config/environment"
+require 'application'
+require 'test/unit'
+require 'active_record/fixtures'
+require 'action_controller/test_process'
+require 'action_web_service/test_invoke'
+require 'breakpoint'
+def create_fixtures(*table_names)
+  Fixtures.create_fixtures(File.dirname(__FILE__) + "/fixtures", table_names)
+end
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + "/fixtures/"
+</pre>
+
+<p class="entryBody">
+が、1.0 では実際には以下の様になってます。（コメントや空行は省略）
+</p>
+
+<pre class="code">
+ENV["RAILS_ENV"] = "test"
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+require 'test_help'
+class Test::Unit::TestCase
+  self.use_transactional_fixtures = true
+  self.use_instantiated_fixtures  = true
+end
+</pre>
+
+<p class="entryBody">
+どうやら require 'test_help' がポイントらしい、というわけで、/usr/local/lib/ruby/gems/1.8/gems/rails-1.0.0/lib/test_help.rb を覗いてみると、こんな風になってます。（コメントや空行は省略）
+</p>
+
+<pre class="code">
+require 'application'
+silence_warnings { RAILS_ENV = "test" }
+require 'test/unit'
+require 'active_record/fixtures'
+require 'action_controller/test_process'
+require 'action_web_service/test_invoke'
+require 'breakpoint'
+Test::Unit::TestCase.fixture_path = RAILS_ROOT + "/test/fixtures/"
+def create_fixtures(*table_names)
+  Fixtures.create_fixtures(RAILS_ROOT + "/test/fixtures", table_names)
+end
+</pre>
+
+<p class="entryBody">
+というわけで、test_helper.rb の内容は Rails 本とは異なり、一部が test_help.rb に移されてるんですね。そんだけです。
+</p>

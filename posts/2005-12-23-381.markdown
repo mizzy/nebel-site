@@ -1,0 +1,53 @@
+---
+layout: post
+title: "Rails 勉強中 #0"
+date: 2005-12-23 21:51
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Agile Web Development With Rails</a> を読みながら勉強中。
+</p>
+
+<p class="entryBody">
+別に perl から ruby へ転向したというわけではなく、フレームワークの実装について勉強しようかな、と。
+</p>
+
+<p class="entryBody">
+</p>
+
+<p class="entryBody">
+Rails に触れるのは、るびま 0004 号の<a href="http://jp.rubyist.net/magazine/?0004-RubyOnRails" target="_blank">RubyOnRails を使ってみる 【第 1 回】</a>のチュートリアルを試して以来なので、およそ1年ぶりですね。この時は scaffold というものにはじめて触れて感動したものでした。
+</p>
+
+<p class="entryBody">
+まだ読み始めたばかりで、scaffold からちょっと先に進んだだけなのですが、Validation を Model クラスにやらせる、というのがすごく新鮮。以下の様に、product という商品テーブルに対応した Product クラスに Validation の処理を記述しておくと、フォーム submit した時に入力内容をチェックして、ブラウザにエラー表示してくれます。
+</p>
+
+<pre class="code">
+class Product &lt; ActiveRecord::Base
+  validates_presence_of :title, :description, :image_url
+  validates_numericality_of :price
+  validates_uniqueness_of :title
+  validates_format_of :image_url,
+    :with    => %r{^http:.+\.(gif|jpg|png)$}i,
+    :message => 'must be a URL for a GIF, JPG, or PNG image'
+  protected
+  def validate
+    errors.add(:price, 'should be positive') unless price.nil? || price >= 0.01
+  end
+end
+</pre>
+
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/0321127420/httshemizorg-22/ref=nosim" target="_blank">PofEAA 本</a>で、ActiveRecord パターンはモデルにドメインロジックを持つ、みたいなことが書かれていたけど、こういうことなのかな。
+</p>
+
+<p class="entryBody">
+なんでフレームワークの実装を勉強しようと思ったかというと、API によるデータ提供やフレームワークの整備によって、個人のアイデアを実現する敷居が低くなってきているな、と。そうなると、自分にしか思いつかないアイデアなんてそうそうあるわけではないので、アイデアをいかに素早く実装して公開するかが重要だなぁ、と。そのためにはフレームワーク重要となるわけですが、単に与えられたフレームワークを使うだけではなく、いかに自分の目的や開発手法になじんだフレームワークを作るかが重要になってくるんじゃないかな、とか思ってるわけです。
+</p>
+
+<p class="entryBody">
+あと、ライブドアのテクノロジセミナーで、変なあだなで有名な人が次期 Sledge の話をしていて、その開発に貢献できるようになりたいな、と。Sledge によってウェブプログラミングの楽しさを知って、スキルも飛躍的に向上したので、恩返しがしたいですね。
+</p>
+

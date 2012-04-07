@@ -1,0 +1,24 @@
+---
+layout: post
+title: "RSSフィードにタグをカテゴリとして埋め込む for blosxom"
+date: 2005-05-18 00:32
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.technorati.com/" target="_blank">technorati</a>はRSSフィード中のcategory要素をタグとして認識くれる、っつーことで、このブログではせっかく<a href="http://mizzy.org/?topic=/program/blosxomWithTagging09" target="_blank">taggingプラグイン</a>を作ってタグづけしてるので、RSSフィードにタグをカテゴリとしてつっこんでみることにした。
+</p>
+
+<p class="entryBody">
+ここのRSSフィードは、プラグインを使わずにフレーバだけで生成してるのと、<a href="http://mizzy.org/?topic=/program/blosxomTT" target="_blank">自作のttプラグイン</a>があるので、taggingプラグインをちょっといじってタグのリストへのリファレンスを返すようにして、あとはstory.rssでカテゴリを入れたい部分に、ttプラグインを利用して以下の様に記述してやるだけでOKだった。
+</p>
+
+<pre class="code">
+&#x5b;% FOREACH tag = tagging.tags_in_this_array %&#x5d;
+&lt;category&gt;&#x5b;% tag %&#x5d;&lt;/category&gt;
+&#x5b;% END %&#x5d;
+</pre>
+
+<p class="entryBody">
+で、この改造後にtechnoratiにupdate pingを打って、一晩たったらちゃんとタグで検索できてる。素晴らしい。
+</p>

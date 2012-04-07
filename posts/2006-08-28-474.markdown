@@ -1,0 +1,14 @@
+---
+layout: post
+title: "Filter::Audio #1"
+date: 2006-08-28 22:15
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/Audio.pm"><span class="icon"></span>Filter::Audio</a> を色々修正しました。機能追加ではなくあくまでも修正です。うまく動かないところとかあったので。<a class="ext-link" href="http://trac.mizzy.org/public/changeset/246"><span class="icon"></span>trac のチェンジセットはこちら</a>。
+</p>
+<p>
+<strong>#plagger-ja にて課せられた（と勝手に自分が思っている）宿題</strong>
+</p>
+<ul><li>音量/音質の均一化</li></ul>

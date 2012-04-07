@@ -1,0 +1,15 @@
+---
+layout: post
+title: "feedbringerをremixin' #3"
+date: 2005-11-23 18:30
+comments: true
+categories: 
+---
+<p class="entryBody">
+feedbringer用greasemonkeyユーザスクリプトの色違いバージョンを作成しました。色を考えるのがめんどっちいので白黒で。<a href="/img/feedbringer2.jpg" target="_blank">スクリーンショット</a>。以下の2種類からお好きなものをどうぞ。
+</p>
+
+<ul class="entryBody">
+<li><a href="/js/feedbringer.user.js" target="_blank">白ベース＋青バージョン（旧来のもの。微妙に色変えました。）</a></li>
+<li><a href="/js/feedbringer2.user.js" target="_blank">白黒バージョン</a></li>
+</ul>

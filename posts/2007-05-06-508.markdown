@@ -1,0 +1,103 @@
+---
+layout: post
+title: "Re: DBICとDBIx::Class::Schema::Loader 僕のいろいろな勘違い"
+date: 2007-05-06 19:11
+comments: true
+categories: 
+---
+[ブログが続かないわけ | DBICとDBIx::Class::Schema::Loader 僕のいろいろな勘違い](http://en.yummy.stripper.jp/?eid=550053) にて、
+
+> とはいえ、僕の稼働中のアプリはすでに手動型のSchema で動いている。スキーマを作り直したら、リレーションの設定を全てしなおさなければならないので、それは現実的じゃない。inflate, deflate の指定は、やっぱりすべてのSchema にかかなきゃだめそうだ。
+
+とあったので、これに関して少し楽ができる方法をコメントしようと思ったけれど、コメント欄ではうまく伝えられる自信がないので、こちらで書いてみることにしました。
+
+### load_components で 読み込む方法
+
+DBIx::Class::Schema::Loader ではなく DBIx::Class::Schema を継承したスキーマの場合には、各スキーマファイルに以下の様に書いてあげれば OK です。（既にご存知かもしれませんが。）
+
+    package My::Schema::Table;
+
+    __PACKAGE__->load_components(
+      "InflateColumn::DateTime",
+      "PK::Auto",
+      "Core",
+    );
+
+すべてのスキーマファイルに書かなきゃいけないことには変わりありませんが、各カラムに inflate/deflate を設定するよりははるかに楽だと思います。
+
+
+### make\_schema\_at を使う方法
+
+make\_schema\_at でスキーマファイルを生成しているのであれば、こんな感じでリレーションだけ定義した ./tmp/lib/My/Schema/Table.pm をまず用意します。
+
+    package My::Schema::Table;
+    
+    __PACKAGE__->belongs_to(
+        realation => 'My::Schema::OtherTable
+        { 'foreign.id' => 'self.other_table_id' },
+    );
+    
+    1;
+
+でもって、こんなスクリプトを実行します。
+
+    #!/usr/bin/perl
+    
+    use strict;
+    use warnings;
+    
+    use lib qw( ./tmp/lib );
+    use Carp;
+    use DBIx::Class::Schema::Loader qw( make_schema_at dump_to_dir:lib dump_overwrite );
+    
+    make_schema_at(
+        'My::Schema::Table',
+        {
+            components     => [qw/ ResultSetManager UTF8Columns InflateColumn::DateTime /],
+            dump_overwrite => 1,
+        },
+        ['dbi:mysql:dbname' ,'user', 'password'],
+    );
+
+そうすると、lib/My/Schema/Table.pm に以下の内容を吐き出してくれます。
+
+    package My::Schema::Table;
+
+    # Created by DBIx::Class::Schema::Loader v0.03009 @ 2007-04-26 18:21:23
+
+    use strict;
+    use warnings;
+    
+    use base 'DBIx::Class';
+    
+    __PACKAGE__->load_components(
+      "ResultSetManager",
+      "UTF8Columns",
+      "InflateColumn::DateTime",
+      "PK::Auto",
+      "Core",
+    );
+    __PACKAGE__->table("table");
+    __PACKAGE__->add_columns(
+      "id",
+      { data_type => "INT", default_value => undef, is_nullable => 0, size => 11 },
+      "other_table_id",
+      { data_type => "INT", default_value => 0, is_nullable => 0, size => 11 },
+      "date",
+      { data_type => "DATE", default_value => undef, is_nullable => 1, size => 10 },
+    
+    __PACKAGE__->set_primary_key("id");
+    # These lines loaded from user-supplied external file:
+    package My::Schema::Table;
+    
+    __PACKAGE__->belongs_to(
+        employees => 'My::Schema::Table',
+        { 'foreign.id' => 'self.other_table_id' },
+    );
+    
+    1;
+    # End of lines loaded from user-supplied external file
+
+この方法を使うと、スキーマを作り直しても、リレーションの再設定をしなくて済みます。
+
+手動でやるのが楽なのか、上の方法のいずれかを使うのが楽なのかは、状況にもよると思いますが、こんな方法もありますよ、ということで、ご参考になれば幸いです。

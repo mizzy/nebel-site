@@ -1,0 +1,159 @@
+---
+layout: post
+title: "Filter::Rule と Filter::CloneFeed"
+date: 2006-09-05 20:53
+comments: true
+categories: 
+---
+<p>
+最近は Plagger いじりの記録と化してるこのブログですが、今日もまた Plagger ネタですよ。
+</p>
+<p>
+ちょっとやりたいことがあって、Filter::Rule の改造と、Filter::CloneFeed というものを作ってみました。やりたいことが何かというのは長くなるので、後回しにして、まずは Filter::Rule の修正内容と、Filter::CloneFeed の説明を。
+</p>
+<p>
+Filter::Rule の修正内容はこんな感じです。
+</p>
+<pre class="wiki">
+Index: plagger/trunk/lib/Plagger/Plugin/Filter/Rule.pm
+===================================================================
+--- plagger/trunk/lib/Plagger/Plugin/Filter/Rule.pm (revision 258)
++++ plagger/trunk/lib/Plagger/Plugin/Filter/Rule.pm (revision 259)
+@@ -19,4 +19,12 @@
+ sub feed {
+     my($self, $context, $args) = @_;
++
++    if ( defined ( my $expression = $self->conf->{expression} ) ){
++        my $status = eval $expression;
++        if ($@) {
++            Plagger->context->log(error => "Expression error: $@ with '$expression'");
++        }
++        return unless $status;
++    }
+ 
+     for my $entry ($args->{feed}->entries) {
+</pre>
+<p>
+これにより何ができるかというと、以下のような yaml を書くことで、フィルタを適用するためのルールを設定することができます。
+</p>
+<pre class="wiki">
+  - module: Filter::Rule
+    rule:
+      module: Fresh
+      duration: 60
+    config:
+      expression: $args->{feed}->type eq 'AmazonWebService'
+</pre>
+<p>
+この例だと、feed type が AmazonWebService であるフィードには Rule::Fresh を適用する、それ以外のフィードには何もフィルタをかけずにそのままにする、という動作になります。
+</p>
+<p>
+次に Filter::CloneFeed ですが、名前の通りフィードの複製をつくります。で、複製されたフィードは type が clone となります。ソースはこれだけです。
+</p>
+<pre class="wiki">
+package Plagger::Plugin::Filter::CloneFeed;
+use strict;
+use base qw( Plagger::Plugin );
+
+sub register {
+    my($self, $context) = @_;
+    $context->register_hook(
+        $self,
+        'update.feed.fixup' => \&amp;clone,
+    );
+}
+
+sub clone {
+    my($self, $context, $args) = @_;
+
+    my $feed = $args->{feed}->clone;
+    $feed->type('clone');
+    $context->update->add($feed);
+}
+
+1;
+</pre>
+<p>
+で、これで何がやりたかったかというと、以下のようなことがやりたかったんです。
+</p>
+<pre class="wiki">
+  - module: CustomFeed::AmazonWebService
+    config:
+      title: Amazon - New Books
+      developer_token: XXXXXXXXXXXXXXXXXXXX
+      associate_id: xxxxxx-22
+      keywords:
+        - 川原正敏
+
+  - module: Filter::CloneFeed
+
+  - module: Filter::Rule
+    rule:
+      module: Ahead
+    config:
+      expression: $args->{feed}->type eq 'clone'
+
+  - module: Publish::iCal 
+    config:
+      dir: /home/miya/ical
+      filename: %t.ics
+    rule:
+      module: FeedType
+      type: AmazonWebService
+
+  - module: Publish::Gmail
+    config:
+      mailto:   xxx@gmail.com
+      mailfrom: xxx@mizzy.org
+      mailroute:
+        via: smtp
+        host: localhost
+    rule:
+      module: FeedType
+      type: clone
+</pre>
+<p>
+言葉で説明すると、こんな感じです。
+</p>
+<ul><li>CustomFeed::AmazonWebService で Amazon 検索してフィードを生成。</li>
+<li>Filter::CloneFeed でフィードの複製をつくる。</li>
+<li>Filter::Rule で、複製されたフィード（type が clone）のみに <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Rule/Ahead.pm"><span class="icon"></span>Rule::Ahead</a> を適用し、今から1日以内に発売される商品情報だけを抽出。オリジナルのフィードにはフィルタをかけないので、検索された商品情報がすべて含まれている。</li>
+<li>Publish::iCal で商品情報を iCalendar 形式で吐き出す。Rule::FeedType を適用し、クローンではないオリジナルのフィード（type が AmazonWebService）だけを吐き出す。これで Amazon 検索の結果すべてが iCalendar 形式のデータになる。</li>
+<li>Publish::Gmail で商品情報をメールで送信。Rule::FeedType を適用し、クローンのフィード（type が clone）だけを送信。これで1日以内に発売される商品情報のみが送信される。</li></ul>
+<p>
+要するに、同じフィードでも、Publish プラグイン毎に異なる内容で Publish したかった、というわです。
+</p>
+<p>
+最初は以下のような yaml で、Publish::iCal では Rule を指定せずに全部吐き出す、Publish::Gmail では Rule::Ahead を適用して、1日以内に発売される商品情報だけ送信、とできるんじゃないかな、と思ったのですが、Publish::Gmail は publish.feed フックで動作していて、Rule でエントリレベルのフィルタリングができないんですよね。
+</p>
+<pre class="wiki">
+  - module: CustomFeed::AmazonWebService
+    config:
+      title: Amazon - New Books
+      developer_token: XXXXXXXXXXXXXXXXXXXX
+      associate_id: xxxxxx-22
+      keywords:
+        - 川原正敏
+
+  - module: Publish::iCal 
+    config:
+      dir: /home/miya/ical
+      filename: %t.ics
+
+  - module: Publish::Gmail
+    config:
+      mailto:   xxx@gmail.com
+      mailfrom: xxx@mizzy.org
+      mailroute:
+        via: smtp
+        host: localhost
+    rule:
+      module: Ahead
+</pre>
+<p>
+こういった事情で、Filter::Rule を改造し Filter::CloneFeed をつくってみました。もっとエレガントな方法があれば教えてください。
+</p>
+<p>
+<strong>追記</strong><br />
+<a class="ext-link" href="http://mizzy.org/program/smartfeed.html"><span class="icon"></span>もっとエレガントな方法教えてもらいました</a>。というか、上でやったことは全くの無駄でした。なので参考にしないでください。
+</p>

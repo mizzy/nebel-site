@@ -1,0 +1,15 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::FFmpeg &amp; FFmpeg::Command"
+date: 2006-07-31 23:57
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/plagger_and_itunes00.html"><span class="icon"></span>このエントリ</a> の <a class="ext-link" href="http://d.hatena.ne.jp/shimibow/"><span class="icon"></span>id:shimibow</a> さんからのコメントで、-title オプションでつけたタイトルが iTunes でも表示される、という情報頂きましたので、FFmpeg::Command で title をセットできるようにし、Plagger::Plugin::Filter::FFmpeg もそれに対応させてみました。（残念ながらうちの環境では、やはり iTunes では表示されませんでした…何が悪いのかなぁ…何かしょぼいミスとかしてそうな気がする…）
+</p>
+<ul><li><a class="ext-link" href="http://search.cpan.org/~mizzy/FFmpeg-Command-0.03/"><span class="icon"></span>FFmpeg-Command-0.03</a> （07/31 23:49 現在、まだ CPAN には反映されていません。待ちきれない場合は <a class="ext-link" href="http://svn.mizzy.org/public/library/perl/tags/FFmpeg-Command-0.03/"><span class="icon"></span>こちらの svn リポジトリ</a> からどうぞ。）</li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FFmpeg.pm"><span class="icon"></span>Plagger::Plugin::Filter::FFmpeg</a></li></ul>
+<p>
+FFmpeg::Command ならびに Filter::FFmpeg では、title だけではなく、author, comment もセットできるようにしました。また、Filter::FFmpeg では、encoding オプションでこれらの値のエンコーディングを指定できるようにしています。（何も指定しなければ、デフォルトで cp932 でエンコードされます。）
+</p>

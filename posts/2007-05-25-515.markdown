@@ -1,0 +1,13 @@
+---
+layout: post
+title: "Puppet 勉強会資料"
+date: 2007-05-25 22:16
+comments: true
+categories: 
+---
+ペパボ社内で実施した Puppet 勉強会の資料を[パペウィキにアップしました](http://trac.mizzy.org/puppet/wiki/LearningPuppet)。
+
+内容的には、Puppetをまったく知らない人が、とりあえず動かしてみるために最低限知っておく必要のある情報をまとめてみた、という感じです。既に触っている方や、どんなものか一通りご存知の方には当たり前の内容ばかりだと思います。
+
+
+

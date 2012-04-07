@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Apache での SSL クライアント証明書による認証"
+date: 2006-09-09 03:47
+comments: true
+categories: 
+---
+<p>
+Apache 2.x で SSL クライアント証明書による認証を行うためのメモ。ssl.conf があるので、そいつに以下の様な設定を入れる。（コメントアウトされてるので、# を外して適当に書き換える。）
+</p>
+<pre class="wiki">
+SSLCACertificatePath /usr/local/apache/conf/ca
+SSLCACertificateFile /usr/local/apache/conf/ca/cacert.pem
+</pre>
+<p>
+cacert.pem は <a class="ext-link" href="http://mizzy.org/linux/ssl_client_certificate.html"><span class="icon"></span>このエントリ</a> で生成された cacert.pem を適当な場所にコピーするなり、ダイレクトにパスを指定するなりする。
+</p>
+<pre class="wiki">
+SSLVerifyClient require
+SSLVerifyDepth  10
+</pre>
+<p>
+これで Apache を再起動してやれば OK。cacert.pem を持つ CA から発行された証明書のみ、アクセスが許可されるようになる。
+</p>

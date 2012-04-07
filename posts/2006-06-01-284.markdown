@@ -1,0 +1,70 @@
+---
+layout: post
+title: "Inside JugemKey's Backend"
+date: 2006-06-01 23:36
+comments: true
+categories: 
+---
+<p class="entryBody">
+よくある Inside Backend 系の話と違って、ハードの話ではなくプログラムの話が中心です。
+</p>
+
+<p class="entryBody">
+<a href="http://jugemkey.jp/api/auth/" target="_blank">JugemKey 認証 API の仕様や PHP/Perl ライブラリ</a> を読んだ方はお気づきだと思いますが、認証 API を利用するには2つのサーバにアクセスする必要があります。1つは secure.jugemkey.jp、もう 1つが api.jugemkey.jp です。
+</p>
+
+<p class="entryBody">
+secure.jugemkey.jp の方は、直接ユーザに見える部分をを担当していて、PHP で開発されています。https://secure.jugemkey.jp/ で見えるところがこれにあたります。
+</p>
+
+<p class="entryBody">
+api.jugemkey.jp はそのバックエンドで動いていて、実際のユーザ登録や認証などの処理はこいつが担当し、AtomPP ライクな API を実装しています。
+</p>
+
+<p class="entryBody">
+つまり、secure.jugemkey.jp と api.jugemkey.jp の間のやりとりは、AtomPP でやってる、というわけですね。
+</p>
+
+<p class="entryBody">
+で、今回の認証 API リリースでは、今まで secure.jugemkey.jp にしか開放していなかった API を、一部だけ外部に公開した、ということになります。
+</p>
+
+<p class="entryBody">
+そもそもなぜフロントとバックを分けて API で繋ぐようにしたか、ということなんですが、認証 API の様に外部へ API を公開する、という目的もあるのですが、それよりもまず、JugemKey 自体の最初の目的が、ペパボの各サービスで分散されているユーザ管理を統合する、ということだったので、重要な機能は一箇所にまとめてそれを API でラップし、各サービスでは API を叩くライブラリを利用することにより、実装効率を高めてサービス間の連携を容易にする、という狙いがあったからです。
+</p>
+
+<p class="entryBody">
+また、自分は Perl 好きで、ペパボは PHP メインの会社なわけですが、API で繋ぐことによってフロントとバックの実装を明確に分離することができると、お互い得意な言語に集中して実装できるというメリットもありますね。
+</p>
+
+<p class="entryBody">
+あと、JugemKey 認証 API に関連するフロント部分は、自分が PHP で実装しているのですが、面倒な処理はバックエンドのサーバがやってくれて、フロントからは AtomPP な割とシンプルな API を叩くだけだし、PHP 用ライブラリは既に社内の PHP 得意な人が実装してくれてるし、といった感じで、PHP に慣れてない自分でも割とさくさく実装することができました。
+</p>
+
+<p class="entryBody">
+転職したばかりの頃に <a href="http://mizzy.org/web/build_on_your_own_api.html" target="_blank">こんなエントリを書いた</a> のですが、まさにこれを実践した、というわけです。
+</p>
+
+<p class="entryBody">
+話変わって AtomPP ライクな API を実装している api.jugemkey.jp ですが、こいつは Perl + Catalyst で実装されていて、特にコアな部分は、主に以下の CPAN モジュールに依存しています。
+</p>
+
+<ul class="entryBody">
+<li><a href="http://search.cpan.org/perldoc/DBIx::Class" target="_blank">DBIx::Class</a></li>
+<li><a href="http://search.cpan.org/perldoc/Catalyst::Model::DBIC::Schema" target="_blank">Catalyst::Model::DBIC::Schema</a></li>
+<li><a href="http://search.cpan.org/perldoc/Catalyst::Plugin::AtomServer" target="_blank">Catalyst::Plugin::AtomServer</a></li>
+<li><a href="http://search.cpan.org/perldoc/Catalyst::Plugin::AtomPP" target="_blank">Catalyst::Plugin::AtomPP</a></li>
+<li><a href="http://search.cpan.org/perldoc/XML::Atom::Entry" target="_blank">XML::Atom::Entry</a></li>
+</ul>
+
+<p class="entryBody">
+Catalyst::Plugin::AtomServer に含まれている C::P::Authentication::Credential::Atom は、当初 Basic 認証では crypted/hashed な形で保持されたパスワードに対応していなかったので、修正して使ってました。0.03 からこの修正をとりこんでもらっていますので、今は対応しています。
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/?topic=/program/atom_client_with_catalyst" target="_blank">Catalyst で Atom API テストツール</a> を作ったのも、この様に AtomPP なサーバを実装してたからだったりします。
+</p>
+
+<p class="entryBody">
+この手の Inside Backend 系の話は大好物なので、みんなどんどん公開してくれないかなー、と思ってるのですが、それなら自分も公開するのが筋だろう、ってことでこんなエントリ書いてみました。
+</p>

@@ -1,0 +1,30 @@
+---
+layout: post
+title: "Shibuya.js Technical Talk 行けませんでした…"
+date: 2006-04-14 23:47
+comments: true
+categories: 
+---
+<p class="entryBody">
+こんな大事な日に限って仕事でおおはまり。普段は早く帰れてるのに。行きたくても応募が締め切られて行けなかった方々に大変申し訳ないです。
+</p>
+
+<p class="entryBody">
+もっとはやく残業することがわかっていれば、別の人に代わりに行ってもらえたのですが、なかなか終る時間が読めずに、「何とか間に合うかな？」「ちょっと遅れるけど行けそうかな？」「懇親会ぐらいは行けそうかな？」「ああ、やっぱ無理」といった感じでした。
+</p>
+
+<p class="entryBody">
+<a href="http://d.hatena.ne.jp/secondlife/" target="_blank">id:secondlife</a> さんにも、<a href="http://solvalou.net/" target="_blank">オオヒダさん</a> を通じて懇親会に誘って頂いていたのですが、参加できなくて大変申し訳ありません。YAPC 懇親会での約束通り、ランチ行きましょうね。社交辞令にはさせませんよ！MSN Messenger のアドレスは <a href="http://search.cpan.org/~mizzy/" target="_blank">CPAN に登録しているアドレス</a> ですので、ぜひぜひご連絡ください。
+</p>
+
+<p class="entryBody">
+近々新サービスがリリースされるのでしかたがないと言えばしかたないのですが、昨日の段階では自分の担当分はほとんど終っていて、余裕で行けるなって思ってたんですよ。ところが今日になって急な仕様追加があったり、トラブル対応に追われたり、自分の担当はサービスのバックエンドで perl でコーディングしてたのですが、上司から「フロント部分やってみない？」と言われてPHPデビューしたり、といった感じでした。
+</p>
+
+<p class="entryBody">
+そう、新サービスがリリースされるんですよ。ペパボに入ってから裏側のことばかりやってたのですが、自分が関わったプロジェクトがはじめて日の目を見ることになります。（とかいって作ってるのはやっぱりバックエンドという日陰の部分なのですが。）最近リリースされた、<a href="http://heteml.jp/" target="_blank">ヘテムル</a>、 <a href="http://grouptube.jp/" target="_blank">グルチュ</a>、<a href="http://calamel.jp/" target="_blank">カラメル</a>、<a href="http://chicappa.jp/" target="_blank">チカッパ</a> なんかと比べると、ややインパクトに欠けるかもしれませんが、今後展開していくサービスの基盤でもあり布石でもあるので、みなさん期待していて下さい。（とか言って自分にプレッシャーをかけてみる。） 内容については間もなくプレスリリースで発表されると思います。
+</p>
+
+<p class="entryBody">
+で、タイトルの Shibuya.js Technical Talk から全然関係ない話になってしまいましたが、言いたかったことは id:secondlife さんランチ行きましょう、ってことです。
+</p>

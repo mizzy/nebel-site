@@ -1,0 +1,10 @@
+---
+layout: post
+title: "blosxom + Rast #0"
+date: 2005-04-17 14:10
+comments: true
+categories: 
+---
+<p class="entryBody">
+blosxomのエントリを<a href="http://www.netlab.jp/rast/" target="_blank">Rast</a>で検索できるようなプラグインを作ろうと思い、Rastのperlバインディングを書かなきゃいけないなぁ、めんどくさいなぁ、と思っていたところ、<a href="http://blog.yappo.jp/yappo/archives/000225.html" target="_blank">既にYappoさんが作成されていました。</a>非常にありがたいです。XSモジュール書いたことないし、Cもしばらく触っていなかったので、自分でちゃんとしたモジュール作る自信がなかったので。ありがたく使わせて頂きます。
+</p>

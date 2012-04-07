@@ -1,0 +1,13 @@
+---
+layout: post
+title: "SVN::TracWiki #1"
+date: 2007-04-22 15:07
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/SVN-TracWiki"><span class="icon"></span>SVN::TracWiki</a> (<a class="ext-link" href="http://svn.mizzy.org/public/SVN-TracWiki/"><span class="icon"></span>svn repos</a>) について、ブクマコメントで miyagawa さんから「File::Extract?」というアドバイス？を頂きましたので、テキスト抽出部分を File::Extract ベースに書き換えてみました。
+</p>
+<p>
+おかげでプラグインまわりの処理が少しすっきりした上に、File::Extract で対応しているファイルフォーマットであれば、SVN::TracWiki 用のプラグインを書かなくてもテキスト抽出ができるようになりました。（Excel で試しましたが、ばっちり動作しました。）
+</p>

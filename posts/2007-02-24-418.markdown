@@ -1,0 +1,35 @@
+---
+layout: post
+title: "Plagger にあって Yahoo!pipes にあるもの"
+date: 2007-02-24 12:06
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/plagger-ybooks.html"><span class="icon"></span>前回のエントリ</a> で取り上げた方のブログに、<a class="ext-link" href="http://pythonbeginner.blog78.fc2.com/blog-entry-209.html"><span class="icon"></span>Plagger になくてYahoo!pipesにあるもの</a> というエントリがあったので、それについても釣られて言及してみます。
+</p>
+<blockquote>
+<p>
+  基本的に Plagger の処理は一本道であり、複数の基本データを扱うことができなかったはず
+</p>
+</blockquote>
+<p>
+それ Plagger でもできるよ。複数の入力から一つの出力もできるし、一つの入力から複数の出力もできるし、複数の入力から複数の出力もできる。
+</p>
+<blockquote>
+<p>
+  いってみればPlaggerは一つの入力に一つの出力が対応している直線的な処理しかできない。それに対しYahoo!pipesは複数の入力に一つの出力が対応するという、逆ピラミッド的な処理もできる。これがPlagger になくてYahoo!pipesにあるものだ。（もしかして今はできるのかもしれない。） 
+</p>
+</blockquote>
+<p>
+id:otsune さんも<a class="ext-link" href="http://b.hatena.ne.jp/entry/http://pythonbeginner.blog78.fc2.com/blog-entry-209.html"><span class="icon"></span>指摘してる</a>けど、それ smartfeed で。
+</p>
+<p>
+「Plagger の発展をフォローしてないので不正確かもしれない」とか「もしかして今はできるのかもしれない」などと書かれてますが、少なくとも SmartFeed::All は 2006/05/03 には作られているので、複数の入力に対して一つの出力は、かなり前からできます。
+</p>
+<p>
+また、一つの入力から複数の出力、複数の入力から複数の出力は最初からできます。なので、「基本的に Plagger の処理は一本道」というのは完全に間違い。Plagger の発展をフォローしてない、というのは言い訳にならない。「少なくとも自分が使っていた頃のPlagger になくて」と書いてるけど、本当に使ってたの？ 
+</p>
+<p>
+まあ、Yahoo!Books のエントリを見てもわかるように、Plagger が何かをまったくわかっていない人間のたわごとなので、適当に流しておくのが大人の対応なんでしょうが、Plagger ラブな人間としては、間違った情報広められるのは嫌な気分になるので。
+</p>

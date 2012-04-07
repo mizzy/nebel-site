@@ -1,0 +1,30 @@
+---
+layout: post
+title: "Blog Hackers Conference 2005に行ってきました"
+date: 2005-05-28 01:57
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://hacks.bloghackers.net/archives/2005/05/blog_hackers_co_1.html" target="_blank">Blog Hackers Conference 2005</a>から帰ってきました。3時間半ほど前に。家庭がある身なので、「打倒naoya！はてなTシャツ争奪ジャンケンバトル」（呼び捨てすんません）に2nd Roundで敗れて早々会場を後にしたわけですが、あの後も何かおもしろいことあったんですかね。
+</p>
+
+<p class="entryBody">
+どんな内容だったとか、どんな感じだったとかは、誰かが書いてくれるでしょうから、ここでは書きません。（めんどくさい。）
+</p>
+
+<p class="entryBody">
+ブログ暦が2ヶ月弱と浅いので、前回は出ておらず初めての参加なのですが、いつもブログやブックマークを拝見させて頂いている方々が目の前にいて、しかも中には、こんな俺のブログをsubscribeしてくれていたり、ブックマークしてくれている方もいらっしゃるので、「どうも！mizzy.orgの宮下です。いつもお世話になってます！」と挨拶してまわりたいぐらいでした。うざがれること必至なのでやめましたが。
+</p>
+
+<p class="entryBody">
+あと、<a href="http://blog.yappo.jp/yappo/" target="_blank">Yappoさん</a>がRastの利用例で、拙作の<a href="http://mizzy.org/?topic=/program/blosxomWithRast" target="_blank">blosxom+Rast</a>をちらりと書いてくださっていたのがすげーうれしかったです。実は、Yappoさんの3つ後ろの席に座っていたのですよ。
+</p>
+
+<p class="entryBody">
+俺はこの会場に来て、顔を拝見させて頂いているのに、向こうは俺のことをこのブログで知っていても、近くにいることは気づいてないんだよなぁ、という感覚が、なんだか妙でおかしかったです。同様に、俺がいつもブログを拝見してるけど、顔を知らない方々がこの会場に結構いるんだろうなぁ、というのも。
+</p>
+
+<p class="entryBody">
+内容も素晴らしかったですが、上に書いた様な、なんとも言えない雰囲気というか感覚も味わえた、そんなカンファレンスでした。
+</p>

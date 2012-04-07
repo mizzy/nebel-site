@@ -1,0 +1,30 @@
+---
+layout: post
+title: "PLAYLOG HACKS with Plagger #0"
+date: 2006-03-07 00:41
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/playlog_hacks.html" target="_blank">iTunes や iPod で聴いた曲情報を非同期で PLAYLOG へアップするスクリプト</a> を Plagger Plugin として書き直してみました。よくわかってないので、他の方がつくったプラグインの見様見真似で。
+</p>
+
+<ul class="entryBody">
+<li><a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/iTunesRecentPlay.pm" target="_blank">Plagger::Plugin::CustomFeed::iTunesRecentPlay</a></li>
+<li><a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Publish/Playlog.pm" target="_blank">Plagger::Plugin::Publish::Playlog</a></li>
+</ul>
+
+<p class="entryBody">
+とりあえず気になった点をここに書いておけば、宮川さんとかが答えてくれるかも。
+</p>
+
+<ul class="entryBody">
+<li>CustomFeed の下に置くのは適切？</li>
+<li>iTunes Music Library.xml から取得した曲データは、全部 $entry->meta につっこんでるけど、このやり方は正しい？</li>
+<li>今後「最近聴いた曲」以外の情報を取得するプラグインとかも必要になるかもしれないから、Plugin::iTunes とか作って、その下に Plugin::iTunes::RecentPlay とか作った方がいいかも。</li>
+<li>Publish::Playlog も、Publish::AtomPP::Playlog とかにした方がいいかも。</li>
+</ul>
+
+<p class="entryBody">
+この辺りもっとブラッシュアップしてから、commit 権もらって commit させてもらおうっと。
+</p>

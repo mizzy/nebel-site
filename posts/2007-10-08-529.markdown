@@ -1,0 +1,130 @@
+---
+layout: post
+title: "FLV::Info で ustream の FLV ファイル情報をとろうとするとエラーになる件"
+date: 2007-10-08 14:07
+comments: true
+categories: 
+---
+ustream の FLV をダウンロードして音声変換する方法は、"typesterさんのとこに詳しく書いてある":http://unknownplace.org/memo/2007/10/03 わけですが、sox に渡すときにサンプルレートを指定する必要があったりします。
+
+で、これを Plagger プラグインで実現するためには、何らかの方法で元ファイルのサンプルレートを取得しないといけないわけで、"FLV::Info":http://search.cpan.org/dist/FLV-Info/ でできそうだな、と思ったところ
+
+<pre><code>Failed to read FLV file: Tag size is too small (0) at byte 193 (0xc1) at /usr/local/lib/perl5/site_perl/5.8.7/FLV/Tag.pm line 81.
+</code></pre>
+
+といったエラーが出ます。色々調べてみたところ、ustream の FLV ファイル中に、ボディが 0 のオーディオタグが存在するから、ということがわかったので、"パッチを書いて RT に投げておきました。":https://rt.cpan.org/Ticket/Display.html?id=29831
+
+パッチ自体は数行コメントアウトして1行追加しただけ、という簡単なものなのですが、このパッチを書くために、"FLVのファイルフォーマット":http://osflash.org/flv を調べて、音声フォーマットを取得する Perl スクリプトを自分で書いてみたりと、えらく回り道しました。せっかくなんでスクリプトを載せておきます。スクリプト作成にあたって、[nelly2pcm](http://code.google.com/p/nelly2pcm/) のソースも参考にしています。
+
+{% codeblock lang:perl %}
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Readonly;
+
+Readonly my $FLV_TAG_TYPE_AUDIO                => 0x08;
+Readonly my $AUDIO_MASK_STEREO                 => 0x01;
+Readonly my $AUDIO_MASK_16bit                  => 0x02;
+Readonly my $AUDIO_MASK_RATE                   => 0x0c;
+Readonly my $AUDIO_RATE_5point5KHZ             => 0x00;
+Readonly my $AUDIO_RATE_11KHZ                  => 0x04;
+Readonly my $AUDIO_RATE_22KHZ                  => 0x08;
+Readonly my $AUDIO_RATE_44KHZ                  => 0x0c;
+Readonly my $AUDIO_MASK_FORMAT                 => 0xf0;
+Readonly my $AUDIO_FORMAT_UNCOMPRESSED         => 0x00;
+Readonly my $AUDIO_FORMAT_ADPCM                => 0x10;
+Readonly my $AUDIO_FORMAT_MP3                  => 0x20;
+Readonly my $AUDIO_FORMAT_NELLYMOSER_8KHZ_MONO => 0x50;
+Readonly my $AUDIO_FORMAT_NELLYMOSER           => 0x60;
+
+Readonly my %AUDIO_RATE => (
+    $AUDIO_RATE_5point5KHZ => 5.5,
+    $AUDIO_RATE_11KHZ      => 11,
+    $AUDIO_RATE_22KHZ      => 22,
+    $AUDIO_RATE_44KHZ      => 44,
+);
+
+Readonly my %AUDIO_FORMAT => (
+    $AUDIO_FORMAT_UNCOMPRESSED         => 'Uncompressed',
+    $AUDIO_FORMAT_ADPCM                => 'ADPCM',
+    $AUDIO_FORMAT_MP3                  => 'MP3',
+    $AUDIO_FORMAT_NELLYMOSER_8KHZ_MONO => 'Nellymoser 8kHz mono',
+    $AUDIO_FORMAT_NELLYMOSER           => 'Nellymoser',
+);
+
+my $file = shift;
+
+open my $fh, '<', $file;
+
+my $header = read_header($fh);
+
+while ( ! eof $fh ) {
+    my $tag = read_tag($fh);
+    if ( $tag->{type} == $FLV_TAG_TYPE_AUDIO and $tag->{length} ) {
+        my $first_byte = $tag->{first_byte};
+
+
+	my $stereo       = $first_byte & $AUDIO_MASK_STEREO;
+	my $audio_size  = $first_byte & $AUDIO_MASK_16bit ? 16 : 8;
+        my $audio_rate   = $AUDIO_RATE{ $first_byte & $AUDIO_MASK_RATE } || 'unknown';
+        my $audio_format = $AUDIO_FORMAT{ $first_byte & $AUDIO_MASK_FORMAT } || 'unknown';
+
+        print 'audio type: ' . ( $stereo ? 'stereo' : 'mono' ) . "\n";
+        print "audio size: $audio_size bit\n";
+        print "audio rate: $audio_rate Hz\n";
+        print "audio format: $audio_format\n";
+        last;
+    }
+}
+
+sub read_header {
+    my $fh = shift;
+    read $fh, my $sig,       3;
+    read $fh, my $version,   1;
+    read $fh, my $flag,      1;
+    read $fh, my $offset,    4;
+    read $fh, my $prev_tag,  4;
+
+    return {
+        sig => $sig,
+        version => unpack('H*', $version),
+        flag    => unpack('H*', $flag),
+        offset  => unpack('H*', $offset),
+    };
+}
+
+sub read_tag {
+    my $fh = shift;
+    read $fh, my $type,               1;
+    read $fh, my $length,             3;
+    read $fh, my $timestamp,          3;
+    read $fh, my $timestamp_extended, 1;
+    read $fh, my $stream_id,          3;
+    read $fh, my $first_byte,         1;
+
+    my $pos = hex unpack 'H*', $length;
+    seek $fh, $pos - 1, 1;
+
+    read $fh, my $prev_tag,  4;
+
+    return {
+        type       => unpack('C', $type),
+        length     => $pos,
+        first_byte => unpack('C', $first_byte),
+    };
+}
+{% endcodeblock %}
+
+こんな感じで FLV ファイルの音声情報を表示します。
+
+<pre><code>$ ./get_flv_info.pl broadcast_35957_1191232400660.flv
+audio type: mono
+audio size: 16 bit
+audio rate: 11 Hz
+audio format: Nellymoser  
+</code></pre>
+
+あとは Plagger プラグインを書くだけ、という感じなのですが、リビドーが沸いてこないのでちょっと保留。FFmpeg で Nellymoser に対応する予定がある（既に SVN HEAD には Nellymoser という文字列がコード中にある）ようなので、それまで待ってもいいかなー、と。
+
+音声変換するプラグイン "Filter::Audio":http://coderepos.org/share/browser/lang/perl/plagger/lib/Plagger/Plugin/Filter/Audio.pm は coderepos にあげてありますので、俺が対応してやるぜ、という方はお好きなようにいじってください。

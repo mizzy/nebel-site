@@ -1,0 +1,50 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::FFmpeg #1"
+date: 2006-07-28 00:09
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/ffmpeg00.html"><span class="icon"></span>FFmpeg::Command</a> を修正したので、それに合わせて <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FFmpeg.pm"><span class="icon"></span>Plagger::Plugin::Filger::FFmpeg</a> を修正。（というか、Filter::FFmpeg のために FFmpeg::Command を修正、の方が正しいかも。）
+</p>
+<p>
+yaml に記述するオプションができるだけ少なく済むようにしてみました。iPod 用に変換するのであれば、
+</p>
+<pre class="wiki">
+  - module: Filter::FFmpeg
+    config:
+      dir: /home/miya/mov
+</pre>
+<p>
+だけで OK。
+</p>
+<p>
+PSP 用であればこんな感じで。
+</p>
+<pre class="wiki">
+  - module: Filter::FFmpeg
+    config:
+      dir: /home/miya/mov
+      device: psp
+</pre>
+<p>
+自分の好きなフォーマットに変換したい場合には、こんな感じで記述します。
+</p>
+<pre class="wiki">
+  - module: Filter::FFmpeg
+    config:
+      dir: /home/miya/mov
+      ext: mp4
+      options:
+        format:              psp
+        video_codec:         h264
+        bitrate:             600
+        size:                320x240
+        audio_codec:         aac
+        audio_sampling_rate: 48000
+        audio_bit_rate:      64
+</pre>
+<p>
+と言っても、PSP は持ってないのでテストができていません。試された方は結果お知らせ頂けると大変うれしいです。
+</p>

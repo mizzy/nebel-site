@@ -1,0 +1,100 @@
+---
+layout: post
+title: "JKL.ParseXMLを試してみた"
+date: 2005-05-29 18:44
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://prototype.conio.net/" target="_blank">prototype</a>, <a href="http://www.twilightuniverse.com/2005/05/sack-of-ajax/" target="_blank">Sack of Ajax</a>と、ajax関連のjavascriptライブラリをここでは取り上げて来ましたが、大本命と言えるものが登場してきました。<a href="http://zerobase.jp/blog/entry-215.html" target="_blank">ajax ml</a>で話題の、川崎さん作<a href="http://www.kawa.net/works/js/jkl/parsexml.html" target="_blank">JKL.ParseXML</a>です。
+</p>
+
+<p class="entryBody">
+使い方は川崎さんのサイトに詳しくありますので、ここでは説明しません。代わりに、このライブラリを使うと何がうれしいのか、語っちゃいます。
+</p>
+
+<p class="entryBody">
+まず1点目。XMLをJavascriptのオブジェクトに変換してくれちゃうことですね。そのためのライブラリなので当たり前なのですが。でもこれって、ものすごく需要があると思うんですよね。
+</p>
+
+<p class="entryBody">
+現在、様々なウェブ上のサービスがRESTベースのAPIを提供していますよね。で、そのAPIを利用したサイトというのもまた色々があるわけですが、これらのサイトはおそらく、RESTで取得したXMLを、サーバサイドで加工してHTMLに出力、という様な処理をしてることが多いんじゃないかと思います。で、これにajaxを加えようとすると、俺に考えつくのは、
+</p>
+
+<ul class="entryBody">
+<li>サーバサイドで加工したHTMLをinnerHTMLでウェブページにつっこむ。ただし、Javascriptでデータを加工する自由がない。</li>
+<li>サーバサイドでXMLからJSONに変換して、Javascriptで処理する。ただし、XMLからJSONへの汎用的な変換ツールを知らないので、自分でルーチン書いてた。しかも正規表現で汎用性がないやつ。</li>
+<li>サーバサイドでは何もせずにJavascriptに渡し、JavascriptでXSLTなりDOMなりでいじる。これはめんどくさそうで実際に試す気になれなかった。</li>
+</ul>
+
+<p class="entryBody">
+という、どれもイマイチな方法ばかりなんですよ。これがJKL.ParseXMLを使うと、
+</p>
+
+<ul class="entryBody">
+<li>サーバサイドでは何もせずにJavascriptにXMLを渡し、JKL.ParseXMLがXMLをオブジェクトに変換してくれる。それもものすごく簡単に。後はこのオブジェクトを好きなように加工するだけ。超ラクチン!</li>
+</ul>
+
+<p class="entryBody">
+ってことになります。ほんっと、すばらしいです。
+</p>
+
+<p class="entryBody">
+で、2点目の良い点なのですが、xmlHttpRequestでデータを取得するルーチンがものすごく簡単に書ける、ということですね。どれぐらい簡単か、<a href="http://mizzy.org/program/sackOfAjax.html" target="_blank">Sack of Ajax</a>で説明したのと同様に、prototypeやSackと比較してみます。
+</p>
+
+<p class="entryBody">
+前と同じ例ですが、まずはprototypeのコード。
+</p>
+
+
+<pre class="code">
+new Ajax.Request(
+    '/deislde/index.cgi',
+    {
+      method: 'GET',
+      onComplete: function(request){
+        eval('tagsListObj = ' +  request.responseText);
+	displayTags();
+      }
+    });
+</pre>
+
+<p class="entryBody">
+次にSackでのコード。（<a href="http://mizzy.org/program/sackOfAjax.html" target="_blank">Sack of Ajax</a>でのサンプルは微妙に間違ってます。こっちが正しいです。）
+</p>
+
+<pre class="code">
+ajax = new sack('/delside/index.cgi');
+ajax.method = 'GET';
+ajax.onCompletion = function() {
+                        var response = ajax.response;
+		        eval('tagsListObj = ' +  response);
+		        displayTags();
+                    };
+ajax.runAjax();
+
+</pre>
+
+<p class="entryBody">
+これをJKL.ParseXMLで書き直すと、
+</p>
+
+<pre class="code">
+var url = "/delside/index.cgi";
+var xml = new JKL.ParseXML( url );
+var tagsListObj = xml.parse();
+displayTags();
+</pre>
+
+<p class="entryBody">
+といった感じで、ものすごく簡略化できます。<strong>しかも</strong>、しかもですよ、簡略化されるのはJavascriptだけではありません。prototypeとSackでは、サーバ側でXMLをJSONに変換しているのですが、JKL.ParseXMLはそれすらも不要!XMLのまんまでJavascriptに渡してやればいいんです。<strong>素敵です。</strong>
+</p>
+
+<p class="entryBody">
+今ちょうど、作りかけのajaxアプリがあるので、早速使わせて頂きます。川崎さん、<strong>ありがとうございます!</strong>
+</p>
+
+<p class="entryBody">
+俺も人が作ったものばかり使ってないで、こういうものを提供できるようにならないとなぁ。
+</p>

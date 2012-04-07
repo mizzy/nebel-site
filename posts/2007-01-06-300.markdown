@@ -1,0 +1,52 @@
+---
+layout: post
+title: "Assurer - サーバテスティングフレームワーク #1"
+date: 2007-01-06 21:22
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://unknownplace.org/memo/"><span class="icon"></span>typester さん</a> が del.icio.us で「開発参加したい！」とおっしゃってくださったので、#assurer@freenode チャネルつくりました。まだおおまかな仕様すら固まっていない段階なので、いろいろご助言頂けると大変うれしいです。ご興味のある方はぜひ！
+</p>
+<p>
+で、本題。<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Assurer"><span class="icon"></span>Assurer</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Assurer/"><span class="icon"></span>SVN</a>) をちょっと修正しました。修正点は以下の通りです。
+</p>
+<ul><li>assurer.pl に Plagger の文字が残っていたので、修正しました。（はてブでコメント頂きました。ありがとうございます。）</li>
+<li>Assurer::Test というクラスをつくりました。Assurer::Plugin::HTTP では最初、Test::More を使っていたのですが、代わりにこちらを使うようにしてます。</li>
+<li>他微修正。</li></ul>
+<p>
+今回追加した Assurer::Test というクラスは Test::Builder を利用していて、 Test::More の代わりとしてテスト用プラグインから利用することを想定しています。
+</p>
+<p>
+なぜわざわざこのクラスを作ったかというと、テスト結果出力を色分けしたかったからです。実行するとこんな感じの出力になります。（RSS リーダだと色が見えないと思いますが…）
+</p>
+<pre class="wiki">
+$ ./assurer.pl -c examples/config.yaml
+[info] Testing http://svn.mizzy.org/ #0
+<span style="color: blue;">ok 1 - Content of http://svn.mizzy.org/ matches 'It works!'</span>
+[info] Testing http://svn.mizzy.org/ #1
+<span style="color: red;">not ok 2 - Content of http://svn.mizzy.org/ matches 'It not works!'</span>
+#                   '&lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;'
+#     doesn't match '(?-xism:It not works!)'
+</pre>
+<p>
+また、
+</p>
+<pre class="wiki">
+global:
+  config:
+    no_diag: 1
+</pre>
+<p>
+といった設定をすると、以下のように diag message を表示しなくなります。
+</p>
+<pre class="wiki">
+$ ./assurer.pl -c examples/config.yaml
+[info] Testing http://svn.mizzy.org/ #0
+<span style="color: blue;">ok 1 - Content of http://svn.mizzy.org/ matches 'It works!'</span>
+[info] Testing http://svn.mizzy.org/ #1
+<span style="color: red;">not ok 2 - Content of http://svn.mizzy.org/ matches 'It not works!'</span>
+</pre>
+<p>
+Assurer::Test は今後、 Assurer::Test::More とか Assurer::Test::Class といった感じでベースとなる Test::* に応じて細分化するかもしれません。
+</p>

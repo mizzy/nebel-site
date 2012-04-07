@@ -1,0 +1,38 @@
+---
+layout: post
+title: "JugemKey 認証 API リリース"
+date: 2006-05-31 12:47
+comments: true
+categories: 
+---
+<p class="entryBody">
+<strong>追記</strong><br />
+CPAN モジュールが Perl 5.8.7 じゃないとインストールできない、という指摘が宮川さんからありましたので、修正しました。CPAN に反映されるまで時間がかかりますので、<a href="http://mizzy.org/archives/WebService-JugemKey-Auth-0.03.tar.gz">ここから取得してください</a> 。モジュール作るのに h2xs を使うのはやめます。今は Module::Starter の時代らしいです。
+</p>
+
+<p class="entryBody">
+<a href="http://jugemkey.jp/api/auth/" target="_blank">JugemKey 認証 API</a> がリリースされました。<a href="http://jugemkey.jp/api/auth/#faq_for_developers" target="_blank">PHP4, PHP5, Perl の 認証 API ライブラリも提供しています</a>。
+</p>
+
+<p class="entryBody">
+基本的には、Flickr や はてなの認証 API とほぼ同等のものなのですが、<a href="http://labs.cybozu.co.jp/blog/kazuho/" target="_blank">Kazuho@Cybozu Labs</a>, <a href="http://d.hatena.ne.jp/tociyuki/" target="_blank">Tociyuki::Diary</a>, <a href="http://www.machu.jp/diary/" target="_blank">まちゅダイアリー</a> のはてな認証 API 関連エントリを参考にさせて頂きつつ、以下の様な独自の仕様を加えています。
+</p>
+
+<ul class="entryBody">
+<li>署名コードの生成には HMAC_SHA1 を利用。</li>
+<li>frob や token を認証 API に渡す際に、クエリストリングではなく、HTTP リクエストヘッダを利用。これは、特に今後の他サービス API の認証に token を利用するにあたって、クエリストリングはあくまでもサービス固有のクエリストリングとして使いたい、ということと、frob や token が Authorization や X-WSSE などの認証用 ヘッダの代わりになるものなので、ヘッダに入れるのが自然ではないか、という考え。</li>
+<li>frob や token を認証 API に渡す際に、リクエスト時の日時もヘッダに含め、署名コードも日時を含めて生成する。API サーバ側では、署名とともに日時のチェックも行い、現在時刻から5分以上ずれているリクエストはリジェクトする。</li>
+<li>コールバック URL はリクエスト毎に自由に設定可能。ただし、API キーの設定で指定された URL を含む URL である必要あり。</li>
+</ul>
+
+<p class="entryBody">
+<a href="http://labs.cybozu.co.jp/blog/kazuho/archives/2006/05/scenario.php" target="_blank">はてな認証 API への攻撃シナリオ</a> にあるような、frob（はてなの場合は cert） の漏洩対策に関しては、今後の課題とさせてください。
+</p>
+
+<p class="entryBody">
+API の仕様決めや Perl ライブラリを作成するにあたって、はてな認証 API や <a href="http://search.cpan.org/~naoya/Hatena-API-Auth/lib/Hatena/API/Auth.pm" target="_blank">Hatena::API::Auth</a> を大いに参考にさせて頂きました。なので、naoya さんに一言お伝えするのが礼儀だろうと思い、事前にメールさせて頂いたのですが、「全然気にしなくていいですよ。」と快いお返事が頂けました。naoya さん、ありがとうございました！
+</p>
+
+<p class="entryBody">
+また、PHP5 用ライブラリは <a href="http://solvalou.net/" target="_blank">オオヒダさん</a> に作成して頂きました。しかもオオヒダさんはライブラリだけでなく…、とこれは後ほどのお楽しみ、ということで。オオヒダさん、ありがとうございます！
+</p>

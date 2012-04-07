@@ -1,0 +1,14 @@
+---
+layout: post
+title: "やじうま Watch と Plagger"
+date: 2006-04-23 22:47
+comments: true
+categories: 
+---
+<p class="entryBody">
+既に誰かが作ってそうだと思ったけど、見つからなかったので作ってみた。<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/YajiumaWatch.pm" target="_blank">Plagger::Plugin::CustomFeed::YajiumaWatch</a>
+</p>
+
+<p class="entryBody">
+プログラム内の文字コードが UTF-8 だと、正規表現でうまくマッチしなかったので、無理やり euc-jp で。なので encode/decode しまくりでコード汚いです。誰かがきれいに書き直してくれることを期待。正規表現と文字エンコーディングって苦手…
+</p>

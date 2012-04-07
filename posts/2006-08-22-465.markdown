@@ -1,0 +1,38 @@
+---
+layout: post
+title: "Plagger::Plugin::CustomFeed::AmazonWebService"
+date: 2006-08-22 05:54
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/wata_d/20060821/1156113214"><span class="icon"></span>ベイダー日記 - Amazon2iCal</a> の CustomFeed::AmazonSearch を、他の用途でも使えるように、もう少し汎用的に書き換えてみました。
+</p>
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/AmazonWebService.pm"><span class="icon"></span>CustomFeed::AmazonWebService</a>
+</p>
+<p>
+オリジナルからの変更ポイントは、
+</p>
+<ul><li>link や icon もセットするようにした。</li>
+<li>link には アソシエイト ID を含めることができるようにした。</li>
+<li>ソート条件を yaml で指定できるようにした。</li>
+<li>「発売日が今日の日付から一ヶ月以上前のものは省く」という条件廃止。これは Rule でやるべきなので。</li></ul>
+<p>
+といったあたりですかね。
+</p>
+<p>
+名前は以前に <a class="ext-link" href="http://mizzy.org/program/plagger_and_aws.html"><span class="icon"></span>Filter::AmazonWebService</a> というものを作っていたので、それに合わせてます。（Plagger が media API 対応してから色々手を加えようと思い、しばらく放置中ですが…）
+</p>
+<p>
+例によって Publish::Gmail と組み合わせるとこんな感じ。
+</p>
+<p>
+<img src="http://mizzy.org/img/aws.jpg" alt="CustomFeed::AmazonWebService + Publish::Gmail" />
+</p>
+<p>
+でもって、Publish::iCal + Google Calendar ではこんな感じ。
+</p>
+<p>
+<img src="http://mizzy.org/img/gcal.jpg" alt="CustomFeed::AmazonWebService + Publish::iCal + Google Calendar" />
+</p>

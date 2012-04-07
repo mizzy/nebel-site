@@ -1,0 +1,44 @@
+---
+layout: post
+title: "entries_in_this_pageプラグイン"
+date: 2005-05-03 15:10
+comments: true
+categories: 
+---
+<p class="entryBody">
+現在のページに表示されているエントリのタイトルが一目で分かる様にしたいな、ってことで、
+<a href="/archives/entries_in_this_page" target="_blank">entries_in_this_pageプラグイン</a>というものを作ってみました。左メニューの「entries in this page」の様に表示されます。
+</p>
+
+<p class="entryBody">
+プラグインの中身自体は非常に単純で、以下の様なデータのリファレンスを返してるだけです。
+</p>
+
+<pre class="code">
+$entries = [
+	    { title => 'title1',
+	      path => 'path1',
+	      fn => 'fn1',
+	    },
+	    { title => 'title2',
+	      path => 'path2',
+	      fn => 'fn2',
+	    }, 
+	    ];
+</pre>
+
+<p class="entryBody">
+<a href="http://mizzy.org/program/blosxomTT.html" target="_blank">ttプラグイン</a>を利用して、このリファレンスをフレーバの中で以下の様に処理してます。
+</p>
+
+<pre class="code">
+&lt;ul&gt;
+&#x5b;% FOREACH entry = entries_in_this_page.entries %&#x5d;
+&lt;li&gt;&lt;a href="&#x5b;% entry.path %&#x5d;/&#x5b;% entry.fn %&#x5d;"&gt;&#x5b;% entry.title %&#x5d;&lt;/a&gt;&lt;li&gt;
+&#x5b;% END %]
+&lt;/ul&gt;
+</pre>
+
+<p class="entryBody">
+こんな感じでプラグインからHTMLを分離したかったというのが、ttプラグインを作った理由だったりします。やっぱり、プログラムの中にHTMLが混じるのは気色悪いので。
+</p>

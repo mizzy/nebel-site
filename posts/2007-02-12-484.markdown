@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Assurer にシェルモード"
+date: 2007-02-12 19:56
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://assurer.jp/trac"><span class="icon"></span>Assurer</a> についてその後あんまり書いてないですが、何もしてないわけではなく、リトライをハンドリングできるようにしたり、並列実行できるようにしたりと、ちょこちょこと開発は進めています。
+</p>
+<p>
+で、<a class="ext-link" href="http://mizzy.org/program/archer00.html"><span class="icon"></span>前回のエントリ</a> で、<a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/20060929/1159495175"><span class="icon"></span>Archer</a> にシェルモードをつけてみたわけなんですが、シェルモードってテスト/監視ツールにこそふさわしい、と思ったので、Assurer にもつけてみました。こんな感じになります。
+</p>
+<pre class="wiki">
+$ assurer.pl --config=config.yaml --shell --role=app --para=3
+shell> uptime
+[www.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+[svn.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+[ftp.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+shell> 
+</pre>
+<p>
+--role がなければ、config.yaml で列挙されているホスト全部で実行します。
+</p>

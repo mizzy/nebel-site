@@ -1,0 +1,68 @@
+---
+layout: post
+title: "cfengine メモ #0 - cfengine の構成パターン"
+date: 2006-12-26 22:55
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trombik.mine.nu/~cherry/w/index.php/2006/08/19/715/centralized-configuration-management-with-cfengine-1"><span class="icon"></span>I, newbie &raquo; cfengineによるシステム管理の自動化: その1</a> を読んで、cfengine よさげだなぁ、ってことで導入を検討することに。
+</p>
+<p>
+このブログでは、上記エントリで「ややこしいけど魅力的」と書かれている cfengine について、自分なりに試したことや整理したことについてメモしていこうと思います。日本語のドキュメントが少ないですし、実際に手を動かしてみないと理解しにくいものなので、これを使ってみようかな、という方に少しでもお役に立てれば幸いです。
+</p>
+<p>
+まず、cfengine ってそもそも何？というところですが、上記の I, newbie さんのエントリがわかりやすいので省略。今回は cfengine の構成パターンについて整理してみます。
+</p>
+<h3 id="単一マシンで利用するパターン">単一マシンで利用するパターン</h3>
+<p>
+<img src="http://mizzy.org/img/linux/cfengine00.jpg" alt="http://mizzy.org/img/linux/cfengine00.jpg" />
+</p>
+<p>
+単一のマシンで cfengine を実行します。実際にこのパターンで運用することはない（cfengine 使う意味がない）と思いますが、cfengine の動作を理解するためのはじめの一歩として、まずはこのパターンで実行してみると良いです。
+</p>
+<p>
+cfagent は cfengine に含まれるコマンドラインツールなのですが、以下の様に実行することで、設定情報がなどが書かれた cfagent.conf の内容にしたがって、自身の設定を行います。
+</p>
+<pre class="wiki">
+# cfagent -f cfagent.conf
+</pre>
+<h3 id="クライアント主導パターン">クライアント主導パターン</h3>
+<p>
+<img src="http://mizzy.org/img/linux/cfengine01.jpg" alt="http://mizzy.org/img/linux/cfengine01.jpg" />
+</p>
+<p>
+cfengine サーバ（設定情報を一元管理するサーバ）と cfengine クライアント（cfengine による管理対象サーバ）の2種類によって構成されます。今度は新しく cfserved というものが出てきましたが、これも cfengine に含まれているプログラムでデーモンとして常駐し、cfengine クライアントに cfagent.conf や他のファイルなどを提供したり、他のホストから cfagent を起動するリクエストを受け付けたり（これについては後述）します。
+</p>
+<p>
+動作の流れは次のようになります。
+</p>
+<ol start="1"><li>cfengine クライアントは cfengine サーバから最新の cfagent.conf を取得する。（どのサーバから取得するか、どのファイルを取得するか、といった情報が update.conf に記述されている。） </li>
+<li>cfengine クライアントは取得した cfagent.conf の内容にしたがって、自身の設定を行う。</li></ol>
+<p>
+この様に、最新の cfagent.conf の取得と実行は、クライアントサイド主導で行われますので、このパターンを「クライアント主導パターン」としています。実際の運用では、cron で定期的に実行することになるかと思います。
+</p>
+<h3 id="サーバ主導パターン">サーバ主導パターン</h3>
+<p>
+<img src="http://mizzy.org/img/linux/cfengine02.jpg" alt="http://mizzy.org/img/linux/cfengine02.jpg" />
+</p>
+<p>
+このパターンもサーバ/クライアント構成になっていますが、クライアント主導パターンと違うのは、クライアント側でも cfservd が動いていることと、サーバ側で cfrun というコマンドを実行していることです。cfrun も cfengine に含まれるコマンドラインツールで、リモートの cfserved に対して、cfagent を実行するようリクエストを出します。
+</p>
+<p>
+このパターンでの動作の流れは次のようになります。
+</p>
+<ol start="1"><li>サーバ側で cfagent.conf の更新をトリガーに cfrun を実行して、クライアントの cfagent をキックする。</li>
+<li>キックされた cfagent が cfagent.conf を取得し、その内容にしたがって自身の設定を行う。</li></ol>
+<p>
+何百とサーバがある環境だと、クライアントがサーバにアクセスする負荷もバカにならないので、クライアント主導型の様に、何も変更がないのに cron で定期的に実行するのも無駄ですし、一気にアクセスがこないように cron のスケジューリングを調整するのも面倒ですよね。そういった場合にはこのパターンが適しているかと思います。
+</p>
+<p>
+cfrun は1ホストに対して1回実行というわけではなく、cfrun.hosts というファイルに書かれたホスト全部に対してコマンド一発実行もできますし、一度に起動できるプロセス数もオプションで指定できるので、サーバに一気にアクセスが集中する、ということがないようにコントロールすることも容易です。
+</p>
+<p>
+以上が cfengine の構成パターンとして代表的なものになります。
+</p>
+<p>
+次回以降、実際の使い方、注意点、運用上のノウハウなど少しづつ書いていきたいと思います。（まぁ、まだ運用してないので、ノウハウなんかないですが。）
+</p>

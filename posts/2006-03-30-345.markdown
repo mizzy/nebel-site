@@ -1,0 +1,35 @@
+---
+layout: post
+title: "Plagger と Google Video #1"
+date: 2006-03-30 23:36
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/GoogleVideo.pm" target="_blank">CustomFeed::GoogleVideo</a> をアップデートしてみた。
+</p>
+
+<ul class="entryBody">
+<li>LWP::Simple ではなく Plagger::UserAgent を使うようにしてみた。</li>
+<li>pod 書いた。</li>
+</ul>
+
+<p class="entryBody">
+本当は enclosure に length を入れるために、HEAD でファイルサイズ取得しようと思って、Plagger::UserAgent 使ってみたんだけど、HEAD だと Content-length に 0 が返ってきてしまうので、意味がなかった…
+</p>
+
+<p class="entryBody">
+あと、Google Video が返す RSS の item には、media:content が 4つ含まれます。type が video/x-flv, video/x-msvideo, video/mp4 が 2つ、という感じで。で、video/mp4 のものは、どっちが PSP 用でどっちが iPod 用かが、RSS 見ただけでは区別がつかないので、最初のものが iPod 用、2番目のものが PSP 用と決めうちにしてます。
+</p>
+
+<p class="entryBody">
+0.7 で enclosure や MediaRSS に対応するとのことなので、それまでは 本家の方には取り込まずに野良プラグインとして転がしておきます。（そうしてくれ、と宮川さんから言われましたので。）
+</p>
+
+<p class="entryBody">
+プラグイン名も、Google Video は最初から RSSを吐いてるので CustomFeed ではなく Subscription なのかなぁ、とか思ったりしてるのですが、その辺りは 0.7 で取り込まれるときに、宮川さんが良きにはからってくれるでしょう。
+</p>
+
+<p class="entryBody">
+これで GoogleVideo の方はほぼ完成ということで、次は YouTube 行きます。あ、iTunesRecentPlay もまだ中途半端だった…
+</p>

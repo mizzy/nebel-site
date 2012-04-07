@@ -1,0 +1,87 @@
+---
+layout: post
+title: "ActiveRecord のコールバックとオブザーバ（Rails勉強中 #6）"
+date: 2005-12-30 00:36
+comments: true
+categories: 
+---
+<p class="entryBody">
+Rails の興味深い実装メモの続き。
+</p>
+
+<p class="entryBody">
+ActiveRecord の主な仕事は、DB の読み書きとデータの Validation なわけですが、コールバックを利用すると、Validation の前後や DB 読み書きの前後の、任意のタイミングで好きな処理を割り込ませることができます。
+</p>
+
+<p class="entryBody">
+例えば、 <a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Rails本</a>のサンプルでは、
+</p>
+
+<pre class="code">
+def before_create
+  self.hashed_password = User.hash_password(self.password)
+end
+</pre>
+
+<p class="entryBody">
+といった感じで、DBにユーザ情報をインサートする前にパスワードを SHA1 でハッシュしたり、
+</p>
+
+<pre class="code">
+after_create do |order|
+  logger.info "Order #{order.id} created"
+end
+</pre>
+
+<p class="entryBody">
+といった感じで、オーダー情報をDBに格納した後ログに記録する、といったことをモデルの中で実行できるようになっています。
+</p>
+
+<p class="entryBody">
+モデルで Validation するのと同様、これもコントローラの処理の簡略化につながり、より見通しの良いコードが書けていい感じですね。
+</p>
+
+<p class="entryBody">
+また、上記のようなロギング処理を、モデルにやらせるのは気持ち悪い、という場合には、オブザーバを使ってモデルから処理を追い出すことができます。こんな感じで。
+</p>
+
+<pre class="code">
+class OrderObserver &lt; ActiceRecord::Observer
+  def after_save(an_order)
+    an_order.logger.info("Order #{an_order.od} created")
+  end
+end
+</pre>
+
+<p class="entryBody">
+クラス名を OrderObserver としておくと、勝手に Order というモデルクラスのオブザーバとなってくれます。
+</p>
+
+<p class="entryBody">
+さらに、observe メソッドで監視対象のクラスを複数指定することもできます。
+</p>
+
+<pre class="code">
+class AuditObserver &lt; ActiveRecord::Observer
+  <strong>observe Order, Payment, Refund</strong>
+  def after_save(model)
+    model.logger.info("#{model.class.name} #{model.id} created")
+  end
+end
+</pre>
+
+<p class="entryBody">
+こんな感じで、複数のモデルクラスに共通する処理を、元のクラスをまったくいじることなく、ひとつのクラスに記述しておくことができます。アスペクト指向っぽいですね。
+</p>
+
+<p class="entryBody">
+Catalyst でこれと同じようなことができるのかな、と調べてみたところ、<a href="http://search.cpan.org/perldoc?Catalyst::Plugin::Observe" target="_blank">Catalyst::Plugin::Observe</a> なるものが。といっても、ActiveRecord::Observer はモデルに特化しているのに対し、Catalyst::Plugin::Observe はフレームワーク全体で働くオブザーバなので、用途が異なるようです。
+</p>
+
+<p class="entryBody">
+特に端的に異なるのは、コールバックイベントの種類ですね。ActiveRecord::Observer は before_validation, after_create などの、Validation や DB読み書きの処理段階に応じたイベントですが、Catalyst::Plugin::Observe は dispatch, prepare_action など、フレームワークの処理段階に応じたイベントとなってます。
+</p>
+
+<p class="entryBody">
+Sledge 次期バージョンでは、ActiveRecord の様な Validation、コールバック、オブザーバはぜひ欲しいですね。お前が実装しろ、というのであれば、喜んでコード書きます。（あ、言っちゃった…）
+</p>

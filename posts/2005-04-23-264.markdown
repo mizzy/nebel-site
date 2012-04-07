@@ -1,0 +1,38 @@
+---
+layout: post
+title: "ソーシャルブックマークのRSSをブラウザのブックマークに取り込む #0"
+date: 2005-04-23 15:54
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://d.hatena.ne.jp/naoya/" target="_blank">はてなのnaoyaさん</a>が<a href="http://b.hatena.ne.jp/naoya/" target="_blank">naoyaのブックマーク</a>にて、「del.icio.us の RSS をブックマークのお気に入りに取り込めるようにしたいなあ。」と呟いていたのを見て、こんなものを作ってみた。（naoyaさんが考えているものと違うかもしれませんが。もしかしてはてなブックマークのお気に入りのこと？）
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/rss2xbel/index.cgi" target="_blank">RSSをXBELに変換するゲートウェイ</a>と<a href="/archives/rss2xbel.tar.gz">そのソース</a>。
+</p>
+
+<p class="entryBody">
+使い方は簡単で、フォームにソーシャルブックマークのRSSフィードURLを入力してsubmitすると、XBELに変換されたものが表示されます。
+</p>
+
+<p class="entryBody">
+で、これをXBELに対応したインポートツールで取り込めばOK、って感じです。Mozilla Firefoxであれば、<a href="http://extensionroom.mozdev.org/more-info/booksync" target="_blank">Bookmarks Synchronizer</a>というextensionがあります。(FTPと書いてますが、HTTP/HTTPSも対応してます。）このextensionでsubmit後のURLを設定しておけば、ブラウザを起動するたびに、指定したRSSフィードをブックマークにインポートしてくれます。試しに<a href="http://del.icio.us/rss/popular/" target="_blank">del.icio.us/popular</a>をインポートしみると、以下の様になりました。
+</p>
+
+<p class="entryBody">
+<img src="/img/rss2xbel.jpg" alt="rss2xbel firefox sidebar" />
+</p>
+
+<p class="entryBody">
+<a href="http://antipop.zapto.org/mt/" target="_blank">antipop2.0のけんたろさん</a>が作成された<a href="http://antipop.zapto.org/mt/archives/001278.php" target="_blank">Alpha Geek Tracker</a>も試しにインポートしてみたのですが、途中までは取り込めたものの、データ量が多すぎるためか、Bookmarks Synchronizerが途中でハングしてしまいました…
+</p>
+
+<p class="entryBody">
+試しに作ってみただけなので、現段階では単一のRSSフィードしか扱えませんが、次は複数のRSSフィードをフォルダ分けしてXBELに変換する、という機能の追加を考えてます。
+</p>
+
+<p class="entryBody">
+でも、FirefoxだとLive BookmarksでRSSを直接ブックマークに取り込めるから、XBELに変換する意味がないと今気づいた…
+</p>

@@ -1,0 +1,18 @@
+---
+layout: post
+title: "PLAYLOG HACKS"
+date: 2006-03-04 20:23
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://playlog.jp/" target="_blank">PLAYLOG</a> で遊んでいます。が、似たようなサービスである <a href="http://www.last.fm/" target="_blank">last.fm</a> のクライアントソフトは、iPod で聴いた曲の情報もちゃんとアップしてくれてるのに、PLAYLOG のクライアントソフトは、リアルタイムに聴いてる曲しかアップしてくれないようです。
+</p>
+
+<p class="entryBody">
+自分はほとんど iPod でしか音楽を聴いてないので、これだと曲情報が PLAYLOG に全然アップされなくて、まったくおもしろくねー、ということで軽くハクって<a href="http://trac.mizzy.org/public/browser/itunes2playlog/trunk" target="_blank">こんなもの作りました</a>。 <a href="http://playlog.jp/Development/blog/playlog_upload_api" target="_blank">曲情報アップ用の API</a> は AtomPP になってるので、iTunes Music Library.xml から最近聞いた曲の情報を取得し、Atom Entry にして POST してます。
+</p>
+
+<p class="entryBody">
+XML のパースは宮川さんのブログにあったものを参考にさせてもらってます。手っ取り早く動かしたかったので、全然汎用性がなくていいかげんなスクリプトです。後ほど Plagger Plugin として作り直してみようと思ってます。
+</p>

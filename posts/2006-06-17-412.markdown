@@ -1,0 +1,104 @@
+---
+layout: post
+title: "Text::Trac - Trac Wiki 記法パーサ #0"
+date: 2006-06-17 01:11
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://d.hatena.ne.jp/drawnboy/" target="_blank">id:drawnboy</a> さんがつくった <a href="http://d.hatena.ne.jp/drawnboy/20060616/1150384749">Catlxom::Plugin::Format::Hatena</a> を見て、「お、それいい！」と思ったんだけど、そもそも自分ははてダ使っていなくて、この手の記法で唯一使ってるのは <a href="http://projects.edgewall.com/trac/wiki/WikiFormatting" target="_blank">Trac の Wiki 記法</a> なので、Catlxom::Plugin::Format::Trac が欲しいな、と思ったわけですが、Perl のパーサがないんですよね。
+</p>
+
+<p class="entryBody">
+で、IRC の #catlxom での会話の流れで、自分が <a href="http://trac.mizzy.org/public/browser/library/perl/trunk/Text-Trac" target="_balnk">Text::Trac</a> をつくることになりました。といってもまだつくりかけなので、CPAN にアップするのはまだ先になりそう。とりあえず興味ある方は以下の要領で取得してみてください。
+</p>
+
+<pre class="code">
+svn co http://svn.mizzy.org/public/library/perl/trunk/Text-Trac
+</pre>
+
+<p class="entryBody">
+もうほとんど <a href="http://search.cpan.org/~jkondo/Text-Hatena/" target="_blank">Text::Hatena</a> のコードそのまんまです。<a href="http://d.hatena.ne.jp/jkondo/" target="_blank">id:jkondo さん</a> と <a href="http://d.hatena.ne.jp/tociyuki/" target="_blank">id:tociyuki さん</a> に感謝感謝です。 
+</p>
+
+<p class="entryBody">
+とりあえず
+</p>
+
+<pre class="code">
+= heading1 =
+</pre>
+
+<p class="entryBody">
+から
+</p>
+
+<pre class="code">
+&lt;h1 id="heading1"&gt;heading1&lt;/h1&gt;
+</pre>
+
+<p class="entryBody">
+への変換のみ実装済み。
+</p>
+
+<p class="entryBody">
+Text::Hatena と異なる点は、
+</p>
+
+<pre class="code">
+my $p = Text::Trac-&gt;new(
+    custom_notation =&gt; {
+        h1node =&gt; '&lt;p&gt;$1&lt;/p&gt;',
+    },
+);
+</pre>
+
+<p class="entryBody">
+などと指定すると、
+</p>
+
+<pre class="code">
+= heading1 =
+</pre>
+
+<p class="entryBody">
+を
+</p>
+
+<pre class="code">
+&lt;p&gt;heading1&lt;/p&gt;
+</pre>
+
+<p class="entryBody">
+と変換する、といった感じで、記法をカスタマイズすることができます。また、
+</p>
+
+<pre class="code">
+my $p = Text::Trac-&gt;new(
+    min_heading_level =&gt; 2,
+);
+</pre>
+
+<p class="entryBody">
+と指定すると、
+</p>
+
+<pre class="code">
+= heading1 =
+</pre>
+
+<p class="entryBody">
+が
+</p>
+
+<pre class="code">
+&lt;h2 id="heading1"&gt;heading1&lt;/h2&gt;
+</pre>
+
+<p class="entryBody">
+と変換されます。なぜこんな機能をつけたかというと、catlxom プラグインとして使うことを考えた場合、通常 h1 はブログのトップ見出し、h2 はエントリのタイトルに使われるので、エントリの中では h3 以降を使うことになるかと思います。
+</p>
+
+<p class="entryBody">
+だからといってエントリを書くときにいちいち、「えーと、h3 にしないといけないから、 === hogehoge === だな」とかやるのもうざいので、こんな機能をつけてみました。
+</p>

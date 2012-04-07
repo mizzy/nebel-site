@@ -1,0 +1,26 @@
+---
+layout: post
+title: "feedbringerをremixin' #6"
+date: 2005-11-23 18:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/js/feedbringer2.user.js" target="_blank">feedbringer用greasemonkeyユーザスクリプト</a>から呼び出しているcssを若干変更。
+</p>
+
+<p class="entryBody">
+<a href="http://blog.feedbringer.net/feed/archives/2005/08/814_2.html" target="_blank">今日のメンテナンス</a>で、「このページのトップへ」というリンクが追加され、修正前のcssではこれが左上に表示されて邪魔なので、display: none; で消去。
+</p>
+
+<p class="entryBody">
+たぶん、フィードを下まで読んでいって、読み終わったらページの先頭への移動がすぐにできるように追加されたんでしょうが、このcssでは全く使う必要がないので。
+</p>
+
+<p class="entryBody">
+それにしても、HTMLがダメすぎ。「ああ、こういうのをdiv厨と呼ぶんだな」という典型的な例。しかも、今回追加されたリンクもに見られるように、classがalign-rightとか、nav-tab-rightとか、思いっきりレイアウトを意識したクラス名になってるし。HTMLやCSSに対して、この程度の理解しかないから、インターフェースもダメなんだろうなぁ、と妙に納得してしまった。（と、自分のことは棚に上げてみる。）
+</p>
+
+<p class="entryBody">
+なんかひどいこと言ってますが、それだけ期待してるってことで。
+</p>

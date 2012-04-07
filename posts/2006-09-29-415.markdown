@@ -1,0 +1,93 @@
+---
+layout: post
+title: "Using svk with plagger"
+date: 2006-09-29 22:55
+comments: true
+categories: 
+---
+<p>
+うちでは 普段実行している plagger は<a class="ext-link" href="http://svn.bulknews.net/repos/plagger/trunk/plagger"><span class="icon"></span>本家 trunk</a> から持ってきていて、自分で作ったプラグインは <a class="ext-link" href="http://svn.mizzy.org/public/plagger/trunk"><span class="icon"></span>svn.mizzy.org</a> に置いてあるのですが、以下の様なプロセスで開発してました。
+</p>
+<ol start="1"><li>svn.mizzy.org からチェックアウトしたディレクトリに、俺プラグインを書いて置く。</li>
+<li>plagger 本家 trunk からチェックアウトしたディレクトリに、上記ディレクトリからファイルをコピーして、俺プラグインの動作テスト。</li>
+<li>テストが問題なければ、svn.mizzy.org に俺プラグインをコミット。</li>
+<li>本家 trunk にコミットする場合は、svn co で コミットするファイルだけを指定。</li></ol>
+<p>
+2.のコピーがめんどくさくて、svk 使えばもっとエレガントになるんじゃないかな、と以前から思っていたのですが、使い方間違えると本家 trunk に余分なファイルまでコミットしてしまいそうで、怖くて使ってなかったのですが、色々試行錯誤してみて、こんな感じでいけそうだという感触がつかめたので、ここに整理しておきます。
+</p>
+<h3 id="準備">準備</h3>
+<p>
+本家 trunk のローカルミラーとローカルブランチの作成
+</p>
+<pre class="wiki">
+$ svk mirror //mirror/plagger-trunk http://svn.bulknews.net/repos/plagger/trunk/plagger
+$ svk sync //mirror/plagger-trunk --skipto HEAD  
+$ svk cp -p //mirror/plagger-trunk //local/plagger-trunk
+</pre>
+<p>
+svn.mizzy.org のローカルミラーとローカルブランチの作成
+</p>
+<pre class="wiki">
+$ svk mirror //mirror/plagger-mizzy http://svn.mizzy.org/public/plagger/trunk
+$ svk sync //mirror/plagger-mizzy
+$ svk cp //mirror/plagger-mizzy //local//plagger-mizzy
+</pre>
+<p>
+svk リポジトリの確認
+</p>
+<pre class="wiki">
+$ svk list -R -d 1 //
+local/
+ plagger-mizzy/
+ plagger-trunk/
+mirror/
+ plagger-mizzy/
+ plagger-trunk/   
+</pre>
+<p>
+ローカルディレクトリにチェックアウト
+</p>
+<pre class="wiki">
+$ mkdir svk                                                       [~]
+$ cd svk                                                          [~]
+$ svk co //local/plagger-trunk                                [~/svk]
+$ svk co //local/plagger-mizzy                                [~/svk]
+$ ls                                                          [~/svk]
+plagger-mizzy/  plagger-trunk/
+</pre>
+<h3 id="プラグインの作成や修正など">プラグインの作成や修正など</h3>
+<p>
+プラグインを作ったり、修正したりして plagger-mizzy ローカルブランチにコミット
+</p>
+<pre class="wiki">
+$ ./tools/plugin-start.pl Filter::Hoge          [~/svk/plagger-mizzy]
+... &lt;プラグインを書く&gt; ...
+$ svk commit                                    [~/svk/plagger-mizzy]
+</pre>
+<p>
+つくったプラグインを plagger-trunk ローカルブランチとマージしてテスト
+</p>
+<pre class="wiki">
+$ svk smerge -B //local/plagger-mizzy           [~/svk/plagger-trunk]
+$ ./plagger -c test.yaml                        [~/svk/plagger-trunk]
+</pre>
+<p>
+プラグインに問題がなければ、plagger-mizzy ブランチの変更を svn.mizzy.org にコミット。一度 plagger-trunk とマージしてしまうと、なぜか svk push では svn.mizzy.org まで反映されなくなってしまったので、svk smerge 。
+</p>
+<pre class="wiki">
+$ svk smerge //local/plagger-mizzy //mirror/plagger-mizzy
+</pre>
+<h3 id="plagger本家trunkへのコミット">plagger 本家 trunk へのコミット</h3>
+<p>
+まだ試してないけど、こんな感じでできるはず。
+</p>
+<pre class="wiki">
+$ svk commit files_to_commit                    [~/svk/plagger-trunk]
+$ svk push -C                                   [~/svk/plagger-trunk]
+$ svk push --verbatim                           [~/svk/plagger-trunk]
+</pre>
+<p>
+余計なファイルまでコミットしてしまうと迷惑をかけてしまうので、-C をつけて確認する。
+</p>
+
+UPDATE: <a href="http://mizzy.org/archives/using_svk_with_plagger.pdf">Shibuya.pm テクニカルトーク #7の発表資料</a> も併せてご参照ください。

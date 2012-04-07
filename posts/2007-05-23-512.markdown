@@ -1,0 +1,58 @@
+---
+layout: post
+title: "write はユーザプロセスを待たせない？"
+date: 2007-05-23 00:24
+comments: true
+categories: 
+---
+[naoyaグループ - naoyaの日記 -  I/O, iowait](http://naoya.g.hatena.ne.jp/naoya/20070522/1179830475) にちょっと反応してみます。
+
+> write はページに dirty フラグを立てるだけなので決してユーザープロセスを待たせない
+
+って、本当にそうなんでしょうか？（否定しているわけではなく、純粋な疑問です。）
+
+最近、書き込みの多いメールサーバのディスク I/O 周りを調査していて、実際にどのプロセスの書き込みが多いのかを調べる方法がわからなかったため、I/O 待ちになっているプロセスをカウントして、そこから類推してみようと、まずは
+
+    while [ 1 ]
+      do
+        ps -eo comm,state|grep D|grep -v COMMAND >> ps.txt
+        sleep 1
+      done
+
+な感じで STAT が D のプロセスを記録するスクリプトをしばらく走らせておいて、
+
+    sort ps.txt | uniq -c | sort -gr| more
+
+でカウントしてみると、
+
+    9129 kjournald       D
+    6576 qmail-queue     D
+    2017 multilog        D
+    1897 pdflush         D
+    1373 qmail-send      D
+    1094 procmail        D
+    1032 syslogd         D
+
+な感じで、kjournald と qmail-queue が圧倒的に多い。これってどっちも書き込みがメインの仕事のはず。
+
+man ps で見ても、
+
+    D    Uninterruptible sleep (usually IO)
+
+なので、書き込みでプロセスが待たされてるのだと思うのですが、何か間違ってますでしょうか？
+
+ちなみに、書き込みが多いというのはどれぐらいかというと、iostat での r/s と w/s の比率が 1:7 ぐらいです。
+
+また、free の結果はこんな感じなので、メモリに余裕はあるみたいです。
+
+    # free
+                 total       used       free     shared    buffers     cached
+    Mem:       2043756    2011160      32596          0     351016     847776
+    -/+ buffers/cache:     812368    1231388
+    Swap:      1052248
+
+ここ数日 I/O まわりを追いかけていたので、naoya さんのエントリはタイムリーでとてもためになります。ついでに色々教えてもらおうという甘い考えで、疑問に感じたことを書いてみました。
+
+***追記***
+
+もしかして「write はユーザプロセスを待たせない」というのは、非同期 I/O の話？であれば納得はいく。

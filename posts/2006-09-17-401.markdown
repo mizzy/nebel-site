@@ -1,0 +1,65 @@
+---
+layout: post
+title: "SmartFeed::All で生成されるフィードには Filter::Rule は適用できない"
+date: 2006-09-17 18:28
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/toshi123/20060916#p1"><span class="icon"></span>いまさら聞けない？ 初心者向けPlagger設定覚え書き その5</a> というエントリで、
+</p>
+<pre class="wiki">
+  - module: Filter::Rule
+    rule:
+      module: Deduped
+
+  - module: SmartFeed::All
+</pre>
+<p>
+といった設定（一部のみ抜粋）をしていて、
+</p>
+<blockquote>
+<p>
+  過去に抽出したことのあるエントリも抽出してしまう（Dedupedによる削除がうまくできていない）という問題点がありました。
+</p>
+</blockquote>
+<p>
+と書かれているのですが、こうなる理由を理解するためには、 SmartFeed::All と Filter::Rule が動作するフェーズと、実際にどの様な流れで処理されているかを理解する必要があります。
+</p>
+<p>
+Filter::Rule も SmartFeed::All も、どちらも smartfeed.* フェーズで動作します。実際に Plagger.pm 中で smartfeed.* フェーズを実行している部分のコードは、以下の様になっています。
+</p>
+<pre class="wiki">
+    $self->run_hook('smartfeed.init');
+    for my $feed ($self->update->feeds) {
+        for my $entry ($feed->entries) {
+            $self->run_hook('smartfeed.entry', { feed => $feed, entry => $entry });
+        }
+        $self->run_hook('smartfeed.feed', { feed => $feed });
+    }
+    $self->run_hook('smartfeed.finalize');
+</pre>
+<p>
+SmartFeed::All と Filter::Rule に関わるこの部分の処理を言葉で説明すると、こんな感じです。
+</p>
+<ul><li>smartfeed.init が実行される。</li>
+<li>$self->update->feeds で現在持っているフィードをすべて抽出。ただし、<strong>この中にはまだ SmartFeed::All なフィードは存在しない</strong>。</li>
+<li>smartfeed.entry フェーズが実行され、このフェーズで SmartFeed::All なフィードが作られる。この時点では<strong>まだ Filter::Rule は実行されていないので、Deduped される前のエントリがすべて含まれることになる</strong>。</li>
+<li>smartfeed.feed フェーズが実行され、Filter::Rule による Deduped が行われる。<strong>ただし、SmartFeed::All なエントリは、$self->update->feeds で抽出したフィードの中にはないので、SmartFeed::All なエントリは Deduped の対象外</strong>。</li>
+<li>smartfeed.finalize フェーズで、SmartFeed::All なフィードが add される。（つまり、Plagger がハンドルするフィードの中に登録されることになる。）</li></ul>
+<p>
+これを要約すると、
+</p>
+<ul><li>SmartFeed::All なフィードは、各フィードが Deduped される前につくられる。</li>
+<li>SmartFeed::All なフィードは smartfeed.feed フェーズを通過しないので、Filter::Rule が適用されない。</li></ul>
+<p>
+といった理由で、SmatFeed:All なフィードに Filter::Rule が適用されない、ということになります。
+</p>
+<p>
+では、すべてのフィードをひとつにまとめた上で Rule を適用したい場合にどう書けばいいのか、ということになりますが、以下の様に書けば OK です。
+</p>
+<pre class="wiki">
+  - module: SmartFeed
+    rule:
+      module: Deduped
+</pre>

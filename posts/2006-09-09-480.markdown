@@ -1,0 +1,263 @@
+---
+layout: post
+title: "SSL クライアント証明書の発行"
+date: 2006-09-09 03:18
+comments: true
+categories: 
+---
+<p>
+OpenSSL で クライアント証明書を発行する手順メモ。
+</p>
+<h3 id="openssl.cnfの修正">openssl.cnf の修正</h3>
+<p>
+パスは環境によって違うでしょうが、うちの場合は /usr/local/ssl/openssl.cnf 。
+</p>
+<pre class="wiki">
+# For normal client use this is typical
+# nsCertType = client, email
+</pre>
+<p>
+を以下の様に変えとく。
+</p>
+<pre class="wiki">
+# For normal client use this is typical
+nsCertType = client, email
+</pre>
+<h3 id="CA用ファイルの作成">CA 用ファイルの作成</h3>
+<p>
+直接 openssl コマンド叩くよりも、OpenSSL 付属の CA.sh や CA.pl を使うほうが楽。どちらもやれることは一緒っぽいので、ここでは CA.pl の方を使ってみる。
+</p>
+<pre class="wiki">
+$ mkdir cert
+$ cd cert
+$ /usr/local/ssl/misc/CA.pl -newca
+CA certificate filename (or enter to create)
+
+Making CA certificate ...
+Generating a 1024 bit RSA private key
+...++++++
+.............++++++
+unable to write 'random state'
+writing new private key to './demoCA/private/cakey.pem'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:jp
+State or Province Name (full name) [Some-State]:kanagawa
+Locality Name (eg, city) []:sagamihara
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:mizzy.org
+Organizational Unit Name (eg, section) []:
+Common Name (eg, YOUR name) []:CA of mizzy.org
+Email Address []:
+$ ls
+demoCA/
+</pre>
+<p>
+CA のキーや証明書やらシリアル番号管理用ファイルやら、諸々作ってくれます。
+</p>
+<h3 id="リクエスト生成">リクエスト生成</h3>
+<p>
+クライアント証明書用リクエスト作成。
+</p>
+<pre class="wiki">
+$ /usr/local/ssl/misc/CA.pl -newreq
+Generating a 1024 bit RSA private key
+...............................++++++
+......++++++
+unable to write 'random state'
+writing new private key to 'newreq.pem'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:jp
+State or Province Name (full name) [Some-State]:kanagawa
+Locality Name (eg, city) []:sagamihara
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:mizzy.org
+Organizational Unit Name (eg, section) []:
+Common Name (eg, YOUR name) []:Gosuke Miyashita
+Email Address []:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+Request (and private key) is in newreq.pem
+</pre>
+<p>
+以下の様な キーと CSR を含んだ newreq.pem ができあがる。
+</p>
+<pre class="wiki">
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3-CBC,C27EDC6FD0152E96
+
+ki738nKH/tR2n2QWm9LmRrRJNGMOPpBwT+a3+HMeU/jGuXutW4qGdVA+OGTKES89
+FB11qih4Utb1fEasofdubvuQssSM3yHaPYD20rLkSlepHuoT0PiBYf7yrIJxntd4
+IwnFm4OepZ2wW9yzT6sicWLmPq/W+h7db0OCU/sls/5Je5awdY74/68VdurgKFpH
+Ev8qdo1Qr/azyIsCOCjEIHj1ZgDdJs2wNbg7iIyPkDscZYe0uL+E8B81SCx8UUWV
+iXRjJrrQZLgN0hFKQuYKb+RSQjv9gYQk47vgigAEQmBBpsrPB9nOb0+vuXCpY6o6
+AqvTCgk7/UYjDuSPEDT3VS+JD8EG9B+wZNIMXrT4WerX4ajiF/ylOd280YhZf+dC
+Dcw1nM2lulgJ+HKGdCLHXAIT4uEdRYJSsqZ23hmSmWmwjODN0kuqEQxAfRZC6tmJ
+UPdTRZBdXX8q+dT6pndHFdOG+kTkkoD/VwVtYShnGiAch+dbSRNyNQxslQX3QJJk
+oj+Q90pB8+EQ09tJJjUGwV2R/9O5Cdxc6JJ1nkrkUaRqDU2G9SjL2XUiQzYShbvV
+TAJkECe/6yYYpAOR2S2s0bxJKEq7cIyBEAbKf7HaNB7n+Qh/d4QK4kgbA+qgTY6D
+/l328ja/gbweljfX1gdOsS3OG8HvtDrbK3VKabf5hJrmmEOEpMejiCso8exTVluW
+uC4O8lijiZXCMlluR9JLjw5TUZ2bje3YEDxhNKrxmu8s2mMHKiWtl48d7fvWfLQP
+UsdqFM/mbTCFGXPMsAZ5NpFd1aTASW+JzlI5ivi7SmMNblgCasuuMA==
+-----END RSA PRIVATE KEY-----
+-----BEGIN CERTIFICATE REQUEST-----
+MIIBpDCCAQ0CAQAwZDELMAkGA1UEBhMCanAxETAPBgNVBAgTCGthbmFnYXdhMRMw
+EQYDVQQHEwpzYWdhbWloYXJhMRIwEAYDVQQKEwltaXp6eS5vcmcxGTAXBgNVBAMT
+EEdvc3VrZSBNaXlhc2hpdGEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANp9
+lhjHNQmMSH08ccj0C4+bKle4Prd0GglGMueKIUBCXGk5o6xS7o5U9JH9YfzVN4vC
+zdOLwzw9NNfeLALrymt8vyBTE9/RenxRcCRk4CMRvD6YMsrJ6+9b/z425FY/FU5q
+TAg0Gs30VgyjqBo81K7A9Zi63U2z5JkFtFOY2dyZAgMBAAGgADANBgkqhkiG9w0B
+AQQFAAOBgQBNo4ubHdThZOAQvB+jqRBG4pXQu4Go8sgzEY+hdOEvp+L7T3jxqh1W
+XXrA3FFBQtbzEnjXlias3g4jQcFtakdD1SIM7HoJbBQ9y4gsT/9q+ZyvyIkuCPnD
+SasVBdVklOC19BT6kw5V0sOv+Zt/4n4asrktjqSArFz6dF7ERXcjVg==
+-----END CERTIFICATE REQUEST-----
+</pre>
+<h3 id="CAによる署名">CA による署名</h3>
+<pre class="wiki">
+$ /usr/local/ssl/misc/CA.pl -sign
+Using configuration from /usr/local/ssl/openssl.cnf
+Enter pass phrase for ./demoCA/private/cakey.pem:
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+        Serial Number: 1 (0x1)
+        Validity
+            Not Before: Sep  8 17:57:48 2006 GMT
+            Not After : Sep  8 17:57:48 2007 GMT
+        Subject:
+            countryName               = jp
+            stateOrProvinceName       = kanagawa
+            localityName              = sagamihara
+            organizationName          = mizzy.org
+            commonName                = Gosuke Miyashita
+        X509v3 extensions:
+            X509v3 Basic Constraints:
+            CA:FALSE
+            Netscape Cert Type:
+            SSL Client, S/MIME
+            Netscape Comment:
+            OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier:
+            EF:7F:AA:D8:9A:C2:83:BC:69:C0:55:C8:B6:11:3F:C1:DD:D2:A7:C9
+            X509v3 Authority Key Identifier:
+            keyid:27:4C:C9:4E:45:63:A8:62:1B:41:4D:14:2A:98:C9:EE:87:AE:1D:09
+            DirName:/C=jp/ST=kanagawa/L=sagamihara/O=mizzy.org/CN=CA of mizzy.org
+            serial:00
+
+Certificate is to be certified until Sep  8 17:57:48 2007 GMT (365 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+Signed certificate is in newcert.pem
+</pre>
+<p>
+以下の様な newcert.pem ができる。
+</p>
+<pre class="wiki">
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+        Signature Algorithm: md5WithRSAEncryption
+        Issuer: C=jp, ST=kanagawa, L=sagamihara, O=mizzy.org, CN=CA of mizzy.org
+        Validity
+            Not Before: Sep  8 17:57:48 2006 GMT
+            Not After : Sep  8 17:57:48 2007 GMT
+        Subject: C=jp, ST=kanagawa, L=sagamihara, O=mizzy.org, CN=Gosuke Miyashita
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:da:7d:96:18:c7:35:09:8c:48:7d:3c:71:c8:f4:
+                    0b:8f:9b:2a:57:b8:3e:b7:74:1a:09:46:32:e7:8a:
+                    21:40:42:5c:69:39:a3:ac:52:ee:8e:54:f4:91:fd:
+                    61:fc:d5:37:8b:c2:cd:d3:8b:c3:3c:3d:34:d7:de:
+                    2c:02:eb:ca:6b:7c:bf:20:53:13:df:d1:7a:7c:51:
+                    70:24:64:e0:23:11:bc:3e:98:32:ca:c9:eb:ef:5b:
+                    ff:3e:36:e4:56:3f:15:4e:6a:4c:08:34:1a:cd:f4:
+                    56:0c:a3:a8:1a:3c:d4:ae:c0:f5:98:ba:dd:4d:b3:
+                    e4:99:05:b4:53:98:d9:dc:99
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints:
+            CA:FALSE
+            Netscape Cert Type:
+            SSL Client, S/MIME
+            Netscape Comment:
+            OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier:
+            EF:7F:AA:D8:9A:C2:83:BC:69:C0:55:C8:B6:11:3F:C1:DD:D2:A7:C9
+            X509v3 Authority Key Identifier:
+            keyid:27:4C:C9:4E:45:63:A8:62:1B:41:4D:14:2A:98:C9:EE:87:AE:1D:09
+            DirName:/C=jp/ST=kanagawa/L=sagamihara/O=mizzy.org/CN=CA of mizzy.org
+            serial:00
+
+    Signature Algorithm: md5WithRSAEncryption
+        96:0f:74:99:c1:b7:ce:62:08:df:d0:f8:f2:6b:ee:1e:90:43:
+        c7:8e:9c:4d:f2:de:2d:05:06:b9:25:49:d1:6e:d5:65:04:65:
+        71:52:44:1e:8f:87:9b:7b:e7:ed:d1:60:0a:6a:d1:fa:41:cc:
+        2a:82:b6:10:84:2a:7c:e3:8f:bf:32:a8:e0:01:d9:99:e6:ab:
+        dd:5e:a8:26:4d:85:cf:64:b7:62:de:74:5f:df:36:fe:ce:fd:
+        cd:b2:37:e1:a4:ce:6a:da:1e:3e:f7:89:24:cd:de:f3:9f:39:
+        5f:01:78:3c:30:ae:57:e1:94:07:fd:60:51:66:f8:9b:66:60:
+        1c:bb
+-----BEGIN CERTIFICATE-----
+MIIDPDCCAqWgAwIBAgIBATANBgkqhkiG9w0BAQQFADBjMQswCQYDVQQGEwJqcDER
+MA8GA1UECBMIa2FuYWdhd2ExEzARBgNVBAcTCnNhZ2FtaWhhcmExEjAQBgNVBAoT
+CW1penp5Lm9yZzEYMBYGA1UEAxMPQ0Egb2YgbWl6enkub3JnMB4XDTA2MDkwODE3
+NTc0OFoXDTA3MDkwODE3NTc0OFowZDELMAkGA1UEBhMCanAxETAPBgNVBAgTCGth
+bmFnYXdhMRMwEQYDVQQHEwpzYWdhbWloYXJhMRIwEAYDVQQKEwltaXp6eS5vcmcx
+GTAXBgNVBAMTEEdvc3VrZSBNaXlhc2hpdGEwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
+MIGJAoGBANp9lhjHNQmMSH08ccj0C4+bKle4Prd0GglGMueKIUBCXGk5o6xS7o5U
+9JH9YfzVN4vCzdOLwzw9NNfeLALrymt8vyBTE9/RenxRcCRk4CMRvD6YMsrJ6+9b
+/z425FY/FU5qTAg0Gs30VgyjqBo81K7A9Zi63U2z5JkFtFOY2dyZAgMBAAGjgf4w
+gfswCQYDVR0TBAIwADARBglghkgBhvhCAQEEBAMCBaAwLAYJYIZIAYb4QgENBB8W
+HU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBTvf6rYmsKD
+vGnAVci2ET/B3dKnyTCBjQYDVR0jBIGFMIGCgBQnTMlORWOoYhtBTRQqmMnuh64d
+CaFnpGUwYzELMAkGA1UEBhMCanAxETAPBgNVBAgTCGthbmFnYXdhMRMwEQYDVQQH
+EwpzYWdhbWloYXJhMRIwEAYDVQQKEwltaXp6eS5vcmcxGDAWBgNVBAMTD0NBIG9m
+IG1penp5Lm9yZ4IBADANBgkqhkiG9w0BAQQFAAOBgQCWD3SZwbfOYgjf0Pjya+4e
+kEPHjpxN8t4tBQa5JUnRbtVlBGVxUkQej4ebe+ft0WAKatH6QcwqgrYQhCp844+/
+MqjgAdmZ5qvdXqgmTYXPZLdi3nRf3zb+zv3NsjfhpM5q2h4+94kkzd7znzlfAXg8
+MK5X4ZQH/WBRZvibZmAcuw==
+-----END CERTIFICATE-----
+</pre>
+<h3 id="PEMからPKCS12へ">PEM から PKCS12 へ</h3>
+<p>
+PEM のままではブラウザにインポートできないので、PKCS12 へ変換。
+</p>
+<pre class="wiki">
+$ openssl pkcs12 -export -in newcert.pem -inkey newreq.pem -certfile demoCA/cacert.pem -out newcert.p12
+Enter pass phrase for newreq.pem:
+Enter Export Password:
+Verifying - Enter Export Password:
+</pre>
+<h3 id="newcert.p12をブラウザにインポート">newcert.p12 をブラウザにインポート</h3>
+<p>
+手順は省略。Firefox だとこんな感じで入る。
+</p>
+<p>
+<img src="http://mizzy.org/img/client_certificate.jpg" alt="http://mizzy.org/img/client_certificate.jpg" />
+</p>

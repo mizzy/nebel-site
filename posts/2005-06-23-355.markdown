@@ -1,0 +1,20 @@
+---
+layout: post
+title: "blosxomでtagging #12"
+date: 2005-06-23 10:46
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/archives/tagging" target="_blank">taggingプラグイン</a>を修正。カテゴリ毎のタグの数を足すべきところを、単にインクリメントしてただけ、というなんともお間抜けな間違いを犯してました…
+</p>
+
+
+<p class="entryBody">
+しかもよく見ると、カエルチュウイホウさんの<a href="http://kerolin.jspeed.jp/Computer/blosxom/tagging050620.html" target="_blank">taggingプラグイン(其の弐)</a>でご提示頂いている修正内容とほとんど同じですね。さらに、自分の方は間違っているという間抜けぶり…せっかく修正してくれてるのだから、コードちゃんと読めよ。＞ 自分
+</p>
+
+
+<p class="entryBody">
+カエルチュウイホウのkzfmさん、お手数ですが再度差し替えて頂けますでしょうか。すみません。
+</p>

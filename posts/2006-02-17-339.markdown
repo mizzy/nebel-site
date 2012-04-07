@@ -1,0 +1,58 @@
+---
+layout: post
+title: "Catalyst で Atom API テストツール #0"
+date: 2006-02-17 03:46
+comments: true
+categories: 
+---
+<p class="entryBody">
+<strong>2006/02/16 22:40 追記</strong><br />
+なんかツールに名前が欲しいな、ってことで、「A2T2」と名づけました。Atom API Testing Tool の略ってことで。それに合わせて、HTML テンプレートも書き換えてます。あと、My::XML::Atom::Client の方もちょっと書き換え。ベースクラスの XML::Atom::Client の getFeed() では、 Status 200 以外の時に例外処理をしてくれてるのですが、このツールの性質上、例外処理をせずにそのまま結果を渡して欲しいので。
+</p>
+
+<hr />
+
+<p class="entryBody">
+Atom API なサーバを実装するにあたって、以下の様なテストツールが欲しいなぁ、と思った。
+</p>
+
+<ul class="entryBody">
+<li>ブラウザを通じて、好きな Atom API リクエストを出せる。</li>
+<li>ヘッダも含めてリクエスト/レスポンスの内容が確認できる。</li>
+</ul>
+
+<p class="entryBody">
+で、作ってみた。といってもまだ未完成。今のところ GET リクエストのみ対応。POST, PUT, DELETE はこれから対応します。<a href="http://trac.mizzy.org/public/browser/atom_client/trunk" target="_blank">ソース見たい方は trac からどうぞ</a>。ソース丸ごと欲しい方は、
+</p>
+
+<pre class="code">
+$ svn co http://svn.mizzy.org/public/atom_client/trunk
+</pre>
+
+<p class="entryBody">
+とかやっちゃってください。スクリーンショットは下の様な感じ。下の方切れちゃってますが、取得した Atom Feed もちゃんと表示してくれます。（クリックで大きい画像。）
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/img/atom_client.jpg" target="_blank"><img src="http://mizzy.org/img/t_atom_client.jpg" /></a>
+</p>
+
+<p class="entryBody">
+対象となる URI や 実行するメソッド、認証のためのユーザ名やパスワード、POST や PUT の際に必要となる XML データを入力して submit すると、下の方にリクエスト/レスポンスの内容を表示します。せっかく Catalyst 使ってるので、Catalyst::Plugin::Prototype を利用して、画面遷移なしで結果を表示します。
+</p>
+
+<p class="entryBody">
+デモをお見せできるといいのですが、うちの 公開サーバである Slackware 環境では XML::LibXML の make が通らないんですよねぇ…なので coLinux 上で動かしているのですが、こっちは外に公開してないので。
+</p>
+
+<p class="entryBody">
+重要な処理は宮川さん作の XML::Atom::Client がやってくれるので、こちらで書いたコードはたいしたことないです。少し工夫したのは、XML::Atom::Client の getFeed などでは、取得したフィードが返ってくるだけで HTTP のステータスやヘッダの取得ができなさそうなので、My::XML::Atom::Client というモジュールで XML::Atom::Client を継承して、getFeed メソッドをオーバーライドすることによって、HTTP::Request オブジェクトや HTTP::Reponse オブジェクトを取得できるようにしています。今後 POST, PUT, DELETE に対応していくにあたって、他のメソッドのオーバーライドも必要ですね。
+</p>
+
+<p class="entryBody">
+まだ未完成だし、Atom API に関する理解もまだまだなので、「だっせぇ実装。俺ならこうするね。」といったご意見とか頂けるとうれしいっす。
+</p>
+
+<p class="entryBody">
+あと、Thanks to オオヒダさん、ってことで、HTML ソース中に名前入れさせて頂きました。いつもランチ誘ってくださってありがとうございます！って、全然このプログラムと関係ないけど。
+</p>

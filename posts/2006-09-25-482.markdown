@@ -1,0 +1,16 @@
+---
+layout: post
+title: "Plagger::Feed と Plagger::Entry と Plagger::Enclosure"
+date: 2006-09-25 22:11
+comments: true
+categories: 
+---
+<p>
+Plagger::Feed, Plagger::Entry, Plagger::Enclosure の関係と、それぞれが持つメソッド、プロパティを図にしてみた。（メソッドとプロパティの区分けは適当。）
+</p>
+
+<p>
+<a href="http://mizzy.org/img/mashup/feed_entry_enclosure.jpg"><img src="http://mizzy.org/img/mashup/feed_entry_enclosure.jpg" width="397" height="433" alt="Plagger::Feed, Plagger::Entry, Plagger::Enclosure" /></a>
+</p>
+
+各メソッドやプロパティの意味、役割はそのうち書く。

@@ -1,0 +1,106 @@
+---
+layout: post
+title: "catlxom の Account Auto-Discovery プラグイン (catlxom メモ #9)"
+date: 2006-07-22 23:16
+comments: true
+categories: 
+---
+<p>
+catlxom で RSS や TrackBack 等の Auto Discovery データを追加するためのプラグインを書こうと思い、まずは <a class="ext-link" href="http://b.hatena.ne.jp/help?mode=tipjar#autodiscovery"><span class="icon"></span>Account Auto-Discovery</a> データを追加するプラグインを書いてみた。
+</p>
+<p>
+blosxom でも <a class="ext-link" href="http://trac.mizzy.org/public/browser/blosxom_plugins/trunk/account_auto_discovery"><span class="icon"></span>同様のプラグイン</a> を書いているのですが、一番大きな違いは、blosxom プラグインはテンプレートの修正が必要なのに対し、catlxom プラグインはテンプレートの修正が一切必要ありません。XML::TreeBuilder を利用して、HTML ヘッダにデータを追加するような作りにしています。
+</p>
+<p>
+利用上の注意点として、Template::TT よりも後にこのプラグインをロードしなければいけいのですが、自動ロードを有効にしてると先にロードされちゃうので、自動ロードをオフにして yaml で明示的に利用プラグインを指定する必要があります。
+</p>
+<pre class="wiki">
+package Catlxom::Plugin::Format::AccountAutoDiscovery;
+use strict;
+use warnings;
+use base qw/Catlxom::Plugin/;
+
+use NEXT;
+use XML::TreeBuilder;
+
+sub interpolate {
+    my ( $self, $c ) = @_;
+
+    my $accounts = $c-&gt;config-&gt;{account_auto_discovery};
+
+    my $tree = XML::TreeBuilder-&gt;new();
+    $tree-&gt;parse($c-&gt;res-&gt;body);
+
+    my $head = $tree-&gt;find('head');
+
+    for ( @$accounts ){
+        my $rdf = XML::Element-&gt;new(
+            'rdf:RDF',
+            'xmlns:rdf'  =&gt; 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'xmlns:foaf' =&gt; 'http://xmlns.com/foaf/0.1/',
+        );
+
+        my $rdf_description = XML::Element-&gt;new(
+            'rdf:Description',
+            'rdf:about' =&gt; $c-&gt;req-&gt;uri,
+        );
+
+        my $foaf_maker = XML::Element-&gt;new(
+            'foaf:maker',
+            'rdf:parseType' =&gt; 'Resource',
+        );
+
+        my $foaf_holds_acount = XML::Element-&gt;new( 'foaf:holdsAccount' );
+
+        my $foaf_online_account = XML::Element-&gt;new(
+            'foaf:OnlineAccount',
+            'foaf:accountName' =&gt; $_-&gt;{account_name},
+        );
+
+        my $foaf_account_service_homepage = XML::Element-&gt;new(
+            'foaf:accountServiceHomepage',
+            'rdf:resource' =&gt; $_-&gt;{account_service_homepage},
+        );
+
+        $head-&gt;push_content($rdf);
+        $rdf-&gt;push_content($rdf_description);
+        $rdf_description-&gt;push_content($foaf_maker);
+        $foaf_maker-&gt;push_content($foaf_holds_acount);
+        $foaf_holds_acount-&gt;push_content($foaf_online_account);
+        $foaf_online_account-&gt;push_content($foaf_account_service_homepage);
+    }
+
+    $c-&gt;res-&gt;{body} = $tree-&gt;as_HTML;
+    $self-&gt;NEXT::interpolate($c);
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+Catlxom::Plugin::Format::AccountAutoDiscovery
+
+=head1 SYNOPSIS
+
+account_auto_discovery:
+  - account_name: gosukenator
+    account_service_homepage: http://www.hatena.ne.jp/
+  - account_name: xxxx
+    account_service_homepage: http://xxx.ne.jp/
+
+=head1 DESCRIPTION
+
+This plugin inserts Account Auto-Discovery data into HTML header.
+
+=head1 AUTHOR
+
+Gosuke Miyashita
+
+=head1 SEE ALSO
+
+L&lt;http://b.hatena.ne.jp/help?mode=tipjar#autodiscovery&gt;
+
+=cut
+</pre>

@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Catalyst で Atom API テストツール #1"
+date: 2006-02-17 23:13
+comments: true
+categories: 
+---
+<p class="entryBody">
+Atom API テストツール 「A2T2」 をアップデートしました。POST に対応。残りは PUT と DELETE すね。
+</p>
+
+<p class="entryBody">
+ソースは <a href="http://trac.mizzy.org/public/browser/atom_client/trunk" target="_blank">trac</a> または svn://mizzy.org/public/atom_client/trunk からどぞ。
+</p>
+
+<p class="entryBody">
+<strong>2006/02/17 23:11 追記</strong><br />
+PUT と DELETE にもサクッと対応してみました。といっても、動作チェックはまだしてないので、動かなかったらごめんなさい。来週頭にはきちんと動作テストまでやります。
+</p>

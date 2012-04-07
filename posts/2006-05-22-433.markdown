@@ -1,0 +1,33 @@
+---
+layout: post
+title: "Plagger::Plugin::CustomFeed::iTMS #0"
+date: 2006-05-22 16:17
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/iTMS.pm" target="_blank">CustomFeed::iTMS</a> プラグイン作った。iTunes Music Store から指定の条件で検索して、entry や encolosure に検索結果をつっこみます。
+</p>
+
+<pre class="code">
+plugins:
+  - module: CustomFeed::iTMS
+    config:
+      query:
+        artist: Zebrahead
+
+  - module: Publish::Feed
+    config:
+      format: RSS
+      dir: /path/to/rss
+      filename: %t.rss
+</pre>
+
+<p class="entryBody">
+とかやると、Zebrahead の曲を Podcast で試聴、といったことができるはず。
+</p>
+
+<p class="entryBody">
+今後の課題としては、日本の iTMS にも対応させたりとか、Plagger core で media API が実装されたら、<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/AmazonWebService.pm" target="_blank">Filter::AmazonWebService</a> を対応させて、Amazon からサムネイル画像とってくるとかやりたい。
+</p>
+

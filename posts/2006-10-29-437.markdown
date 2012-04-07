@@ -1,0 +1,31 @@
+---
+layout: post
+title: "Text::Trac のバグフィックス・機能追加とテスト駆動開発"
+date: 2006-10-29 20:47
+comments: true
+categories: 
+---
+<p>
+rt.cpan.org でバグレポートと機能追加要望があがっていたので、久々に <a class="ext-link" href="http://search.cpan.org/~mizzy/Text-Trac/lib/Text/Trac.pm"><span class="icon"></span>Text::Trac</a> に手を入れました。
+</p>
+<p>
+バグフィックスしたものは 0.05 としてアップしてあります。また、新機能として <a class="ext-link" href="http://trac.mizzy.org/public/wiki/TracLinks"><span class="icon"></span>Trac Links</a> と <a class="ext-link" href="http://trac.mizzy.org/public/wiki/WikiMacros"><span class="icon"></span>Wiki Macros</a> をサポートしたものは、<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Text-Trac/"><span class="icon"></span>svn リポジトリ</a>に置いてあります。リクエストしてくれた方の確認後、問題なければ CPAN にアップ予定です。
+</p>
+<p>
+今回のこのバグフィックスと機能追加で、TDD のありがたさを改めて実感しました。
+</p>
+<p>
+バグについては一度修正して、報告者に確認をお願いしたのですが、まだバグが残っている状態でした。すると今度は報告者の方が、テストを書いて送ってくれたのですが、これが大いに役に立ちました。テストがあると、どこにどういったバグがあるのか、make test （あるいは prove コマンド）一発でわかるので、言葉で説明してもらうよりも明確ですし、バグ確認後、fail したテスト（と他のテスト）全てが通るようにプログラムに修正を施していけばいいわけで、やることが明確になって作業がスムーズにできました。
+</p>
+<p>
+自分も今後バグレポートする際には、テストとセットでレポートするようにします。
+</p>
+<p>
+新機能の追加についても、ひとつの機能毎にテストを書く、実装する、テスト動かして確認、修正する、というサイクルで作業していたのですが、コマンド一発でテストができると、全体の流れを途切れさせることなく、集中力を保ったまま作業ができていいですね。
+</p>
+<p>
+これを機に Text::Trac のテストを Test::More から Test::Base へ移行したのですが、Test::Base で DRY にテストが書けると、更に全体の流れがよくなり、非常に気持ちよく作業ができます。Test::Base 最高。
+</p>
+<p>
+Test::Base をご存知ない方は、<a class="ext-link" href="http://shibuya.pm.org/blosxom/techtalks/200610.html"><span class="icon"></span>Shibuya.pm テクニカルトーク #7</a> の <a class="ext-link" href="http://blog.bulknews.net/mt/archives/Test-Base.pdf"><span class="icon"></span>宮川さんの発表資料（PDF）</a> を是非ご覧下さい。
+</p>

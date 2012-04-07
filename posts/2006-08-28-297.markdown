@@ -1,0 +1,34 @@
+---
+layout: post
+title: "Filter::Audio #2"
+date: 2006-08-28 23:49
+comments: true
+categories: 
+---
+<p>
+IRC #plagger-ja チャネルにて、音量や音質のノーマライズの話が出てて、「Filter::Audio で当然サポートするよね？」という声が聞こえた気がした（誰もそんなこと言ってない）ので、<a class="ext-link" href="http://sox.sourceforge.net/"><span class="icon"></span>SoX</a> で音量をノーマライズする様に <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/Audio.pm"><span class="icon"></span>Filter::Audio</a> を修正してみた。<a class="ext-link" href="http://trac.mizzy.org/public/changeset/247"><span class="icon"></span>trac のチェンジセットはこちら</a>。
+</p>
+<p>
+利用には当然 SoX が必要で、環境変数 PATH 内にある必要があります。やってることは単純で、
+</p>
+<pre class="wiki">
+      normalize: 1
+</pre>
+<p>
+が設定されていると、
+</p>
+<pre class="wiki">
+my $vol = `sox $converted_file_before_move -e stat -v 2&lt;&amp;1`;
+</pre>
+<p>
+で Volume Adjustment を取得して、
+</p>
+<pre class="wiki">
+system('sox', '-v', $vol, $converted_file_before_move, $converted_file);
+</pre>
+<p>
+で音量変更してます。
+</p>
+<p>
+動いてることは確認したけど、ちゃんとノーマライズされてるかどうかは確認してないす。（今変換中。結構時間かかる。）
+</p>

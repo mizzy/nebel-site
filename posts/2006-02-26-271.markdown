@@ -1,0 +1,22 @@
+---
+layout: post
+title: "Six Apart ユーザーギャザリング vol.2 に行きます"
+date: 2006-02-26 18:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+どうしようか悩んでいたのですが、Ben Trott が来ると聞いて、<a href="http://www.sixapart.jp/movabletype/news/2006/02/15-1140.html" target="_blank">Six Apart ユーザーギャザリング vol.2</a> に行くことにしました。
+</p>
+
+<p class="entryBody">
+彼の姿を拝めば、いい perl プログラムが書ける御利益とかありそうなので。それに、Ben とはちょっとした縁があるので。と言っても、<a href="http://search.cpan.org/src/MIYAGAWA/WebService-Bloglines-0.09/Changes" target="_blank">WebService::Bloglines の Changes</a> に、一緒に名前が載ってる、というだけなんですけどね。これを紙に印刷して持っていって、「Hey you, 俺ら一緒に名前載ってるYO!」とか言ってみようかと。いや、やっぱやめよう。
+</p>
+
+<p class="entryBody">
+「お前、MT じゃなくて blosxom 使ってるじゃん」とか言われそうですが、実はちゃんと MT のライセンスを購入していて、妻や友人がブログ書くのに使っていたりします。
+</p>
+
+<p class="entryBody">
+もしここを見ている方で、ユーザギャザリングに行かれる、かつ俺に興味があるというレアな条件を満たしている方は、当日声をかけていただけるとうれしいです。<a href="http://paperboy.jugem.jp/?eid=75" target="_blank">目印はこの顔</a>。
+</p>

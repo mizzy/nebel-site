@@ -1,0 +1,51 @@
+---
+layout: post
+title: "Plagger で Amazon2iCal の patch"
+date: 2006-08-22 00:35
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/wata_d/20060821/1156113214"><span class="icon"></span>ベイダー日記 - Amazon2iCal</a> を見て、そうそう、これやりたかったんだよねー、ということで、早速プラグインを頂いて試してみたのですが、いくつかこちらの環境でうまく動かなかったところがあったので、パッチを晒してみます。具体的な修正点は以下の通り。
+</p>
+<ul><li>プラグインのフェーズを customfeed.handle から subscription.load へ</li>
+<li>日本語の検索がうまく動かなかったので、 $keyword を encode するようにした</li>
+<li>日付がうまくとれなかった場合に next で次のループへ</li></ul>
+<p>
+<del>でも、日本語の混じった iCalデータ を Google Calendar へインポートしようとするとエラーが出るな…</del> 正確にはインポートではなくて、Other Calendars で iCal ファイルの URL を指定した場合、のことだったのですが、いま試したらちゃんと反映されてました。なんだったんだろう？
+</p>
+<pre class="wiki">
+--- AmazonSearch.pm.org	2006-08-22 00:16:35.000000000 +0900
++++ AmazonSearch.pm	2006-08-22 00:15:16.000000000 +0900
+@@ -3,12 +3,13 @@
+ use base qw( Plagger::Plugin );
+ use Net::Amazon;
+ use Net::Amazon::Request::Keyword;
++use Encode;
+ 
+ sub register {
+     my($self, $context) = @_;
+     $context->register_hook(
+         $self,
+-        'customfeed.handle' => \&amp;aggregate,
++        'subscription.load' => \&amp;aggregate,
+     );
+ }
+ 
+@@ -32,6 +33,7 @@
+         locale    => $self->conf->{locale},
+     );
+ 
++    $keyword = encode('UTF-8', $keyword);
+     my $req = Net::Amazon::Request::Keyword->new(
+         keyword => $keyword,
+         mode    => $self->conf->{mode},
+@@ -53,6 +55,7 @@
+ 
+         my $date = Plagger::Date->strptime("%Y/%m/%d", $prop->ReleaseDate);
+            $date = Plagger::Date->strptime("%Y/%m", $prop->ReleaseDate) unless $date;
++        next unless $date;
+         $e->date($date);
+ 
+         my $d = $date - $dt;
+</pre>

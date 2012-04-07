@@ -1,0 +1,43 @@
+---
+layout: post
+title: "catlxom メモ #0"
+date: 2006-05-27 20:05
+comments: true
+categories: 
+---
+<p class="entryBody">
+今イタリアにいるらしい <a href="http://unknownplace.org/memo/" target="_blank">typester さん</a> 作の Catalyst meets Blosxom な <a href="http://catlxom.org/trac" target="_blank">catlxom</a> を最近触り始めました。（<a href="http://unknownplace.org/slides/catlxom/start.html" target="_blank">説明はこちら。</a>キャットルームと読むらしいです。）
+</p>
+
+<p class="entryBody">
+で、Catalyst::Plugin::Flavour でいくつかはまったのでメモです。
+</p>
+
+<p class="entryBody">
+まず、cpan コマンドで Catalyst::Plugin::Flavour をインストールすると、バージョン 0.02 が入るのですが、これだと catlxom は動きません。DEVELOPER RELEASE の 0.029_01 のソースをもってきてインストールする必要があります。
+</p>
+
+<p class="entryBody">
+次に、個別エントリのパーマリンクページを表示させようとしても、全エントリが表示されてしまうので、調べてみたところ $c-&gt;flavour-&gt;fn の返り値が undef でした。というわけで Catalyst::Plugin::Flavour に一行追加してみた。
+</p>
+
+<pre class="code">
+--- Flavour.pm.org      2006-05-27 19:31:19.000000000 +0900
++++ Flavour.pm  2006-05-27 19:57:43.000000000 +0900
+@@ -79,6 +79,7 @@
+     }
+     elsif ( my ( $fn, $flavour ) = $path[-1] =~ /(.*)\.(.*?)$/ ) {
+
++        $c-&gt;flavour-&gt;fn($fn);
+         $c-&gt;flavour-&gt;flavour($flavour);
+         if ( $fn eq 'index' ) {
+             pop @path;
+</pre>
+
+<p class="entryBody">
+これで個別パーマリンクページがちゃんと表示されました。
+</p>
+
+<p class="entryBody">
+いずれこのブログは、blosxom から catlxom へ移行しようと思います。まずは必要な blosxom プラグインの移植からですね。
+</p>

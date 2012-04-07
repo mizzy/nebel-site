@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Filter::FutureEvents"
+date: 2006-08-26 13:24
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/plagger_event.html"><span class="icon"></span>このエントリ</a> の様な感じで、iCal データに時刻も入れたところ、ちゃんと Google Calendar で通知メールが来るようになりました。が、Google Calendar では終日イベントは背景がキレイに色づけされるのに、時刻が指定されたイベントは背景が色づけされないんですよね。こんな感じで。 
+</p>
+<p>
+<img src="http://mizzy.org/img/events.jpg" alt="Google Calendar" />
+</p>
+<p>
+「歯医者」とあるのが時刻指定イベント。それ以外は終日イベントで青が本、緑が音楽、赤が休日。
+</p>
+<p>
+やっぱ見た目重要なので、iCal データに時刻を入れるのはやめることに。というわけで昨日の作業は無意味に終りました。（いや、収穫もありましたよ、たぶん…）
+</p>
+<p>
+そうなると、今度は Google Calendar が通知メール出してくれない、とふりだしに戻るわけですが、それ Pla(ry ってことで、Plagger でやることに。
+</p>
+<p>
+イベント通知となると、「今から1日以内に発生するイベントを通知する」といった感じになるわけですが、この「1日以内に発生するイベント」という条件でフィルタするためのプラグインが要るな、というわけで、 <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FutureEvents.pm"><span class="icon"></span>Filter::FutureEvents</a> というものを作ってみました。duration のパースなんかは Rule::Fresh を参考にしています。
+</p>
+<p>
+これを CustomFeed::AmazonWebService, Publish::Gmail と組み合わせて、深夜とか早朝に cron で動かしておけば、その日に発売される商品情報がメールで届く、ということが実現できます。
+</p>

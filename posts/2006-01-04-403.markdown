@@ -1,0 +1,104 @@
+---
+layout: post
+title: "subversion + trac ではまりまくり"
+date: 2006-01-04 17:07
+comments: true
+categories: 
+---
+<p class="entryBody">
+そろそろ何かバージョン管理ツールを覚えないと、と思い、<a href="http://www.amazon.co.jp/exec/obidos/ASIN/4274066134/httshemizorg-22/ref=nosim" target="_blank">Subversion実践入門―達人プログラマに学ぶバージョン管理</a> を見ながら subversion を一通り触ってみた。
+</p>
+
+<p class="entryBody">
+で、本も読了したので次は <a href="http://projects.edgewall.com/trac/" target="_blank">trac</a> のセットアップにチャレンジしたら、これがもう、何かやるたびにエラーでつまづく、といった有様。
+</p>
+
+<p class="entryBody">
+環境があまり一般的ではない（Slackware 使っていたり）ので、他の人の参考にはならない気がしますが、一応メモ。
+</p>
+
+<p class="entryBody">
+まずは python のコンパイル。うちの環境は gcc が /usr/bin と /usr/local/bin にあるのですが、/usr/local/bin を優先するようになっています。が、これがはまりの元。LD_LIBRARY_PATH で /usr/local/lib を最初に参照するようにしているにも関わらず、なぜか /usr/lib/libgcc_s.so.1 を参照しに行ってしまいエラーとなる。/usr/local/lib/libgcc_s.so.1 を参照して欲しいのに。で、結局原因が分からないので、PATH から /usr/local/bin を外し、LD_LIBRARY_PATH から /usr/local/lib を外して、/usr/bin/gcc を使うようにして再度 ./configure; make; make install を実行。とりあえずこれで正常に。
+</p>
+
+<p class="entryBody">
+次に subversion の python バインディングをインストールしようとして、subversion のソースのあるディレクトリで make swig-py を実行するも大量のエラー。SWIG を latest stable の 1.1p5 から latest development の 1.3.27 にアップグレードしたら解決。
+</p>
+
+<p class="entryBody">
+そして今度は、 clearsilver のインストールでまたはまる。make install を実行すると、以下の様なエラーが。
+</p>
+
+<pre class="code">
+/usr/bin/ginstall -c neo_cgi.so
+/usr/bin/ginstall: too few arguments
+Try `/usr/bin/ginstall --help' for more information.
+make: *** [install] Error 1
+</pre>
+
+<p class="entryBody">
+python/Makefile を覗いてみたところ、どうやら PYTHON_SITE が定義されていないのが原因っぽい。ということで、Makefile の適当な位置に、
+</p>
+
+<pre class="code">
+PYTHON_SITE = /usr/local/lib/python2.4/site-packages
+</pre>
+
+<p class="entryBody">
+を追加して make install を実行すると今度は正常に完了。
+</p> 
+
+<p class="entryBody">
+そしていよいよ trac のセットアップ。これは正常に完了。が、
+</p>
+
+<pre class="code">
+trac-admin project initenv
+</pre>
+
+<p class="entryBody">
+を実行すると、
+</p>
+
+<pre class="code">
+Failed to initialize environment. No module named svn
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.4/site-packages/trac/scripts/admin.py", line 616,
+ in do_initenv
+    repos = self.__env.get_repository()
+  File "/usr/local/lib/python2.4/site-packages/trac/env.py", line 155, in get_re
+pository
+    from trac.versioncontrol.svn_fs import SubversionRepository
+  File "/usr/local/lib/python2.4/site-packages/trac/versioncontrol/svn_fs.py", l
+ine 25, in ?
+    from svn import fs, repos, core, delta
+ImportError: No module named svn
+</pre>
+
+<p class="entryBody">
+というエラーが。これは以下の様に環境変数 PYTHONPATH を設定することで解決。
+</p>
+
+<pre class="code">
+export PYTHONPATH=/usr/local/lib/svn-python
+</pre>
+
+<p class="entryBody">
+trac プロジェクトが作成できたところで、apache + mod_python で trac を動かそうとするも、うまく動かねー。<a href="http://www.modpython.org/live/mod_python-2.7.8/doc-html/inst-testing.html" target="_blank">ここにあるテスト</a>は正常に動作したので、俺の httpd.conf の書き方が悪いのだと思うけど、原因がさっぱり分からん。
+</p>
+
+<p class="entryBody">
+でも、CGI では動かしたくないし、private なプロジェクトは LDAP で認証したいので、tracd を standalone で動かすのもイヤ。かといってこんなことで時間かけるのもアホらしい。
+</p>
+
+<p class="entryBody">
+というわけで、tracd を standalone で動かしつつ、apache でリバースプロキシ という解決策を採用。こうすれば、tracd の軽さを活かしながら、apache で柔軟な設定が可能に。
+</p>
+
+<p class="entryBody">
+最後に tracd のポートへの外部からの直接アクセスを、iptables で DROP して完了。
+</p>
+
+<p class="entryBody">
+せっかく苦労して環境作ったので、<a href="http://trac.mizzy.org/public/browser" target="_blank">公開しときます</a>。
+</p>

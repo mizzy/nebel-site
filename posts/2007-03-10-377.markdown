@@ -1,0 +1,76 @@
+---
+layout: post
+title: "Assurer 近況"
+date: 2007-03-10 02:53
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://assurer.jp/trac"><span class="icon"></span>Assurer</a> の最近の状況など。
+</p>
+<h3 id="franckが開発に参加">franck が開発に参加</h3>
+<p>
+Plagger コミッタでもある <a class="ext-link" href="http://search.cpan.org/~franckc/"><span class="icon"></span>franck</a> がジョインしてくれ、プラグインやパッチなどを送ってくれたり、新しいアイデアを提案/実装してくれたりしてます。この週末も素敵な機能を実装してくれるみたいです。
+</p>
+<h3 id="Notifyフェーズの追加">Notify フェーズの追加</h3>
+<p>
+Notify フェーズを追加して、Notify::IRC を実装してみました。ほとんど Plagger からのパクリです。
+</p>
+<h3 id="Kwalifyによるコンフィグバリデーション">Kwalify によるコンフィグバリデーション</h3>
+<p>
+Assurer::ConfigLoader に、Kwalify によるコンフィグバリデーション処理が追加されました。実行時に設定ファイルのミスをお知らせしてくれます。
+</p>
+<p>
+プラグインの場合は、当然プラグイン毎に設定内容が異なるわけですが、この辺りもちゃんと対応しています。
+</p>
+<h3 id="シェルモードのブラッシュアップ">シェルモードのブラッシュアップ</h3>
+<pre class="wiki">
+$ assurer.pl -c config.yaml --role=web
+</pre>
+<p>
+といった形で、シェルモード起動時に、ターゲットとなるロールを指定できるのですが、機能追加により、
+</p>
+<pre class="wiki">
+assurer> !on app1.foo.com app2.foo.com do uptime
+assurer> !on /.*.foo.com/ do uptime
+assurer> !with web db do uptime
+assurer> !with /web|mail/ do uptime
+</pre>
+<p>
+といった形で、シェルモード中にもターゲットホストやロールが指定できるようになっています。正規表現も使えます。
+</p>
+<p>
+また、シェルモードからもテストが実行できるようになっています。こんな感じで。
+</p>
+<pre class="wiki">
+assurer> !test SSH on app1.foo.com
+assurer> !test SSH on /.*.foo.com/
+assurer> !test SSH with web
+assurer> !test SSH with /web|mail/ 
+</pre>
+<h3 id="並列度のコントロールと分散処理">並列度のコントロールと分散処理</h3>
+<p>
+テストの実行は assurer_test.pl を POE::Wheel::Run で起動することにより、並列実行させていたのですが、POE::Component::JobQueue を併用することにより、並列度をコントロールできるようにしました。
+</p>
+<p>
+また、
+</p>
+<pre class="wiki">
+exec_on:
+  - host: localhost
+    priority: 3
+  - host: host0.example.com
+    priority: 2
+  - host: host1.example.cm
+    priority: 1
+</pre>
+<p>
+といった設定を行うことにより、複数のマシンで分散してテストを行う、ということができるようになってます。priority は今のところ設定しても意味はなく、ラウンドロビンでテストジョブを割り当ててるのですが、今後は priority に応じて割りてるジョブの数を調整したり、各マシンの負荷状況を見て調整したり、といったことができるようにしたいと考えています。
+</p>
+<h3 id="Test::WWW::Mechanizeプラグイン">Test::WWW::Mechanize プラグイン</h3>
+<p>
+Test::WWW::Mechanize をつかったテストも組み込めるようにしました。
+</p>
+<p>
+まあ、こんな感じです。あまり詳しく書くと YAPC で話すネタがなくなるので、この辺で。
+</p>

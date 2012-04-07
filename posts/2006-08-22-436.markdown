@@ -1,0 +1,52 @@
+---
+layout: post
+title: "Plagger で Amazon2iCal 改良"
+date: 2006-08-22 16:40
+comments: true
+categories: 
+---
+<p>
+自分好みに使いやすくするために、<a class="ext-link" href="http://trac.mizzy.org/public/changeset/230"><span class="icon"></span>CustomFeed::AmazonWebService と Publish::iCal を修正してみました</a>。
+</p>
+<p>
+CustomFeed::AmazonWebService は、$entry->author に 著者名やアーティスト名などをセットするようにしました。
+</p>
+<p>
+Publish::iCal は $event->add_properties で、summary に title だけではなく、author も含めるようにしました。これで Google Calendar で見た場合に、誰の作品なのかが一目で分かります。
+</p>
+<p>
+最初は organizer に author を含めておけば、Google Calendar で適切に表示してくれるんじゃないかと思ったのですが、こちらのやり方が悪いのか、organizer がどこに表示されるのかさっぱり分かりません。
+</p>
+<p>
+また、RFC では organizer は、
+</p>
+<pre class="wiki">
+ORGANIZER;CN=Gosuke Miyashita:MAILTO:gosukenator@gmail.com
+</pre>
+<p>
+といったフォーマットになるのですが、Data::ICal でこの様なフォーマットにする方法が分かりません。
+</p>
+<pre class="wiki">
+$event->add_properties(
+    organizer   => 'CN=Gosuke Miyashita:MAILTO:gosukenator@gmail.com',
+);
+</pre>
+<p>
+としても、
+</p>
+<pre class="wiki">
+ORGANIZER<strong>:</strong>CN=Gosuke Miyashita:MAILTO:gosukenator@gmail.com
+</pre>
+<p>
+となっちゃいます。（ORGANIZER 直後がセミコロンではなくコロンになってしまう。）
+</p>
+<p>
+とりあえず、Google Calendar で表示させてみるとこんな感じになりました。
+</p>
+<p>
+<img src="http://mizzy.org/img/gcal2.jpg" alt="Publish::iCal + Google Calendar" />
+</p>
+<p>
+あと、リンクも含めておけば amazon のページに飛べて便利かも、と思って、<a class="ext-link" href="http://trac.mizzy.org/public/changeset/231"><span class="icon"></span>こんな感じで url property をセットするようにした</a> のですが、これもまた Google Calendar 上ではどこに表示されるのかがさっぱり分かりません。
+ 
+</p>

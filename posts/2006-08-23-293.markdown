@@ -1,0 +1,52 @@
+---
+layout: post
+title: "Publish::iCal patch"
+date: 2006-08-23 20:54
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/amazon2ical01.html"><span class="icon"></span>『Plagger で Amazon2iCal 改良』</a> にて、Data::ICal で ORGANIZER をちゃんとしたフォーマットにする方法がわからん、と言っていたのですが、やりかたわかりました。
+</p>
+<pre class="wiki">
+$event->add_properties(
+    organizer   => [ 'MAILTO:gosukenator@gmail.com', { CN => 'Gosuke Miyashita' } ],
+);
+</pre>
+<p>
+<a class="ext-link" href="http://search.cpan.org/~jesse/Data-ICal-0.07/lib/Data/ICal/Entry.pm#add_property_%24propname_%3D%3E_%24propval"><span class="icon"></span>Data::ICal::Entry の pod</a> にちゃんと書いてありましたね。
+</p>
+<p>
+というわけで、organizer をちゃんとセットするように、Publish::iCal を書き換えてみました。Email::Address は <a class="ext-link" href="http://subtech.g.hatena.ne.jp/miyagawa/20060815"><span class="icon"></span>Filter::ExtractAuthorName</a> から拝借してます。
+</p>
+<pre class="wiki">
+Index: plagger/trunk/lib/Plagger/Plugin/Publish/iCal.pm
+===================================================================
+--- plagger/trunk/lib/Plagger/Plugin/Publish/iCal.pm (revision 231)
++++ plagger/trunk/lib/Plagger/Plugin/Publish/iCal.pm (revision 233)
+@@ -6,4 +6,5 @@
+ use Data::ICal;
+ use Data::ICal::Entry::Event;
++use Email::Address;
+ 
+ sub register {
+@@ -34,4 +35,8 @@
+ 
+     for my $entry ($feed->entries) {
++        my $address = ( Email::Address->parse($entry->author) )[0];
++        my $mail = eval { $address->address } || 'nobody@example.com';
++        my $name = eval { $address->name } || $entry->author;
++
+         my $date = $entry->date;
+         my $event = Data::ICal::Entry::Event->new;
+@@ -39,5 +44,5 @@
+             summary     => $entry->title . ' - ' . $entry->author,
+             description => $entry->summary || $entry->body,
+-            organizer   => $entry->author,
++            organizer   => [ "MAILTO:$mail", { cn => $name } ],
+             url         => $entry->link,
+             dtstart     => join('', split('-', $date->ymd)),
+</pre>
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/changeset/233"><span class="icon"></span>trac のチェンジセットはこちら</a>。
+</p>

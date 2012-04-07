@@ -1,0 +1,10 @@
+---
+layout: post
+title: "blosxomでtagging #7"
+date: 2005-05-03 13:54
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/archives/tagging" target="_blank">taggingプラグイン</a>を修正しました。タグでエントリを絞り込む部分のアルゴリズムを見直し。大量にエントリがある場合にはパフォーマンスが良くなるはず。
+</p>

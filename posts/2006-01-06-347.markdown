@@ -1,0 +1,37 @@
+---
+layout: post
+title: "lighttpdをテスト用のwebサーバとして利用する（Rails 勉強中 #8）"
+date: 2006-01-06 09:05
+comments: true
+categories: 
+---
+<p class="entryBody">
+どこかで見たことあるようなエントリタイトルだと思ったあなた、正解です。
+<a href="http://wiki.rails2u.com/lighttpd%E3%82%92%E3%83%86%E3%82%B9%E3%83%88%E7%94%A8%E3%81%AEweb%E3%82%B5%E3%83%BC%E3%83%90%E3%81%A8%E3%81%97%E3%81%A6%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B" target="_blank">lighttpdをテスト用のwebサーバとして利用する :: wiki.rails2u.com</a> からとっています。
+</p>
+
+<p class="entryBody">
+ここに書いてあることを試そうと思って、lighttpd や fcgi のセットアップから色々調べていたのですが、Rails 1.0 ではもっと簡単に、以下のようにコマンド一発で lighttpd をテスト用ウェブサーバとして起動できることに気づきました。
+</p>
+
+<pre class="code">
+$ ./scripr/server lighttpd
+=> Booting lighttpd (use 'script/server webrick' to force WEBrick)
+=> script/../config/../config/lighttpd.conf not found, copying from /usr/local/l
+ib/ruby/gems/1.8/gems/rails-1.0.0/configs/lighttpd.conf
+=> Rails application started on http://0.0.0.0:3000
+=> Call with -d to detach (requires absolute paths in config/lighttpd.conf)
+=> Ctrl-C to shutdown server (see config/lighttpd.conf for options)
+</pre>
+
+<p class="entryBody">
+もちろん、lighttpd と fcgi が利用できる環境になっていて、ruby の fcgi モジュールがインストールされている必要がありますが。
+</p>
+
+<p class="entryBody">
+それにしても、ここの rails に関するエントリでは、必ず gorou さんのサイトを引き合いに出していますね。頭が下がる思いです、ほんと。
+</p> 
+
+<p class="entryBody">
+gorou さん、面識はありませんが、はてなへの転職おめでとうございます。今後の一層のご活躍を楽しみにしております。gorou さんのような方が perl 陣営に加わるのは、同じ perl 使いとして大変うれしいです。
+</p>

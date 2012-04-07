@@ -1,0 +1,18 @@
+---
+layout: post
+title: "ブログを書いたら mixi 日記に自動投稿"
+date: 2006-01-08 00:30
+comments: true
+categories: 
+---
+<p class="entryBody">
+mixi の日記は外部ブログに設定していたのですが、せっかくプライベートな日記が書けるのであれば使いたいなぁ、と。でも、mixi 日記に設定してしまうと、今度は外部ブログの更新情報が mixi に表示されなくてイヤだな、と常々思っていたわけですが、これを解消する <a href="http://trac.mizzy.org/public/browser/mixi/trunk/post_blog_to_mixi.pl" target="_blank">perl スクリプトを書いてみました</a>。
+</p>
+
+<p class="entryBody">
+RSS からタイトルと permalink url をひろって投稿しています。最初は本文も投稿するようにしていたのですが、いろいろあってやめました。（主にめんどくさいという理由で。）
+</p>
+
+<p class="entryBody">
+マイミクさんでここを読んでいる方は、フィードリーダで読んでるだろうし、フィードリーダで読んでないマイミクさんは、ここのブログに書いてあることにはあんまり興味がないと思うので、あまり意味のないスクリプトの様な気がするけど、まあ気にしない。
+</p>

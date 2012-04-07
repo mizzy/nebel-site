@@ -1,0 +1,44 @@
+---
+layout: post
+title: "iPod で映画を持ち歩く"
+date: 2006-01-16 01:35
+comments: true
+categories: 
+---
+<p class="entryBody">
+またもやはまっちゃった系エントリです。iPod で映画を持ち歩くために、<a href="http://www.geocities.jp/h264ipod/henkankundvd.html" target="_blank">DVDの中身を携帯しよう</a> の「字幕とか音声とかを選んでエンコードしたい場合」にトライしてみたのですが、「用意するもの」にあるのと全く同じファイルがないために、かなりはまりました。
+</p>
+
+<p class="entryBody">
+用意するものに、「DVD2AVI1.76、mpeg2dec3_25_dll_20030728 ←別の場所にあるらしい」とあるのですが、DVD2AVI は 1.77 が既にうちの PC に入っていて、mpeg2dec3_25_dll_20030728 はそのものずばりが見つからず、適当に検索して持ってきたら、最後の変換君でのエンコードで見事につまづきました。
+</p>
+
+<p class="entryBody">
+うまくいくやりかたは、<a href="" target="_blank">AviSynth Filter Collection</a> から DVD2AVI の代わりに dgmpgdec140_20050711 をダウンロード、mpeg2dec3.dll の代わりに、dgmpgdec140_20050711 に同梱されている DGDecode.dll を使う、です。
+</p>
+
+<p class="entryBody">
+そして、手順の中で「MPEG2Dec3.dll を C:\Program Files\AviSynth 2.5\plugins に移動」と書いているところは、「DGDecode.dll を C:\Program Files\AviSynth 2.5\plugins に移動」と読み替え、「DVD2AVI を起動」と書いているところは、dgmpgdec140_20050711 の DGIndex.exe を起動、と読み替えてください。
+</p>
+
+<p class="entryBody">
+うちはこれで、変換君がエラーを出さずに、エンコードをはじめるところまでいけました。現在エンコード中。
+</p>
+
+<p class="entryBody">
+<strong>2006/01/16 追記</strong><br />
+他にもそのままではうまくいかないところがあったのに、書くのを忘れていました。通りすがりさん、コメントありがとうございます。
+</p>
+
+<p class="entryBody">
+他に手順の中で読み替える必要があるのは、AVS_Skelton2.avs の内容を、
+</p>
+
+<pre class="code">
+AudioDub(MPEG2Source("&lt;%InputFile%&gt;"),WavSource("&lt;%InputFilePath%&gt;&lt;%InputFileBase%&gt;.wav"))
+VobSub("&lt;%InputFilePath%&gt;&lt;%InputFileBase%&gt;.sub") 
+</pre>
+
+<p class="entryBody">
+とすることと、DGIndex（DVD2AVI） の操作で Audio → Output Method → Decode to WAV にチェックを入れる、ですね。
+</p>

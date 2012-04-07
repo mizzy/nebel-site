@@ -1,0 +1,14 @@
+---
+layout: post
+title: "Plagger::Plugin::CustomFeed::Xmltv"
+date: 2006-05-21 00:04
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/Xmltv.pm" target="_blank">CustomFeed::Xmltv</a> プラグイン作った。
+</p>
+
+<p class="entryBody">
+これを利用して、Filter::EntryTitle とか Publish::TvRecReserveMail といったプラグイン作って、番組名に特定のワードを含むものを、メール録画に対応した機器で録画予約、とかやりたい。
+</p>

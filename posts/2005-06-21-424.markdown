@@ -1,0 +1,63 @@
+---
+layout: post
+title: "blosxomでtagging #11"
+date: 2005-06-21 21:19
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://kerolin.jspeed.jp/" target="blank">カエルチュウイホウ</a>さんの<a href="http://kerolin.jspeed.jp/Computer/blosxom/tagging050619.html" target="blank">taggingプラグイン</a>というエントリにて指摘されている問題を修正しました。こちらではカテゴリが1階層しかないため、全く気づいていませんでした。ご指摘感謝です。<br />
+download: <a href="/archives/tagging" target="_blank">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+「下の階層のタグが表示されない」という問題については、カエルチュウイホウさんの修正をそのまま反映させて頂いております。
+</p>
+
+<p class="entryBody">
+「同じタグが複数表示されてしまう場合がある」という問題については、以下の様にコードを修正しました。
+</p>
+
+<pre class="code">
+$ diff tagging tagging.20050508
+3c3
+&lt; # Version: 2005-06-21
+---
+&gt; # Version: 2005-05-08
+50d49
+&lt;       my %tags;
+52,53c51,52
+&lt;           if($category =~ /$path/){
+&lt;               foreach my $tag (keys %{$tags_list_per_category-&gt;{$category}}){
+---
+&gt;           if($path eq $category){
+&gt;               foreach my $tag (sort keys %{$tags_list_per_category-&gt;{$category
+}}){
+55c54,56
+&lt;                       $tags{$tag}++;
+---
+&gt;                       my $encoded_tag = $tag;
+&gt;                       $encoded_tag =~ s/(\W)/sprintf("%%%02X", ord($1))/ego;
+&gt;                       $list .= "&lt;li&gt;&lt;a href='$url?tag=$encoded_tag'&gt;$tag&lt;/a&gt; (
+$tags_list_per_category-&gt;{$category}-&gt;{$tag})&lt;/li&gt;\n";
+60,65d60
+&lt;
+&lt;       foreach my $tag (sort keys %tags){
+&lt;           my $encoded_tag = $tag;
+&lt;           $encoded_tag =~ s/(\W)/sprintf("%%%02X", ord($1))/ego;
+&lt;           $list .= "&lt;li&gt;&lt;a href='$url?tag=$encoded_tag'&gt;$tag&lt;/a&gt; ($tags{$tag})
+&lt;/li&gt;\n";
+&lt;       }
+93c88
+&lt;       foreach (sort keys %$files){
+---
+&gt;       foreach (keys %$files){
+</pre>
+
+<p class="entryBody">
+各カテゴリのタグの数の算出と、HTMLで表示するリストの生成を一緒のforeachループ内で行っていたのが問題の原因だったので、各カテゴリのタグの数を算出してタグ毎に積算するのと、HTMLリストの生成を分けるようにしました。
+</p>
+
+<p class="entryBody">
+こちらで試した限りは意図した通りに動いていますが、どんなもんでしょ？
+</p>

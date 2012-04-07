@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Plagger::Plugin::Aggregator::Simple の Media RSS サポート"
+date: 2006-05-23 22:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+Google Video は Media RSS を吐くので、<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Aggregator/Simple.pm" target="_blank">Aggregator::Simple を Media RSS に対応させてみた</a>。<a href="http://trac.mizzy.org/public/changeset/124" target="_blank">diff はこちら</a>。
+</p>
+
+<p class="entryBody">
+でも、つくってから気づいたんだけど、Google Video の RSS にはちゃんと enclosure も入ってるので、別に Media RSS 対応させる必要なかった…。といっても、enclosure に入っているのは iPod 用の mpeg4 だけで、media:content 要素には他に flv, wmv, PSP 用の mpeg4 も含まれてるので、対応しておいても損ではないかな、と。
+</p>
+
+<p class="entryBody">
+これで <a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/GoogleVideo.pm" target="_blank">CustomFeed::GoogleVideo</a> はもう必要ないですね。
+</p>

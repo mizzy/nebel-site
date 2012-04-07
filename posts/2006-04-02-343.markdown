@@ -1,0 +1,22 @@
+---
+layout: post
+title: "blosxom で tagging #13"
+date: 2006-04-02 13:59
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/blosxomWithTagging12.html#comments" target="_blank">Pe7 さんのリクエスト</a> により、 <a href="http://trac.mizzy.org/public/browser/blosxom_plugins/trunk/tagging" target="_blank">tagging プラグイン</a> をアップデート。タグでエントリを絞り込むと、関連するタグリストを表示できるようにしました。そこから更にタグで絞り込む、ということが可能です。
+</p>
+
+<p class="entryBody">
+使い方ですが、関連タグを表示したいところに、$tagging::related_tags と入れてください。左サイドバーの「related tags」の様な感じになります。
+</p>
+
+<p class="entryBody">
+表示フォーマットが気に入らない場合には、169 行目から 176 行目を適当にいじってください。
+</p>
+
+<p class="entryBody">
+もっとこうして欲しいとか、ご要望があればお気軽にどうぞ。
+</p>

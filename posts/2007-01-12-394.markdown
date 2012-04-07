@@ -1,0 +1,44 @@
+---
+layout: post
+title: "Net::LDAPx::Simple と Catalyst::Model::LDAPx::Simple"
+date: 2007-01-12 23:31
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/net-ldap-abstract00.html"><span class="icon"></span>Net::LDAP::Alterntive あらため Net::LDAP::Abstract</a> ですが、この名前だと Net::LDAP の中のモジュールと区別がつかないし、パッと見何をやるモジュールなのか分からないので、<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Net-LDAPx-Simple"><span class="icon"></span>Net::LDAPx::Simple</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Net-LDAPx-Simple/"><span class="icon"></span>SVN</a>) とまた名称を変更しました。DBIx::Simple からの連想です。
+以下の様な感じで CRUD が一通りできるようになってます。
+</p>
+<pre class="wiki">
+# Create
+my $res = $ldap->create({
+    dn => 'uid=mizzy, ou=people, o=southpark',
+    objectclass => [ 'person', 'inetorgperson' ],
+    sn => 'Miyashita',
+    cn => 'Gosuke Miyashita',
+    uid => 'mizzy',
+});
+
+# Retrieve
+my $entries = $ldap->search({
+    -or => {
+        uid => 'miya',
+        cn  => 'miyashita*',
+        },
+    }
+});
+
+# Update
+my $entry = $entries->first;
+$entry->telephonenumber('00-0000-0000');
+$entry->update;
+
+# Delete
+$entry->delete;
+</pre>
+<p>
+ついでに <a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Catalyst-Model-LDAPx-Simple"><span class="icon"></span>Catalyst::Model::LDAPx::Simple</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Catalyst-Model-LDAPx-Simple/"><span class="icon"></span>SVN</a>) もつくりました。Catalyst::Model::* つくるのはじめてなので、こんな感じでいいのかちょっと不安。もう少し他の Catalyst::Model::* のソースを読んでみる。
+</p>
+<p>
+もうちょいエラーハンドリングちゃんとして、POD 書いたり Helper つくったりした後に CPAN に up 予定。
+</p>

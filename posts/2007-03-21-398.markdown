@@ -1,0 +1,49 @@
+---
+layout: post
+title: "Trac の Wiki を emacs で直接編集"
+date: 2007-03-21 02:19
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://www.meadowy.org/~gotoh/projects/trac-wiki/"><span class="icon"></span>emacs trac-wiki mode</a> なんてものがあったんですね。これは便利。
+</p>
+<p>
+セットアップや設定方法なんかは上のリンクを参照すれば分かるので省略。
+</p>
+<p>
+M-x trac-wiki を実行すると、まずはプロジェクト名を聞いてくる。
+</p>
+<p>
+<img src="http://mizzy.org/img/emacs_trac_00.jpg" alt="http://mizzy.org/img/emacs_trac_00.jpg" />
+</p>
+<p>
+次に認証のためのユーザ名。
+</p>
+<p>
+<img src="http://mizzy.org/img/emacs_trac_01.jpg" alt="http://mizzy.org/img/emacs_trac_01.jpg" />
+</p>
+<p>
+そしてパスワード。
+</p>
+<p>
+<img src="http://mizzy.org/img/emacs_trac_02.jpg" alt="http://mizzy.org/img/emacs_trac_02.jpg" />
+</p>
+<p>
+編集する Wiki ページ名を聞いてくる。タブで Trac 上にある Wiki ページ一覧を表示してくれたり、補完してくれたりする。
+</p>
+<p>
+<img src="http://mizzy.org/img/emacs_trac_03.jpg" alt="http://mizzy.org/img/emacs_trac_03.jpg" />
+</p>
+<p>
+Wiki ページを開くとこんな感じ。
+</p>
+<p>
+<img src="http://mizzy.org/img/emacs_trac_04.jpg" alt="http://mizzy.org/img/emacs_trac_04.jpg" />
+</p>
+<p>
+C-c C-c で Trac に保存。
+</p>
+<p>
+まあ、Firefox 拡張の <a class="ext-link" href="https://addons.mozilla.org/firefox/4125/"><span class="icon"></span>It's All Text!</a> 使えば、Trac に限らず任意のエディタで編集できるのですが、ブラウザで開く手間が省けるのはいいですね。Emacs-w3m を利用したプレビュー表示にも対応してたりとか、他にも色々便利な機能があります。詳しくは <a class="ext-link" href="http://www.meadowy.org/~gotoh/projects/trac-wiki/"><span class="icon"></span>開発元サイト</a> 参照。
+</p>

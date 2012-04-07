@@ -1,0 +1,10 @@
+---
+layout: post
+title: "広報ブログで顔出し"
+date: 2006-02-23 22:38
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://paperboy.jugem.jp/?eid=75" target="_blank">会社の広報ブログ</a>に顔写真が載ってます。どんなツラしてるのか興味がある方はどうぞ。
+</p>

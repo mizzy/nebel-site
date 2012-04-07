@@ -1,0 +1,94 @@
+---
+layout: post
+title: "Javascriptの皮を被ったXML #1"
+date: 2005-07-02 15:17
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/javaScriptOverXml.html" target="_blank">前回のエントリ</a>について、<a href="http://amazie.jp/" target="_blank">nektixe</a>さんから、「Greasemonkey限定であれば、GM_xmlhttpRequest という関数を使うことで、外部ドメインのデータも受信可能みたいです」というコメントを頂きました。ありがとうございます。確かに、<a href="http://diveintogreasemonkey.org/api/gm_xmlhttprequest.html" target="_blank">「GM_xmlhttpRequest is not restricted to the current domain」</a>って書いてありますね。これは強力。
+</p>
+
+<p class="entryBody">
+というわけで、「Javascriptの皮を被ったXML構想」は、Greasemonkeyであれば実現できそうな感じです。この構想の要点をおさらいとして整理すると、
+</p>
+
+<ul class="entryBody">
+<li>Javascriptから直接APIにアクセスしてXMLを取得して、UIを被せる。</li>
+<li>UIとなるHTMLはJavasciptから分離する。</li>
+<li>各サービスに合わせて外部XSLTファイルを用意し、JavascriptでXSLT変換する。これにより様々なサービスに統一的なUIを適用する。</li>
+</ul>
+
+<p class="entryBody">
+といった感じです。
+</p>
+
+<p class="entryBody">
+構想の実現に向けて、まずはGM_xmlhttpRequest関数で遊んでみようかと思ったのですが、その前にdel.icio.us direc.torをGreasemonkeyで動かしてみることにしました。といっても、やってみるとものすごく簡単で、del.icio.us direc.torのおおもとのJavascriptである、<a href="http://johnvey.com/features/deliciousdirector/dboot.js" target="_blank">dboot.js</a>の先頭に、以下の様にGreasemonkey用の記述を数行加えてあげるだけです。
+</p>
+
+<pre class="code">
+// ==UserScript==
+// @name            del.icio.us direc.tor greasemonkey user script
+// @namespace       http://mizzy.org/
+// @description     When open a folder in bloglines, close other folders.
+// @include         http://del.icio.us/mizzy/director
+// ==/UserScript==
+
+var d = '&lt;form&gt;&lt;img src="http://johnvey.com/features/deliciousdirector/director-logo.gif" width="206" height="18" alt="Delicious Director" style="float:left;padding:2px 10px 0 0" /&gt;';
+d += '&lt;input id="q" name="q" type="text" size="60" onkeyup="rd.filter(this.value)" autocomplete="off" /&gt;';
+d += '&lt;input type="checkbox" id="h" checked="checked" onchange="rd.th()" /&gt;&lt;label for="h"&gt;Highlight Terms&lt;/label&gt;&lt;/form&gt;';
+d += '&lt;h2&gt;Tag Browser&lt;/h2&gt;';
+d += '&lt;div id="browser"&gt;';
+d += '	&lt;div id="br1" class="browserPane"&gt;&lt;/div&gt;';
+d += '	&lt;div id="br2" class="browserPane"&gt;&lt;/div&gt;';
+d += '	&lt;div id="br3" class="browserPane"&gt;&lt;/div&gt;';
+d += '	&lt;div id="br4" class="browserPane"&gt;&lt;/div&gt;';
+d += '	&lt;div id="br5" class="browserPane"&gt;&lt;/div&gt;';
+d += '	&lt;div id="br6" class="browserPane"&gt;&lt;/div&gt;';
+d += '&lt;/div&gt;';
+d += '&lt;h2 id="summary"&gt;Bookmarks&lt;/h2&gt;';
+d += '&lt;div id="ps"&gt;&lt;p&gt;Loading your del.icio.us bookmarks...&lt;/p&gt;&lt;/div&gt;';
+d += '&lt;p id="ft"&gt;&#169; 2005 Johnvey Hwang. &lt;a href="http://johnvey.com/features/deliciousdirector/" target="_blank"&gt;del.icio.us direc.tor project page&lt;/a&gt;. Released under the &lt;a href="http://www.gnu.org/copyleft/gpl.html" target="_blank"&gt;GPL&lt;/a&gt;.&lt;/p&gt;';
+
+function init() {
+
+	var i, a, main;
+
+	document.body.innerHTML = "";
+	document.body.innerHTML = d;
+	
+	for(i=0; (a = document.getElementsByTagName("link")[i]); i++) {
+	  if(a.getAttribute("rel").indexOf("style") != -1) {
+	    a.disabled = true;
+	  }
+	}
+	
+	var ns = document.createElement("link");
+	ns.rel = "stylesheet";
+	ns.type = "text/css";
+	ns.href = "http://johnvey.com/features/deliciousdirector/d.css";
+	document.body.appendChild(ns);
+	
+	var js = document.createElement("script");
+	js.language = "javascript";
+	js.src = "http://johnvey.com/features/deliciousdirector/d.js";
+	document.body.appendChild(js);
+	
+	document.title += " (Direc.tor)";
+}
+
+init();
+</pre>
+
+<p class="entryBody">
+実際に試してみたい方は、<a href="http://mizzy.org/js/dboot.user.js" target="_blank">こちらからどうぞ</a>。
+</p>
+
+<p class="entryBody">
+@includeで指定されるページは、適宜変更してください。自分は、http://del.icio.us/mizzy/director にアクセスした時にお猿さんが発動するようにしていますが、そこは各自のお好みで。
+</p>
+
+<p class="entryBody">
+次回は実際にGM_xmlhttpRequest関数を利用して、外部HTMLテンプレートを読み込むのに挑戦したいと思います。
+</p>

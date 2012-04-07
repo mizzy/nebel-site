@@ -1,0 +1,161 @@
+---
+layout: post
+title: "mod_dosdetector を Apache 2.0 系で動かすパッチ"
+date: 2007-07-26 22:32
+comments: true
+categories: 
+---
+"mod_dosdetecter 0.2":http://sourceforge.net/projects/moddosdetector/ を Apache 2.0 系で動かすパッチを書いてみた。修正ポイントは、
+
+* /usr/local/apache/include/pcreposix.h:41: error: redeclaration of enumerator `REG_BADBR' といったエラーが大量に出てくるが、これは /usr/include/regex.h と宣言が重複しているため。なので、#include &lt;regex.h&gt; は削除。
+* ap_regmatch_t 構造体と ap_regex_t 構造体は 2.2 系にのみ存在し、2.0 系には存在しない。なのでそれぞれ、regmatch_t, regex_t に置き換える。
+* apr_shm_remove は 2.2系 でしか使えないので、そのための修正を "mod_fcgid のソース":http://mod-fcgid.cvs.sourceforge.net/mod-fcgid/mod_fcgid/arch/unix/fcgid_proctbl_unix.c?r1=1.7&r2=1.8 からパクる。
+* set_ignore_contenttype_config() がセグフォるので修正
+
+<pre><code>=== mod_dosdetector.c
+==================================================================
+--- mod_dosdetector.c	(revision 804)
++++ mod_dosdetector.c	(local)
+@@ -28,7 +28,6 @@
+ #include <arpa/inet.h>
+ //#include <netinet/in.h>
+ #include <time.h>
+-#include <regex.h>
+ #include "httpd.h"
+ #include "http_config.h"
+ #include "http_request.h"
+@@ -41,6 +40,7 @@
+ #include "apr_strings.h"
+ #include "apr_shm.h"
+ #include "apr_thread_mutex.h"
++#include "apr_version.h"
+ 
+ //#define _DEBUG
+ 
+@@ -102,7 +102,90 @@
+ static apr_global_mutex_t *lock = NULL;
+ static apr_shm_t *shm = NULL;
+ 
++/* apr version 0.x not support apr_shm_remove, I have to copy it from apr version 1.x */
++#if (APR_MAJOR_VERSION < 1)
++#ifdef HAVE_SYS_MMAN_H
++#include <sys/mman.h>
++#endif
++#ifdef HAVE_SYS_IPC_H
++#include <sys/ipc.h>
++#endif
++#ifdef HAVE_SYS_MUTEX_H
++#include <sys/mutex.h>
++#endif
++#ifdef HAVE_SYS_SHM_H
++#include <sys/shm.h>
++#endif
++#if !defined(SHM_R)
++#define SHM_R 0400
++#endif
++#if !defined(SHM_W)
++#define SHM_W 0200
++#endif
++#ifdef HAVE_SYS_FILE_H
++#include <sys/file.h>
++#endif
+ 
++static apr_status_t apr_shm_remove(const char *filename, apr_pool_t * pool)
++{
++#if APR_USE_SHMEM_SHMGET
++	apr_status_t status;
++	apr_file_t *file;
++	key_t shmkey;
++	int shmid;
++#endif
++
++#if APR_USE_SHMEM_MMAP_TMP
++	return apr_file_remove(filename, pool);
++#endif
++#if APR_USE_SHMEM_MMAP_SHM
++	if (shm_unlink(filename) == -1) {
++		return errno;
++	}
++	return APR_SUCCESS;
++#endif
++#if APR_USE_SHMEM_SHMGET
++	/* Presume that the file already exists; just open for writing */
++	status = apr_file_open(&file, filename, APR_WRITE,
++						   APR_OS_DEFAULT, pool);
++	if (status) {
++		return status;
++	}
++
++	/* ftok() (on solaris at least) requires that the file actually
++	 * exist before calling ftok(). */
++	shmkey = ftok(filename, 1);
++	if (shmkey == (key_t) - 1) {
++		goto shm_remove_failed;
++	}
++
++	apr_file_close(file);
++
++	if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) < 0) {
++		goto shm_remove_failed;
++	}
++
++	/* Indicate that the segment is to be destroyed as soon
++	 * as all processes have detached. This also disallows any
++	 * new attachments to the segment. */
++	if (shmctl(shmid, IPC_RMID, NULL) == -1) {
++		goto shm_remove_failed;
++	}
++	return apr_file_remove(filename, pool);
++
++  shm_remove_failed:
++	status = errno;
++	/* ensure the file has been removed anyway. */
++	apr_file_remove(filename, pool);
++	return status;
++#endif
++
++	/* No support for anonymous shm */
++	return APR_ENOTIMPL;
++}
++#endif							/* APR_MAJOR_VERSION<1 */
++
++
+ static apr_status_t cleanup_shm(void *not_used)
+ {
+     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Notice: cleaning up shared memory");
+@@ -261,8 +344,8 @@
+ 
+ 	address = r->connection->remote_ip;
+ 
+-    ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
+-    ap_regex_t **contenttype_regexp = (ap_regex_t **) cfg->contenttype_regexp->elts;
++    regmatch_t regmatch[AP_MAX_REG_MATCH];
++    regex_t **contenttype_regexp = (regex_t **) cfg->contenttype_regexp->elts;
+ 	for (i = 0; i < cfg->contenttype_regexp->nelts; i++) {
+ 		if(!ap_regexec(contenttype_regexp[i], content_type, AP_MAX_REG_MATCH, regmatch, 0)){
+ 			//ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, 0, "ignoring content-type: %s", content_type);
+@@ -390,15 +473,13 @@
+ 					 const char *arg)
+ {
+     dosdetector_dir_config *cfg = (dosdetector_dir_config *) mconfig;
+-    char **ignore_contenttype = (char **) cfg->ignore_contenttype->elts;
++    regex_t *regexp;
++    char *type;
+ 
+-    *(char **) apr_array_push(cfg->ignore_contenttype) = apr_pstrdup(parms->pool, arg);
+-
+-	int i;
+-	regex_t *regexp;
+-	for (i = 0; i < cfg->ignore_contenttype->nelts; i++) {
+-        regexp = (regex_t *)ap_pregcomp(parms->pool, (char *)ignore_contenttype[i], REG_EXTENDED|REG_ICASE);
+-		*(regex_t **)apr_array_push(cfg->contenttype_regexp) = regexp;
++    while (*arg) {
++      type = ap_getword_conf(parms->pool, &arg);
++      regexp = ap_pregcomp(parms->pool, type, REG_EXTENDED|REG_ICASE);
++      *(regex_t **)apr_array_push(cfg->contenttype_regexp) = regexp;
+     }
+ 
+     return NULL;
+</code></pre>
+
+2.0 系でも 2.2 系でもどっちでも動くように修正した方がいいんだろうけど、それはまた今度。

@@ -1,0 +1,98 @@
+---
+layout: post
+title: "Deduped::AnyDBM_File"
+date: 2006-09-16 00:11
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/program/dedeuped.html"><span class="icon"></span>前回のエントリ</a>について、宮川さんから「AnyDBM_File をつかうといいかも」というアドバイスを頂いたので、Deduped::AnyDBM_File を書いてみた。
+</p>
+<pre class="wiki">
+package Plagger::Rule::Deduped::AnyDBM_File;
+use strict;
+use base qw( Plagger::Rule::Deduped::Base );
+use UNIVERSAL::require;
+use Fcntl;
+
+sub import {
+    my ( $class, @arguments ) = @_;
+
+    @AnyDBM_File::ISA = () if @arguments;
+    for ( @arguments ) {
+        push @AnyDBM_File::ISA, $_ . '_File';
+    }
+
+    AnyDBM_File->require;
+}
+
+sub init {
+    my($self, $rule) = @_;
+
+    $self->{path} = $rule->{path} || Plagger->context->cache->path_to('Deduped.db');
+    tie my %cache, 'AnyDBM_File', $self->{path}, O_RDWR|O_CREAT, 0666
+        or Plagger->context->error("Can't open DB_File $self->{path}: $!");
+    $self->{db} = \%cache;
+}
+
+sub find_entry {
+    my($self, $url) = @_;
+    my $value = $self->{db}->{$url};
+    return $value;
+}
+
+sub create_entry {
+    my($self, $url, $digest) = @_;
+    $self->{db}->{$url} = $digest;
+}
+
+sub DESTROY {
+    my $self = shift;
+    untie $self->{db};
+}
+
+1;
+</pre>
+<p>
+以下の様な感じで、利用するモジュールを NDBM_File, DB_File, GDBM_File, SDBM_File, ODBM_File の中から選べます。（何も指定しなければ DB_File が使われる。_File は省略する。）
+</p>
+<pre class="wiki">
+    rule:
+      module: Deduped
+      engine: GDBM
+</pre>
+<p>
+また、現在の Rule::Deduped では、Rule::Deduped::$self->{engine} を呼び出すようになっているけれど、上記 NDBM, DB, GDBM, SDBM, ODBM のいずれかが指定された場合には、Rule::Deduped::AnyDBM_File を呼び出す必要があるため、Rule::Deduped も少しいじってみた。
+</p>
+<pre class="wiki">
+Index: lib/Plagger/Rule/Deduped.pm
+===================================================================
+--- lib/Plagger/Rule/Deduped.pm	(revision 1688)
++++ lib/Plagger/Rule/Deduped.pm	(working copy)
+@@ -6,11 +6,19 @@
+ 
+ sub init {
+     my $self = shift;
++    my @dbms = qw( NDBM DB GDBM SDBM ODBM );
+ 
+-    $self->{engine} ||= 'DB_File';
++    $self->{engine} ||= 'DB';
+ 
+-    my $class = "Plagger::Rule::Deduped::$self->{engine}";
+-    $class->require or Plagger->context->error("Error loading $class: $@");
++    my $class;
++    if( grep { $_ eq $self->{engine} } @dbms ){
++        $class = 'Plagger::Rule::Deduped::AnyDBM_File';
++        $class->use($self->{engine}) or Plagger->context->error("Error loading $class: $@");
++    }
++    else {
++        $class = "Plagger::Rule::Deduped::$self->{engine}";
++        $class->require or Plagger->context->error("Error loading $class: $@");
++    }
+ 
+     my $deduper = $class->new($self);
+     $self->{deduper} = $deduper;
+</pre>
+<p>
+こうすると現在の Deduped::DB_File も、Deduped::AnyDBM_File で吸収できます。
+</p>

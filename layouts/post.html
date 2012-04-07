@@ -1,0 +1,38 @@
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>{% if index != true %}{{ title }} - {% endif %}Gosuke Miyashita</title>
+<link rel="stylesheet" href="/css/fonts.css" type="text/css" charset="utf-8">
+<link rel="stylesheet/tass" type="text/x-tass" href="/css/style.tass"/>
+<script type="text/javascript" src="/js/tass.js"></script>
+<link href="/atom.xml" rel="alternate" title="Gosuke Miyashita" type="application/atom+xml">
+</head>
+<body>
+<h1 class="site-title"><a href="/">Gosuke Miyashita</a></h1>
+
+<div class="content autopagerize_page_element">
+
+  <time>{{ date_formatted }}</time>
+  <h1 class="entry-title"><a href="{{ link }}">{{ title }}</a></h1>
+
+  <div class="content">
+    {{ content }}
+  </div>
+
+
+  <div class="pagination">
+    {% if next_page %}
+    <a href="{{ next_page.link }}" rel="next">next post</a>
+    {% endif %}
+    
+    {% if prev_page %}
+    <a href="{{ prev_page.link }}">previous post</a>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="autopagerize_insert_before"></div>
+
+</body>
+</html>

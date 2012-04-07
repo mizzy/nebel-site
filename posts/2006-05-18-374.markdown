@@ -1,0 +1,26 @@
+---
+layout: post
+title: "マルチプロセッサ/マルチスレッド メモリアロケータ Hoard"
+date: 2006-05-18 23:43
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.hoard.org/" target="_blank">Hoard</a> というメモリアロケータを、弊社サーバエンジニアの方から教えてもらいました。
+</p>
+
+<p class="entryBody">
+使い方は簡単で、
+</p>
+
+<pre class="code">
+export LD_PRELOAD="/path/libhoard.so:/lib/libdl.so"
+</pre>
+
+<p class="entryBody">
+などとしておくと、アプリケーション実行時に Hoard のライブラリを読み込み、malloc/free を Hoard のものに置き換えます。これにより、マルチプロセッサ/マルチスレッド環境でパフォーマンスを発揮する Hoard のメモリアロケーションアルゴリズムが、アプリに一切手を加えることなく利用できる、というわけです。
+</p>
+
+<p class="entryBody">
+もちろん仕組み上、<a href="http://www.cs.umass.edu/~emery/hoard/faqs.html">FAQ</a> にあるように、スタティックリンクされたアプリや、malloc/free を使わずに独自のメモリアロケータを使っているアプリでは利用することはできませんが、ほとんどのアプリには利用できるんじゃないでしょうか。
+</p>

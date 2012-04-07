@@ -1,0 +1,31 @@
+---
+layout: post
+title: "bloglines mobile gateway #1"
+date: 2005-05-13 21:55
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/web/bloglines.xhtml" target="_blank">bloglinesモバイルゲートウェイ</a>を久々にアップデート。
+</p>
+
+<ul class="entryBody">
+<li><a href="/web/MobileBloglines-0.04.tar.gz">マルチユーザ版</a></li>
+<li><a href="/web/MobileBloglinesSimple-0.03.tar.gz">シングルユーザ版</a></li>
+</ul>
+
+<p class="entryBody">
+<a href="http://d.hatena.ne.jp/satsumaimoko/20050512/1115851400" target="_blank">うたかた - scatterbrain - いつでもどこでもなんでも巡回</a>にて、「未読をクリアする機能があると更にスバラシイかも」というお言葉を頂きまして、俺自身もその機能があった方がいいかなぁ、と薄々感じてはいたので、実装してみました。
+</p>
+
+<p class="entryBody">
+記事表示画面の一番下に、「このフィードの記事を全て既読にする」というリンクを表示するようになってます。
+</p>
+
+<p class="entryBody">
+既読にした直後にも、既読にする前の記事が表示されてしまいますが、記事を読んでから既読にするまでの間に、更に新着記事があったりすると、その記事まで既読にされてしまうので、こういった仕様になってます。 
+</p>
+
+<p class="entryBody">
+記事を取得した時刻を記録して、それより以前の記事だけ既読にする、ってことができればいいのですが、<a href="http://www.bloglines.com/services/api/" target="_blank">Bloglinse API</a>ではその様な機能がないんですよね。
+</p>

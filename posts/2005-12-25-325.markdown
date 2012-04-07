@@ -1,0 +1,76 @@
+---
+layout: post
+title: "名刺作りました"
+date: 2005-12-25 02:46
+comments: true
+categories: 
+---
+<p class="entryBody">
+最近、ウェブ業界の方々とお会いすることが多いのですが、いま自分が属している会社はウェブとはぜんぜん関係がないので、会社の名刺をお渡しするのって、なんか違和感があるんですよね。会社の人間としてではなく、個人として会ってる、というのもあるので。
+</p>
+
+<p class="entryBody">
+かと言って、名刺をお渡ししないわけにもいかないので、個人用の名刺を知人のデザイナさんに頼んで作ってもらいました。こんな感じです。
+</p>
+
+<p class="entryBody" style="background: #000000;text-align: center;padding: 2em;">
+<img src="/img/name_card.jpg" alt="名刺" title="名刺" />
+</p>
+
+<p class="entryBody">
+で、名刺をお渡しするたびに、「ここはこういう意図があって、こんな風にしてるんですよー」とかいちいち説明するのも面倒なので、ここで解説しておきます。「意味についてはブログ読んでね」で済ませるために。
+</p>
+
+<p class="entryBody">
+まず右上のロゴですが、プログラミングって、ブロックを組み合わせるようなものだよなー、と。で、そのブロックを組み合わせることによって、自分のアイデンティティとなるロゴを表現してる、ってことで、プログラミングによって自分という存在を表現していきたい、という思いを表しています。迷路に迷い込んだ自分を表現してるわけじゃないっす。
+</p>
+
+<p class="entryBody">
+そして全体的には、「空にとけこむプログラム」は自分の脳内というイメージです。青空が少ない気がするけど、まあ気にしない。
+</p>
+
+<p class="entryBody">
+で、記述されたプログラム言語は当然 perl です。これにより「perl ラブ」という思いを表しています。
+</p>
+
+<p class="entryBody">
+左上に記述されたプログラムの内容は以下の通りです。
+</p>
+
+<pre class="code">
+package Shelf::Pages;
+use strict;
+use warnings;
+use Sledge::Pages::Compat;
+use Sledge::Session::MySQL;
+use Sledge::Template::TT;
+</pre>
+
+<p class="entryBody">
+これは自分がはじめて Sledge を使って書いたプログラムからの抜粋です。今の日曜 perl プログラマとしての自分は、Sledge に出会ったからこそ存在していると思っているので、「Sledge リスペクト」という思いを込めています。ついでに、use strict; や use warnings; は perl プログラマとしてのたしなみだ、ということと、MySQL や Template-Toolkit 使ってるよ、ってことを表現してます。
+</p>
+
+<p class="entryBody">
+その下のコードは以下の様になっていて、<a href="http://search.cpan.org/perldoc?Parse%3A%3ACPAN%3A%3AAuthors" target="_blank">Parse::CPAN::Authors</a> をつかって個人情報を表示、という感じにしてます。
+</p>
+
+<pre class="code">
+use Parse::CPAN::Authors;
+my $p = Parse::CPAN::Authors->new;
+my $author = $p->author('MIZZY');
+print 'NAME: ', $author->name , "\n";  
+print 'URL:  ', $author->url  , "\n";   
+print 'MAIL: ', $author->email, "\n"; 
+
+NAME: Gosuke Miyashita
+URL:  http://mizzy.org/
+MAIL: miya at mizzy.org
+</pre>
+
+<p class="entryBody">
+new する時に 01mailrc.txt.gz を渡していなかったり、実際には url というメソッドは存在しなかったり、 CPAN に登録しているメールアドレスはこれとは違ったりするのですが、そこは名刺用デフォルメってことで。
+</p>
+
+<p class="entryBody">
+ここを見てくださっている方々にも、いずれはお会いしてご挨拶させて頂けるといいなあと思っていますので、この名刺を差し出すやつがいたら、笑顔で受け取ってください。お願いします。捨てるなら見えないところでこっそりやってください。
+</p>

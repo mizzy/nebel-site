@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Mac SafariでのxmlHttpRequest文字化け"
+date: 2005-04-13 11:29
+comments: true
+categories: 
+---
+<p class="entryBody">
+このブログをカスタマイズしている過程で、Safari + xmlHttpRequestで取得したデータが文字化けする、という現象に悩んでいたのですが、&lt;?xml version="1.0" encoding="euc-jp"?&gt; という一文を入れてあげると、文字化けが解消されました。
+</p>
+
+<p class="entryBody">
+どうやらSafariのxmlHttpRequestでは、HTTPのContent-typeヘッダのcharsetは無視されるようで、XML宣言（って呼び方でいいの?）で指定されたcharsetを解釈する模様。XML宣言がないと、iso-8859-1とみなすらしい。
+</p>
+
+<p class="entryBody">
+なので、xmlHttpRequestで取得するコメントとトラックバックには、XML宣言を入れてます。なんか気色悪いけど、しかたない。
+</p>

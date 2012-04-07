@@ -1,0 +1,31 @@
+---
+layout: post
+title: "cygwin の sshd がエラーを吐くようになった"
+date: 2006-01-22 04:43
+comments: true
+categories: 
+---
+<p class="entryBody">
+うちでは<a href="http://mizzy.org/mtv2000/index.xhtml?css=white" target="_blank">こんなことをして</a> 無理やりウェブから MTV2000 の録画予約しているのですが、cygwin のパッケージを色々アップデートしたら、cygwin の sshd に対して接続できなくなってしまいました。ちなみにエラーはこんな感じ。
+</p>
+
+<pre class="code">
+initgroups: No such process
+</pre>
+
+<p class="entryBody">
+ssh コマンドをデバッグモードで実行すると、認証まではちゃんとできているということと、initgroups という言葉から、/etc/group の処理あたりでこけているのではないかと踏んで、以下の様に /etc/group と念のため /etc/passwd も作り直したら、正常に接続できるようになりました。
+</p>
+
+<pre class="code">
+$ mkpassed -l > /etc/passwd
+$ mkgroup -l > /etc/group
+</pre>
+
+<p class="entryBody">
+もとのファイルをとっておくのを忘れたので、何が原因だったのかはわからないけど、解決したから良しとしよう。
+</p>
+
+<p class="entryBody">
+同じような症状に遭遇する方もいるかもしれませんので、ここにメモしておきます。
+</p>

@@ -1,0 +1,100 @@
+---
+layout: post
+title: "Net::LDAP::Alternative"
+date: 2007-01-01 04:10
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://search.cpan.org/~gbarr/perl-ldap/lib/Net/LDAP.pod"><span class="icon"></span>perl-ldap (Net::LDAP)</a> のインターフェースがわかりにくくて、たまにこいつでプログラムを書こうとすると、いつもど忘れして perldoc と睨めっこするはめになるので、違うインターフェースで LDAP アクセスできるラッパモジュールを書いてます。とりあえずプロトタイプ版の <a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Net-LDAP-Alternative"><span class="icon"></span>Net::LDAP::Alternative</a> を置いておきます。まだ未完成で pod すらちゃんと書いてないですが。
+</p>
+<p>
+インターフェースがどんな風に違うかを例で示してみます。「特定の検索条件にマッチするエントリの電話番号を書き換える」という操作を、Net::LDAP で書くとこんな感じになります。
+</p>
+<pre class="wiki">
+my $ldap = Net::LDAP->new(
+    'kenny',
+    port => 389,
+);
+
+$ldap->bind(
+    'cn=Directory Manager',
+    password => 'password',
+);
+
+my $msg = $ldap->search(
+    base   => 'o=southpark',
+    filter => '(&(uid=miya)(cn=gosuke*))',
+);
+
+for my $entry ( $msg->entries ) {
+    print $entry->get_value('telephonenumber');
+    $ldap->modify(
+        $entry->dn,
+        replace => { telephonenumber => '00-0000-0000' }
+    );
+}
+</pre>
+<p>
+これを Net::LDAP::Alternative で書くとこうなります。
+</p>
+<pre class="wiki">
+my $ldap = Net::LDAP::Alternative->new({
+    host    => 'kenny',
+    port    => '389',
+    bind_dn => 'cn=Directory Manager',
+    bind_pw => 'password',
+    base    => 'o=southpark',
+});
+
+my $entries = $ldap->search({
+    uid => 'miya',
+    cn  => 'gosuke*',
+});
+
+while ( my $entry = $entries->next ) {
+    print $entry->telephonenumber;
+    $entry->telephonenumber('00-0000-0000');
+    $entry->update;
+}
+</pre>
+<p>
+Net::LDAP と特に異なる点は、
+</p>
+<ul><li>bind は明示的にしない。（コンストラクタで bind してる。）</li>
+<li>search を簡略化。LDAP 特有のフィルタ記法で書かなくて良い。</li>
+<li>検索して得られるエントリをイテレータにしてみた。</li>
+<li>エントリの属性取得のアクセサメソッドを実装。（get_value をつかわなくてよい。）</li>
+<li>エントリの属性変更もアクセサメソッド経由でできるので直感的にわかりやすい。</li></ul>
+<p>
+ってとこですね。
+</p>
+<p>
+また、1件しか検索結果が返らないことがわかっている場合は、Net::LDAP であれば
+</p>
+<pre class="wiki">
+my $msg = $ldap->search(
+    base   => 'o=southpark',
+    filter => '(&(uid=miya)(cn=gosuke*))',
+);
+
+my $entry = ($msg->entries)[0];
+</pre>
+<p>
+といった感じでエントリを取得するわけですが、Net::LDAP::Alternative では
+</p>
+<pre class="wiki">
+my $entry = $ldap->search({
+    uid => 'miya',
+    cn  => 'gosuke*',
+})->first;
+</pre>
+<p>
+といった感じでエントリ取得ができます。
+</p>
+<p>
+こんな感じで、DBIx::Class のインターフェースを参考にして、直感的にわかりやすいようにしてます。
+</p>
+<p>
+とりあえずなんとなくつくってみただけなので、これを発展させるかどうかはまだ未定。
+</p>

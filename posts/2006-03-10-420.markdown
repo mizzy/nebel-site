@@ -1,0 +1,24 @@
+---
+layout: post
+title: "Plagger::Plugin::CustomFeed::iTunesRecentPlay #0"
+date: 2006-03-10 10:42
+comments: true
+categories: 
+---
+<p class="entryBody">
+PLAYLOG が関係なくなったので、タイトル変更。Publish::MTWidget と組み合わせて、MT + <a href="http://www.majordojo.com/projects/SidebarManager/" target="_blank">Sidebar Manager</a> の環境で、サイドバーに iTunes で最近聴いた曲を表示できるように、エントリの title に曲名とアーティスト名をセットするようにしてみました。こんな感じで表示されます。
+</p>
+
+<p class="entryBody">
+<img src="http://mizzy.org/img/irp.jpg" />
+</p>
+
+<p class="entryBody">
+ですがまだ課題が色々あるので、コミットしてません。ここに TODO をまとめておきます。
+</p>
+
+<ul class="entryBody">
+<li>「曲名 - アーティスト名」というフォーマット決めうちなので、config.yaml で自由にカスタマイズできるようにしたい。MTWidget だけでなく、他の Publish 系プラグインと組み合わせるには、どの要素に何を入れるかカスタマイズできる必要があるので、ここは必須かな。</li>
+<li>link 要素に Amazon へのリンクを入れたい。Filter でやるのがスマートかなぁ。</li>
+<li>表示する件数を固定できるようにしたい。今は duration でしか制御ができない。</li>
+</ul>

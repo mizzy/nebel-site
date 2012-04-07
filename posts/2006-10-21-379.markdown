@@ -1,0 +1,49 @@
+---
+layout: post
+title: "HTML::Widget::Kwalify #1"
+date: 2006-10-21 17:58
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/HTML-Widget-Kwalify"><span class="icon"></span>HTML::Widget::Kwalify</a> を修正しました。<a class="ext-link" href="http://mizzy.org/widget/index.cgi"><span class="icon"></span>動作サンプルはこちら</a>。
+</p>
+<p>
+サンプルを触ってもらうと分かると思いますが、ポストしたデータを YAML 形式でダンプできます。また、フォームバリデーションにも対応してます。例えば、user_agent-timeout は Kwalify スキーマでは「type: int」と設定されているのですが、それに合わせてバリデーションルールも設定してあり、数字以外の文字列を入力すると「Invalid Input」と表示されます。
+</p>
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/samples/widget_kwalify/"><span class="icon"></span>サンプルのソースはここに置いときます</a>。
+</p>
+<p>
+サンプルソースのメイン部分は、
+</p>
+<pre class="wiki">
+sub top {
+    my $self = shift;
+
+    my $q = $self->query;
+    my $w = HTML::Widget::Kwalify->new('schema.yaml');
+
+    my $result = $q->param ? $w->process($q) : $w->process;
+
+    if ( $result->have_errors or !$q->param ) {
+        return $self->tt_process( 'index.html', { widget => $result } );
+    }
+    else {
+        $self->header_props( -type => 'text/plain' );
+        return $w->dump;
+    }
+}
+</pre>
+<p>
+といった感じなのですが、たったこれだけでバリデーション、フィルイン対応のフォームを Kwalify スキーマから自動生成し、POST データを YAML にダンプ、ってなことができます。超ベンリ。
+</p>
+<p>
+YAML はネストされたデータ構造なのに対し、HTML フォームは平坦な構造なので、この部分をどう処理するかが実装にあたって一番面倒そうだな、と思っていたのですが、宮川さんから <a class="ext-link" href="http://search.cpan.org/~nuffin/Catalyst-Plugin-Params-Nested-0.02/lib/Catalyst/Plugin/Params/Nested.pm"><span class="icon"></span>Catalyst::Plugin::Params::Nested</a> というモジュールを教えてもらい、これのベースクラスである <a class="ext-link" href="http://search.cpan.org/~bowmanbs/CGI-Expand-2.02/Expand.pm"><span class="icon"></span>CGI::Expand</a> を使うことによって、簡単に実装できてしまいました。CGI::Expand++ 。
+</p>
+<p>
+これで最低限やりたいことはできるようになりましたが、Kwalify スキーマのパースのしかたが適当なので、テストを書いて色んなパターンで試して調整する必要があったり、ファイルにダンプできるようにしたりとか、完成まではまだまだかかりそうです。
+</p>
+<p>
+また、<a class="ext-link" href="http://d.hatena.ne.jp/charsbar/20060114/1137232891"><span class="icon"></span>id:charsbar 氏</a> がおっしゃっている通り、HTML::Widget 自体が日本語が化けたりとか微妙な感じなので、こちらも手を入れないといけないですね。
+</p>

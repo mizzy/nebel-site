@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Catalyst で Atom API テストツール #2"
+date: 2006-02-18 11:24
+comments: true
+categories: 
+---
+<p class="entryBody">
+パッチを送って頂いたので、Atom API テストツール 「A2T2」 をアップデート。Thanks, Brian!
+</p>
+
+<p class="entryBody">
+自分、FeedURI と EditURI に対する GET の違いを理解してなかったので、その辺を直してくれちゃいました。Brian の環境では問題なく動作してるとのこと。テストの手間が省けた。
+</p>
+
+<p class="entryBody">
+例によってソースは <a href="http://trac.mizzy.org/public/browser/atom_client/trunk" target="_blank">trac</a> または svn://mizzy.org/public/atom_client/trunk からどぞ。
+</p>

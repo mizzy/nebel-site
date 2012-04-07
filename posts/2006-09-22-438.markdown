@@ -1,0 +1,77 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::FFmpeg #5"
+date: 2006-09-22 13:01
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/shimibow/20060921/1158852346"><span class="icon"></span>id:shimibow さんが Filter::FFmpeg のパッチを書いてくださいました</a>。いつもありがとうございます。これを参考に、以下の様な修正を行いました。
+</p>
+<pre class="wiki">
+Index: lib/Plagger/Plugin/Filter/FFmpeg.pm
+===================================================================
+--- lib/Plagger/Plugin/Filter/FFmpeg.pm (revision 254)
++++ lib/Plagger/Plugin/Filter/FFmpeg.pm (revision 270)
+@@ -51,15 +51,29 @@
+         $ff->input_options({ file => encode($encoding, $enclosure->local_path) });
+
+         my $output_file = File::Spec->catfile($self->conf->{dir}, "$file");
+-        $ff->output_options({
++        my $output_options = {
+             file    => encode($encoding, $output_file),
+             device  => $self->conf->{device} || 'ipod',
+             title   => encode($encoding, $entry->title),
+             author  => encode($encoding, $entry->author),
+             comment => encode($encoding, $entry->summary),
+             %{ $self->conf->{options} || {} },
+-        });
++        };
+
++        if ( $self->conf->{extra_options} ) {
++            my %option_to_name = reverse %FFmpeg::Command::option;
++            my @extra_options =  split ' ', $self->conf->{extra_options};
++            for ( @extra_options ){
++                my $name = $option_to_name{$_};
++                delete $output_options->{$name} if defined $output_options->{$name} and $name;
++            }
++            $ff->output_options($output_options);
++            $ff->options( @extra_options, @{ $ff->options } );
++        }
++        else {
++            $ff->output_options($output_options);
++        }
++
+         unless( -e $output_file ){
+             $context->log( info => 'Converting ' . $enclosure->filename . ' ...' );
+             my $result = $ff->exec();
+</pre>
+<p>
+extra_options で ffmpeg に渡す追加オプションを指定することができます。
+</p>
+<p>
+それに合わせて、FFmpeg::Command に以下の修正を加えて 0.05 として CPAN にアップしてます。
+</p>
+<pre class="wiki">
+Index: library/perl/trunk/FFmpeg-Command/lib/FFmpeg/Command.pm
+===================================================================
+--- library/perl/trunk/FFmpeg-Command/lib/FFmpeg/Command.pm (revision 248)
++++ library/perl/trunk/FFmpeg-Command/lib/FFmpeg/Command.pm (revision 266)
+@@ -3,5 +3,5 @@
+ use warnings;
+ use strict;
+-our $VERSION = '0.04';
++our $VERSION = '0.05';
+ 
+ use base qw( Class::Accessor::Fast Class::ErrorHandler );
+@@ -11,5 +11,5 @@
+ use Carp qw( carp );
+ 
+-my %option = (
++our %option = (
+     format              => '-f',
+     video_codec         => '-vcodec',
+</pre>
+<p>
+%option を Filter::FFmpeg から参照するためなのですが、外部からオプション追加とかもできるようになって、便利なこともあるかな、と。
+</p>

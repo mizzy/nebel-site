@@ -1,0 +1,18 @@
+---
+layout: post
+title: "bloglines mobile gateway"
+date: 2005-04-13 11:29
+comments: true
+categories: 
+---
+<p class="entryBody">
+こちらもちらほらとアクセスがあるので、リンクしておく。<a href="http://mizzy.org/web/bloglines.xhtml">http://mizzy.org/web/bloglines.xhtml</a>
+</p>
+
+<p class="entryBody">
+バージョンが0.02とか0.03で止まってますが、自分で使う分には十分なので、これ以上の更新はないかも。もちろん、ご要望があればできる限りの対応はさせて頂きます。
+</p>
+
+<p class="entryBody">
+ついでに、<a href="http://blog.cy-vogue.biz/blog/bloglines_mobile_gateway.htm" target="_blank">Ck2 Blogger</a>のきゃーさんがこのgatewayを「素敵」とおっしゃってくださったので、トラックバックしてみる。blosxomのカスタマイズにあたって有用な情報がたくさんあり、かなり参考になったので感謝の意も込めて。
+</p>

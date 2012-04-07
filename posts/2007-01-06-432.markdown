@@ -1,0 +1,29 @@
+---
+layout: post
+title: "Assurer - サーバテスティングフレームワーク #0"
+date: 2007-01-06 00:44
+comments: true
+categories: 
+---
+<p>
+構築したサーバがちゃんと動作するかどうかのテストを自動化したいなー、とスクリプトを書こうと思ったのですが、Perler としてはここはやはり、<a class="ext-link" href="http://plagger.org/trac"><span class="icon"></span>Plagger</a> とか <a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/20060929/1159495175"><span class="icon"></span>Archer</a> みたく、プラガブルで YAML で設定書けば OK みたいのを作るべきだろう、ってことで、<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Assurer"><span class="icon"></span>Assurer</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Assurer/"><span class="icon"></span>SVN</a>) というサーバテスティングフレームワークをでっちあげてみました。
+</p>
+<p>
+テストのことを Quality Assurance とか言ったりするし、Plagger や Archer が er で終わってるので、それに倣って命名してます。
+</p>
+<p>
+今のところ Plagger や Archer からコピペして、ごく簡単な HTTP テストプラグインをつくっただけでまだまだ未完成ですが、以下のような config.yaml で実行すると、HTTP GET して取得したコンテンツに「It works!」が含まれているかどうかテストする、といった感じで動作します。
+</p>
+<pre class="wiki">
+plugins:
+  - module: HTTP
+    config:
+      url: http://svn.mizzy.org/
+      match: It works!
+</pre>
+<p>
+これって、サーバのテストだけでなく、監視にも使えるよなー、と思ったところで、<a class="ext-link" href="http://d.hatena.ne.jp/naoya/20061214/1166063145"><span class="icon"></span>ライブドアテクノロジーセミナーで naoya さんが触れていた</a>、Observer というはてな製監視フレームワークとかぶるんじゃないか、という気がしてきました。Plagger ライクって言っていたし。
+</p>
+<p>
+ということは、はてなが Overver を公開してくれれば、自分で開発する必要がなくなって楽ができそう、ってことで、公開希望とここでつぶやいておきます。
+</p>

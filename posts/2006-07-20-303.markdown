@@ -1,0 +1,30 @@
+---
+layout: post
+title: "Catalyst Tips #1 default アクションでの args の扱い"
+date: 2006-07-20 19:05
+comments: true
+categories: 
+---
+<p>
+Catalyst では /controller/action/foo/bar といった パスでアクセスした場合、$c-&gt;req-&gt;args-&gt;<a class="changeset" href="/changeset/0">[0]</a> で foo、$c-&gt;req-&gt;args-&gt;<a class="changeset" href="/changeset/1">[1]</a> で bar が取り出せるのですが、/controller/foo/bar といったアクションの指定がないパスだと、$c-&gt;req-&gt;args-&gt;<a class="changeset" href="/changeset/0">[0]</a> には controller が入ってしまいます。
+</p>
+<p>
+$c-&gt;req-&gt;args は Catalyst::Dispatcher の prepare_action メソッドでセットされるのですが、default アクションが呼び出される場合には、更に Catalyst::DispatchType::Default 中の以下のコードが実行され、$c-&gt;req-&gt;args に コントローラ名がつっこまれる、という仕様になっているようです。
+</p>
+<pre class="wiki">
+# default methods receive the controller name as the first argument
+unshift @{ $c-&gt;req-&gt;args }, $path if $path;  
+</pre>
+<p>
+default アクションとその他のアクションで、$c-&gt;req-&gt;args の値の入り方が違うのは気持ち悪いし、共通のサブルーチンで args を処理する場合に面倒なので、以下の様なコードで回避することにしました。
+</p>
+<pre class="wiki">
+sub default : Private {
+    my ( $self, $c ) = @_;
+    shift @{ $c-&gt;req-&gt;args };
+    ...
+}
+</pre>
+<p>
+それにしても、なぜ default アクションの場合、コントローラ名を args に入れる必要があるんだろう？
+</p>

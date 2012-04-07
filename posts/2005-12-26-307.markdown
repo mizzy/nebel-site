@@ -1,0 +1,40 @@
+---
+layout: post
+title: "profiler と benchmarker スクリプトのパスが違う（Rails 勉強中 #4）"
+date: 2005-12-26 08:53
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Agile Web Development With Rails</a> の内容と、Rails 1.0 の違いメモ。
+</p>
+
+<p class="entryBody">
+P178、profiler と benchmarker のパスが違う。まずは profiler 。
+</p>
+
+<pre class="code">
+<strong>Rails 本</strong>
+depot> ruby script/profiler "Product.search('version_control') 10
+</pre>
+
+<pre class="code">
+<strong>Rails 1.0</strong>
+depot> ruby script/<strong>performance</strong>/profiler "Product.search('version_control') 10
+</pre>
+
+<p class="entryBody">
+つづいて benchmarker 。
+</p>
+
+<pre class="code">
+<strong>Rails 本</strong>
+depot> ruby script/benchmarker 10 "Product.new_search('version_control')" \
+                                  "Product.search('version_control')"
+</pre>
+
+<pre class="code">
+<strong>Rails 1.0</strong>
+depot> ruby script/<strong>performance</strong>/benchmarker 10 "Product.new_search('version_control')" \
+                                              "Product.search('version_control')"
+</pre>

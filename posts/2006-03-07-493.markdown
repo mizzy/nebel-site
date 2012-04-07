@@ -1,0 +1,31 @@
+---
+layout: post
+title: "PLAYLOG HACKS with Plagger #1"
+date: 2006-03-07 14:57
+comments: true
+categories: 
+---
+<p class="entryBody">
+Plagger Plugin の CustomFeed::iTunesRecentPlay と Publish::Playlog をアップデート。<a href="http://plagger.org/trac" target="_blank">本家サイト</a> にコミットしてますので、こちらをご参照ください。
+</p>
+
+<p class="entryBody">
+宮川さんの助言にしたがって、CustomFeed::iTunesRecentPlay の中の reload_period を廃止して、Rule::Fresh を利用するようにししました。
+</p>
+
+<p class="entryBody">
+それにともない、Publish::Playlog も publish.feed の代わりに publish.entry を利用するようにしています。（entry ひとつひとつの日時を見る必要があるため。）
+</p>
+
+<p class="entryBody">
+最初、宮川さんが CustomFeed::iTunesRecentPlay を修正しているのに気づかないままローカルコピーをいじってました…。svn update する癖をつけないといかんですね。
+</p>
+
+<p class="entryBody">
+次のタスクは、宮川さんの助言にある「スマートリストまたは iTunes API の利用」と otsune さんの助言にある「iTunes Music Library.xml の URL 指定での取得」ですね。といっても、実は「スマートリストの利用」というのが具体的にどうするのかがわからなかったりします。XML をパースするわけでもなく、API も利用せずに、スマートリストを取得する方法があるのでしょうか？#plagger-ja に宮川さんがいらっしゃれば聞いてみようと思ったのですが、誰もいなかったので忘れないようにここにメモしておきます。またコメントしてくれることを期待して:-)
+</p>
+
+<p class="entryBody">
+<strong>2006/03/07 14:50 追記</strong><br />
+深夜に回線ダウンしている間に、宮川さんからメールで回答頂けました。多謝。 #plagger-ja に誰もいなかったのは、単にサーバ選択を間違えていたからでした。 IRC ビギナーなので、クライアントでサーバ選択できるのを見て、「分散システムになってて、どこのサーバ選んでもいいのかな？」と激しく勘違いしてました…
+</p>

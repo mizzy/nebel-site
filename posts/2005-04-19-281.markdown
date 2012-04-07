@@ -1,0 +1,31 @@
+---
+layout: post
+title: "blosxomでtagging #5"
+date: 2005-04-19 23:19
+comments: true
+categories: 
+---
+<p class="entryBody">
+taggingプラグインをアップデート。約束通り、ajax（もどき）でタグを絞り込めるように改造。xmlHttpRequestに対応しているブラウザであれば、find tagフォームに文字を入れると、前方一致でダイナミックにタグが絞り込まれる様を見ることができます。対応していないブラウザでも、文字を入れてEnterを押せば同様にタグの絞込みができます。download: <a href="/archives/tagging">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+もちろん、xmlHttpRequestによる検索はこのプラグインだけでなく、Javascriptも必要です。Javascriptのコードについては、このサイトのソースをご参照下さい。
+</p>
+
+<p class="entryBody">
+これで大体欲しい機能は実装できたので、後はいじるとすると、バグフィックスとかパフォーマンス改善とか、その辺りかな。yuuさんからコメントでStorableモジュールを使わないで済むコードを頂いたのですが、こちらのコードに取り込むのはやめにしました。理由は、
+</p>
+
+<ul class="entryBody">
+<li>Storableモジュールはperl5.8では標準で入ってるらしい。いまどき5.8が使えない環境は少ないだろう。</li>
+<li>今後キャッシュデータが増えたり、データ構造を変えたりするかもしれないので、その度にシリアライズルーチンを変更するのも面倒。それならば汎用的なシリアライザを使ったほうが良いだろう。</li>
+</ul>
+
+<p class="entryBody">
+といったところです。yuuさん、せっかく頂いたのに申し訳ありません。
+</p>
+
+<p class="entryBody">
+ちゃんとドキュメントつくらないとなぁ…
+</p>

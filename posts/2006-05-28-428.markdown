@@ -1,0 +1,66 @@
+---
+layout: post
+title: "catlxom メモ #3"
+date: 2006-05-28 12:04
+comments: true
+categories: 
+---
+<p class="entryBody">
+$self->stash でセットした値を、$self->stashall で取り出すと、以下の様なハッシュリファレンスが返ってきます。
+</p>
+
+<pre class="code">
+{
+    'Catlxom::Plugin::Paginate::Simple' =&gt; {
+        'pager' =&gt; bless( {
+            'total_entries'    =&gt; 14,
+            'current_page'     =&gt; 2,
+            'entries_per_page' =&gt; '5'
+        }, 'Data::Page' )
+}
+</pre>
+
+<p class="entryBody">
+で、これをテンプレートで扱おうとして、
+</p>
+
+<pre class="code">
+&#x5b;% Catlxom::Plugin::Paginate::Simple.pager.current_page %&#x5d;
+</pre>
+
+<p class="entryBody">
+などと記述すると、
+</p>
+
+<pre class="code">
+unexpected token (Catlxom::Plugin::Paginate::Simple)
+</pre>
+
+<p class="entryBody">
+といったエラーになります。: が入ってるのがまずいのと、冗長で書くのがめんどくさいので、以下の様な patch を書いてみました。
+</p>
+
+<pre class="code">
+Index: lib/Catlxom/Context/Base.pm
+===================================================================
+--- lib/Catlxom/Context/Base.pm (revision 23)
++++ lib/Catlxom/Context/Base.pm (working copy)
+@@ -57,7 +57,8 @@
+
+ sub stash {
+     my $self   = shift;
+-    my $caller = caller(0);
++    ( my $caller = lc caller(0) ) =~ s/Catlxom::Plugin:://i;
++    $caller =~ s/::/_/g;
+
+     if (@_) {
+         my $stash = @_ &gt; 1 ? {@_} : $_[0];
+</pre>
+
+<p class="entryBody">
+これでテンプレートの中で以下の様に記述できます。
+</p>
+
+<pre class="code">
+&#x5b;% pagenate_simple.pager.current_page %&#x5d;
+</pre>

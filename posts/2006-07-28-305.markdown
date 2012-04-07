@@ -1,0 +1,84 @@
+---
+layout: post
+title: "FFmpeg::Command - A wrapper class for ffmpeg command line utility #1"
+date: 2006-07-28 00:02
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/FFmpeg-Command/lib/FFmpeg/Command.pm"><span class="icon"></span>FFmpeg::Command</a> の修正。
+</p>
+<p>
+昨日のエントリでの宣言どおり、iPod か PSP を指定することにより、変換フォーマットのオプションを省略できるようにしてみた。
+</p>
+<p>
+iPod の場合は device オプションすら省略可能で、
+</p>
+<pre class="wiki">
+$ffmpeg->output_options({
+    file => 'nba.mp4',
+});
+</pre>
+<p>
+は
+</p>
+<pre class="wiki">
+$ffmpeg->output_options({
+    file   => 'nba.mp4',
+    device => 'ipod',
+});
+</pre>
+<p>
+と同等で、更に
+</p>
+<pre class="wiki">
+$ffmpeg->output_options({
+    file                => 'nba.mp4',
+    format              => 'mp4',
+    video_codec         => 'h264',
+    bitrate             => 600,
+    size                => '320x240',
+    audio_codec         => 'aac',
+    audio_sampling_rate => 48000,
+    audio_bit_rate      => 64,
+});
+</pre>
+<p>
+とも同等です。
+</p>
+<p>
+PSP の場合は
+</p>
+<pre class="wiki">
+$ffmpeg->output_options({
+    file   => 'nba.mp4',
+    device => 'psp',
+});
+</pre>
+<p>
+と指定すれば OK で、
+</p>
+<pre class="wiki">
+$ffmpeg->output_options({
+    file                => 'nba.mp4',
+    format              => 'psp',
+    video_codec         => 'h264',
+    bitrate             => 600,
+    size                => '320x240',
+    audio_codec         => 'aac',
+    audio_sampling_rate => 48000,
+    audio_bit_rate      => 64,
+});
+</pre>
+<p>
+と同等になります。
+</p>
+<p>
+と言っても、デフォルト値がこれでいいのかはよく分からないので、このパラメータの値はこの方がいいんじゃない？などありましたら、ご指摘頂けると幸いです。
+</p>
+<p>
+あと、ボンヌさんと相談しまして、こちらで作っているものを CPAN にあげる、ということになりました。ボンヌさん、ありがとうございます。明日のランチ楽しみにしています。
+</p>
+<p>
+それから、CPAN にあげる前に、FFmpeg の作者の方の意向も聞いてみたいな、と思い、現在コンタクト中です。良い返事がもらえ次第、CPAN にアップしたいと思います。
+</p>

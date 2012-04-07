@@ -1,0 +1,22 @@
+---
+layout: post
+title: "blosxomでtagging #3"
+date: 2005-04-14 15:50
+comments: true
+categories: 
+---
+<p class="entryBody">
+taggingプラグインをアップデート。タグとファイルを関連付けるキャッシュを生成するようにして、パフォーマンスを向上。download: <a href="/archives/tagging">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+QUERY_STRINGやPOSTパラメータで、recache_tags=1を指定すれば、キャッシュを再作成します。
+</p>
+
+<p class="entryBody">
+手を抜くためにStorableモジュールを使ってます。なので、使える環境が限られてしまいます。ごめんなさい。（って、使ってくれる人がいれば、だけど。）
+</p>
+
+<p class="entryBody">
+次の目標は、タグの検索インターフェースにajaxを利用して、使いやすいものを目指してみる。
+</p>

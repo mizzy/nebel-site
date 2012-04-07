@@ -1,0 +1,31 @@
+---
+layout: post
+title: "ajaxでdel.icio.usを使いやすく #1"
+date: 2005-05-21 23:56
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/deliciousBar00.html" target="_blank">前回</a>は、<a href="http://del.icio.us" target="_blank">del.icio.us</a>を使いやすくするための、Firefoxサイドバーを作ろうと試みたのですが、ものすごく中途半端な状態で放置するはめになりました。敗因は、「俺はブラウザの機能としてのサイドバーが嫌い」ということを忘れていたから、ですね。ブラウザのメイン画面が狭くなるのでいやなんですよ。自分で使う気がないものを作ったって、いいものになるわけがない。
+</p>
+
+<p class="entryBody">
+で、今回は自分で使いたくなるようなものをちゃんと作ろう、ってことで作ってみました。
+<a href="http://mizzy.org/md/" target="_blank">サンプルはこちら</a>。で、<a href="http://mizzy.org/archives/MyDelicious.tar.gz">ソースはこちら</a>。 
+</p>
+
+<p class="entryBody">
+サンプルを試してみよう、という方は、パスワードの取り扱いにご注意下さい。セッションとひもづけて、こちらのサーバに保存してますので。一応暗号化して保存してますし、ブラウザ経由では見えないようにしていますが、できれば捨てパスワードに変更してから試して頂いて、その後元のパスワードに戻す、というのがよろしいかと。またはソースをお持ち帰り頂いて、ご自身で設置して頂くとか。
+</p>
+
+<p class="entryBody">
+Firefox 1.0.4(Win)でしか試していません。IE6はエラーが出ます。あと、Firefoxでもエラーが出て、del.icio.usからデータを取得できていないことがあります。原因不明。
+</p>
+
+<p class="entryBody">
+<a href="http://www.spurl.net" target="_blank">Spurl</a>の方が自分用オンラインブックマークとして使いやすい、と前に書いた気がしますが、SpurlBarはレスポンスが悪いんですよね。特に、関連するタグを取得する時。それに、SpurlBarは俺が嫌いなFirefoxサイドバーだったりするし、My spurlの使い勝手はSpurlBarに及ばないし。それにSpurlはAPIがない。2月末ぐらいにAPIについて問い合わせたら、「あと3,4週間でフルAPI提供できるぜ」と返事が来たものの、いまだAPIは提供されていないし。
+</p>
+
+<p class="entryBody">
+なので、これを作ったのを機に、del.icio.usに復帰しようかな、と思ってます。今のままだと、登録データが増えてくると最初の待ち時間が長くなるので、そのあたりの解決策も考えないといけないですね。
+</p>

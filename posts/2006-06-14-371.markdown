@@ -1,0 +1,57 @@
+---
+layout: post
+title: "catlxom の プラグイン機構を plagger ライクに #2 (catlxom メモ #7)"
+date: 2006-06-14 23:15
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/catlxom_memo_06.html" target="_blank">前回のエントリ</a>で、catlxom のプラグイン機構を plagger っぽくしてみたのですが、
+</p>
+
+<pre class="code">
+sub register {
+    my ($class, $c) = @_;
+    $c-&gt;catlxom-&gt;register_hook(
+        $class,
+        'setup'       =&gt; 'setup',
+        'interpolate' =&gt; 'interpolate',
+    );
+}
+</pre>
+
+<p class="entryBody">
+といった感じで、各プラグイン毎にいちいちプラグインを実行する hook ポイントと、その hook ポイントで実行するメソッドを記述するのもちょっと冗長だなぁ、と。
+</p>
+
+<p class="entryBody">
+なので、hook ポイント名とメソッド名は同じ、という規約を作ってしまって、Catalxom::Plugins でプラグインロードする際に register_hook してやれば、いちいち register を書く必要がなくなってハッピーだと思ったのでコード書いてみた。
+</p>
+
+<pre class="code">
+Index: lib/Catlxom/Plugins.pm
+===================================================================
+--- lib/Catlxom/Plugins.pm      (revision 23)
++++ lib/Catlxom/Plugins.pm      (working copy)
+@@ -51,7 +51,15 @@
+         ( my $plugin = 'Catlxom::Plugin::' . join( '::', @path ) . $file-&gt;basename )
+             =~ s/\.pm$//;
+
+-        unshift @Catlxom::Context::ISA, $plugin;
++        for ( qw(setup initialize start update filter sort paginate fixedup
++                 interpolate end) ){
++            if ( $plugin-&gt;can($_) ){
++                $c-&gt;catlxom-&gt;register_hook(
++                    $plugin,
++                    $_ =&gt; $_,
++                );
++            }
++        }
+     }
+
+     if ( $c-&gt;debug ) {
+</pre>
+
+<p class="entryBody">
+これでプラグインのコードがちょっとだけすっきりする。<a href="http://mizzy.org/archives/catlxom.patch" target="_blank">本家からの全差分はこちら。</a>
+</p>

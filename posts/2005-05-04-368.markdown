@@ -1,0 +1,58 @@
+---
+layout: post
+title: "redirect_permalinkプラグイン"
+date: 2005-05-04 23:35
+comments: true
+categories: 
+---
+<p class="entryBody">
+permalinkは変わらないからこそpermalinkなわけですが、事情があってpermalinkを変更せざるを得ないこともあると思います。
+</p>
+
+<p class="entryBody">
+そこで、permalink変更後に古いpermalinkにアクセスがあった場合、自動的に新しいpermalinkへリダイレクトするようなプラグインを作ってみました。<a href="/archives/redirect_permalink" target="_blank">redirect_permalinkプラグイン</a>
+</p>
+
+<p class="entryBody">
+permalinkが変わるといっても、どんな場合でも対応できるわけではなく、ファイル名が変わらない場合のみ有効です。例えば、このサイトの場合、古いpermalink <a href="http://mizzy.org/web/ajaxWebMail02.html" target="_blank">http://mizzy.org/<strong>web</strong>/ajaxWebMail02.html</a>が新しいpermalink <a href="http://mizzy.org/program/ajaxWebMail02.html" target="_blank">http://mizzy.org/<strong>program</strong>/ajaxWebMail02.html</a>に変更されたとします。太字の部分（ディレクトリ）が変更されていますが、ファイル名ajaxWebMail02は変更されていません。
+</p>
+
+<p class="entryBody">
+この状態で古いpermalink（存在しないpermalink）にアクセスすると、自動的に新しい方へリダイレクトされるのが分かるかと思います。
+</p>
+
+<p class="entryBody">
+想定している用途としては、カテゴリ構成を見直す場合、ですね。ファイル名を変更してしまうと、古いものと新しいものを自動的に関連付けるのが難しいので、現状では対応できませんが、プラグイン中に古いファイル名と新しいファイル名のマッピングを記述することで、対応できるようにしたいな、と考えていたりします。
+</p>
+
+<p class="entryBody">
+このプラグイン、blosxom.cgi本体の修正も必要です。406行目あたりの、
+</p>
+
+<pre class="perl">
+    # Plugins: Last
+    foreach my $plugin ( @plugins ) { $plugins{$plugin} > 0 and $plugin->can('last')
+    and $entries = $plugin->last() }
+</pre>
+
+<p class="entryBody">
+という記述を、
+</p>
+
+<pre class="code">
+    # Plugins: Last
+    foreach my $plugin ( @plugins ) { $plugins{$plugin} > 0 and $plugin->can('last')
+    and $entries = $plugin->last(<strong>$ne</strong>) }
+</pre>
+
+<p class="entryBody">
+と修正します。本当はblosxom.cgi本体の修正は、最終手段にしたかったのですが、指定されたpermalinkが見つかったどうかを判断する方法が、これ以外は思いつきませんでした…
+</p>
+
+<p class="entryBody">
+せっかく作ったものの、自分では使うことはないかも。カテゴリ構成を見直す必要がないように、<a href="http://mizzy.org/?topic=/program/blosxomWithTagging" target="_blank">taggingプラグイン</a>を作ったので。
+</p>
+
+<p class="entryBody">
+そろそろ自分が作ったプラグインを一度整理しないとなぁ…
+</p>

@@ -1,0 +1,89 @@
+---
+layout: post
+title: "html-tt-mode を sgml-mode のマイナーモードで動くようにしてみた"
+date: 2007-04-09 17:36
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://clouder.jp/yoshiki/mt/archives/000377.html"><span class="icon"></span>Clouder::Blogger: html-tt - emacsのTemplate Toolkit用のmode</a> を html-helper-mode ではなく、sgml-mode のマイナーモードで動くようにしたパッチ。（置換しただけ。）
+</p>
+<p>
+別に sgml-mode に思い入れはなく、Meadow でデフォルトで動いてるからそのまま使ってるだけなので、html-helper-mode にしてもいいんだけど、どうも Meadow でうまく色づけされないので、その原因追求するよりも、sgml-mode で動くようにした方がはやかったので。
+</p>
+<p>
+本当はどっちでも動くようにするのがいいんだろうけど、それはまた今度。
+</p>
+<pre class="wiki">
+=== html-tt.el
+==================================================================
+--- html-tt.el	(revision 193)
++++ html-tt.el	(local)
+@@ -66,7 +66,7 @@
+ ;; Code:
+ 
+ (provide 'html-tt)
+-(require 'html-helper-mode)
++(require 'sgml-mode)
+ (require 'tempo)
+ (require 'font-lock)
+ 
+@@ -217,38 +217,38 @@
+ (defun html-tt-load-hook ()
+   (interactive)
+   ;; define key bind
+-  ;(define-key html-helper-mode-map "\C-cs"
++  ;(define-key sgml-mode-map "\C-cs"
+   ;  'html-tt-insert-sequence)
+-  (define-key html-helper-mode-map "\C-cs"
++  (define-key sgml-mode-map "\C-cs"
+     'tempo-template-html-tt-insert-sequence)
+-  (define-key html-helper-mode-map "\C-cd"
++  (define-key sgml-mode-map "\C-cd"
+     'html-tt-insert-directive)
+-  (define-key html-helper-mode-map "\C-cn"
++  (define-key sgml-mode-map "\C-cn"
+     'tempo-template-html-tt-insert-directive)
+-  (define-key html-helper-mode-map "\C-ci"
++  (define-key sgml-mode-map "\C-ci"
+     'tempo-template-html-tt-insert-if)
+-  (define-key html-helper-mode-map "\C-cl"
++  (define-key sgml-mode-map "\C-cl"
+     'tempo-template-html-tt-insert-elsif)
+-  (define-key html-helper-mode-map "\C-ce"
++  (define-key sgml-mode-map "\C-ce"
+     'tempo-template-html-tt-insert-else)
+-  (define-key html-helper-mode-map "\C-cf"
++  (define-key sgml-mode-map "\C-cf"
+     'tempo-template-html-tt-insert-foreach)
+-  (define-key html-helper-mode-map "\C-cw"
++  (define-key sgml-mode-map "\C-cw"
+     'tempo-template-html-tt-insert-while)
+-  (define-key html-helper-mode-map "\C-cm"
++  (define-key sgml-mode-map "\C-cm"
+     'tempo-template-html-tt-insert-switch)
+-  (define-key html-helper-mode-map "\C-cn"
++  (define-key sgml-mode-map "\C-cn"
+     'tempo-template-html-tt-insert-include)
+
+   ;; add hilit-set-mode-pattern, if use hilit19.
+   (if (featurep 'hilit19)
+-      (hilit-add-pattern "\\&#x5b;%" "%\\&#x5d;" 'midnightblue 'html-helper-mode)
++      (hilit-add-pattern "\\&#x5b;%" "%\\&#x5d;" 'midnightblue 'sgml-mode)
+     )
+ 
+   ;; set font-lock
+   (make-local-variable 'font-lock-defaults)
+   (setq html-tt-font-lock-keywords
+-	(append html-helper-font-lock-keywords html-tt-font-lock-keywords))
++	(append sgml-font-lock-keywords html-tt-font-lock-keywords))
+   (setq font-lock-defaults '(html-tt-font-lock-keywords t t))
+   ) 
+</pre>
+<p>
+.emacs での設定はこんな感じで。
+</p>
+<pre class="wiki">
+(require 'html-tt)
+(add-hook 'sgml-mode-hook 'html-tt-load-hook)
+</pre>

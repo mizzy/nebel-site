@@ -1,0 +1,61 @@
+---
+layout: post
+title: "puppet の実行ファイル"
+date: 2007-03-21 00:34
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://reductivelabs.com/trac/puppet/wiki/PuppetExecutables"><span class="icon"></span>Puppet Executables</a> より。またもや超意訳、というかメモ。
+</p>
+<h3 id="puppet">puppet</h3>
+<p>
+スタンドアロンなインタプリタ。manifest ファイルを直接読んで、自ホストに適用する。あまり使うことはないと思う。
+</p>
+<h3 id="puppetca">puppetca</h3>
+<p>
+SSLv3 証明書ハンドリングのためのコマンド。<a class="ext-link" href="http://mizzy.org/linux/puppet05.html"><span class="icon"></span>この辺参照</a>。
+</p>
+<h3 id="puppetd">puppetd</h3>
+<p>
+puppet クライアント側で実行するデーモン。デフォルトでは、puppet サーバに対して定期的に問い合わせに行くけれど、
+</p>
+<pre class="wiki">
+$ puppetd --listen --no-client
+</pre>
+<p>
+と実行することで、puppet サーバからキックされるのを待ち受ける状態になる。（サーバは後述の puppetrun を実行してキックする。）
+</p>
+<h3 id="puppetdoc">puppetdoc</h3>
+<p>
+puppet ソースからドキュメントを抽出するためのツール。これもあまり使わないと思う。
+</p>
+<h3 id="puppetmasterd">puppetmasterd</h3>
+<p>
+puppet サーバ側で起動するデーモン。
+</p>
+<h3 id="puppetrun">puppetrun</h3>
+<p>
+puppet クライアントをサーバ側からキックする時に使うコマンド。
+</p>
+<pre class="wiki">
+$ puppetrun --host hostA --host hostB
+</pre>
+<p>
+という感じで特定のクライアントのみキックできるし、
+</p>
+<pre class="wiki">
+$ puppetrun --all --parallel 5
+</pre>
+<p>
+とかですべてのクライアントをキックする（ただし同時にキックするのは 5 クライアント）といったことができる。
+</p>
+<pre class="wiki">
+$ puppetrun --class web
+</pre>
+<p>
+とかで web クラスのクライアントのみキックとかもできる。ただし、--all や --class は、クライアントホストを LDAP で管理している場合のみ。
+</p>
+<p>
+うちではこれをメインに使うことになりそう。サーバの数が数百台とかあるから、クライアントから定期的にポーリングされる負荷も馬鹿にならないし、いっぺんにファイルとりにこられたりすると、とんでもないことになるので。
+</p>

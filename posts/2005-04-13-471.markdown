@@ -1,0 +1,23 @@
+---
+layout: post
+title: "shelf.mizzy.org"
+date: 2005-04-13 11:29
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://pitecan.com/Bookshelf/">本棚.org</a>や<a href="http://booklog.jp/">ブクログ</a>を見て、「俺だったらこんな風につくるなぁ」という思いを形にしてみたのが<a href="http://shelf.mizzy.org/" target="_blank">これ</a>。
+</p>
+
+<p class="entryBody">
+一般公開は考えてはいるものの、今のマシンリソースでは厳しいので、要望があれば考える、という感じです。一般公開するにしても、知り合いだけの閉じた空間は大切にしたいので、今あるものとは別にすると思う。
+</p>
+
+<p class="entryBody">
+これを作るにあたって、はじめてフレームワークなるものを使いました。<a href="http://sl.edge.jp" target="_blank">sledge</a>です。今までオブジェクト指向には興味なかったのですが、フレームワーク自体がOOなため、OOを意識してプログラムを書く必要があるわけですが、実際使ってみるとすげー便利。俺のプログラミングスタイルががらっと変わりました。OO万歳。
+</p>
+
+<p class="entryBody">
+もちろんフレームワークも超便利。もうフレームワークなしではCGIプログラミングできません。ただ、sledgeはレンタルサーバ環境などではまず使えないので、<a href="http://search.cpan.org/~markstos/CGI-Application/" target="_blank">CGI::Application</a>もよく使ってます。
+
+</p>

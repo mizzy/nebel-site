@@ -1,0 +1,50 @@
+---
+layout: post
+title: "Trac の SearchHyperEstraierPlugin を Trac 0.10.x で動かすパッチ"
+date: 2007-08-09 03:03
+comments: true
+categories: 
+---
+
+"SearchHyperEstraierPlugin":http://weekbuild.sakura.ne.jp/trac/wiki/TracDoc/SearchHyperEstraierPlugin が、Trac 0.10.x というか、うちの環境で動かないので、パッチ書いた。初 Python プログラミング。（というほどのものじゃないけど。）
+
+<pre><code>
+=== searchhyperestraier/searchhyperestraier.py
+==================================================================
+--- searchhyperestraier/searchhyperestraier.py	(revision 892)
++++ searchhyperestraier/searchhyperestraier.py	(local)
+@@ -2,8 +2,9 @@
+ # SearchRepositoryWithNamazu plugin
+
+ from trac.core import *
+-from trac.Search import ISearchSource, query_to_sql, shorten_result
++from trac.Search import ISearchSource, shorten_result
+ from trac.util import NaivePopen
++from trac.util.text import to_unicode
+ from StringIO import StringIO
+ import urllib
+ import time
+@@ -44,9 +45,9 @@
+         browse_trac = self.env.config.get('searchhyperestraier', 'browse_trac','enabled')
+ 
+ 
+-        cmdline = "%s %s %s %s" % (estcmd_path,estcmd_arg,index_path,unicode(query,'utf-8').encode(estcmd_encode))
++        cmdline = "%s %s %s %s" % (estcmd_path,estcmd_arg,index_path,' '.join(query))
+         self.log.debug('SearchHyperEstraier:%s' % cmdline)
+-        np = NaivePopen(cmdline)
++        np = NaivePopen( cmdline.encode(estcmd_encode) )
+         #self.log.debug('Result:%s' % unicode(np.out,'utf-8').encode('mbcs'))
+         #self.log.debug('Result:%s' % np.out)
+         if np.errorlevel or np.err:
+@@ -74,7 +75,7 @@
+             attrelem_array = element.getElementsByTagName("attribute")
+             for attrelem in attrelem_array:
+                 attr_name = attrelem.getAttribute("name")
+-                attr_value = unicode(attrelem.getAttribute("value")).encode('utf-8')
++                attr_value = to_unicode(attrelem.getAttribute("value"))
+                 #URLとタイトルを生成
+                 if attr_name == "_lreal":
+                     attr_value=attr_value[len(replace_left):].replace("\\","/")
+</code></pre>
+
+エラーが出るたびに、適当にいじってたら動いた、という感じ。なので、こんなんでいいのかはよく分からない。

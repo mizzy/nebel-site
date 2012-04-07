@@ -1,0 +1,45 @@
+---
+layout: post
+title: "Linux の iostat は何を見てるのか"
+date: 2007-05-11 01:54
+comments: true
+categories: 
+---
+Linux の iostat が出している数値が、正確には何なのか、ということを知る必要があり、調べてみたのでメモ。
+
+知りたいのは、とりあえずは以下の様に実行した場合の、rrqm/s, wrqm/s, r/s, w/s の 4 つ。
+
+    $ iostat -d -x
+    Device:    rrqm/s wrqm/s   r/s   w/s  rsec/s  wsec/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await  svctm  %util
+    sda          0.02  72.33  3.73 31.23   57.91  830.07    28.96   415.03    25.40     0.77   22.15   3.26  11.39
+
+特に rrqm/s, wrqm/s が man を読んでもよく分からない。
+
+              rrqm/s
+                     The  number  of read requests merged per second that
+                     were issued to the device.
+
+              wrqm/s
+                     The number of write requests merged per second  that
+                     were issued to the device.
+
+r/s, w/s が実際にデバイスにリクエストされた I/O 数で、rrqm/s, wrqm/s が、プロセスからリクエストされたものの、デバイスに渡される前にマージされたリクエスト数ではないか、推測。それが正しいかどうか確かめる。
+
+また、このリクエスト数というのが正確には何なのか、ということも確かめる。read/write 系のシステムコールの数？
+
+まずはおそらく /proc/diskstat から値を取得しているのだろう、ということで、中身を見てみると、こんな行がある。
+
+    8    0 sda 4506815 26232 69968005 66785384 37727406 87380973 1002794888 868225876 125 137597988 935021144
+
+でもって、sysstat-5.0.5 の iostat.c を見てみると、544行目あたりにこんな記述があった。
+
+    if (dev_type == DT_DEVICE)
+       i = (fscanf(sysfp, "%lu %lu %llu %lu %lu %lu %llu %lu %lu %lu %lu",
+	 	   &sdev.rd_ios, &sdev.rd_merges,
+		   &sdev.rd_sectors, &sdev.rd_ticks,
+		   &sdev.wr_ios, &sdev.wr_merges,
+		   &sdev.wr_sectors, &sdev.wr_ticks,
+		   &sdev.ios_pgr, &sdev.tot_ticks, &sdev.rq_ticks) == 11);
+
+/proc/diskstat 内の sda 右横にあるカラム数とも一致してるので、ここと考えて良さそう。そうなると、r/s, rrqm/s が 1, 2番目のカラム、w/s と wrqm/s が 5,6 番目のカラム、ってことになる。 
+

@@ -1,0 +1,60 @@
+---
+layout: post
+title: "puppetrun を試すならやっぱ trunk 版の方がよさげ"
+date: 2007-03-24 23:21
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://mizzy.org/linux/puppet07.html"><span class="icon"></span>puppet 今試すなら バージョン 0.22.1 を使え、そして gem で入れるな</a> というエントリを書いたわけですが、puppetrun で特に exec を使って puppet クライアントで何かコマンドを実行させたい、ということであれば、今は trunk 版を使ったほうがいいかも。
+</p>
+<p>
+理由。まず以下の様な単純なコマンドを実行させる site.pp をつくる。
+</p>
+<pre class="wiki">
+exec { 'touch':
+  path    => '/bin',
+  command => 'touch /tmp/puppet',
+}
+
+</pre>
+<p>
+で、puppetmasterd を puppet サーバで起動。
+</p>
+<pre class="wiki">
+$ sudo puppetmasterd
+</pre>
+<p>
+次に puppet クライアント側で puppetd を起動。
+</p>
+<pre class="wiki">
+$ sudo puppetd --listen --no-client --server kenny.southpark -v 
+</pre>
+<p>
+そして、puppet サーバ側で puppetrun を起動して、設定した exec をクライアントで実行させる。
+</p>
+<pre class="wiki">
+$ sudo puppetrun --host cartman.southpark
+</pre>
+<p>
+すると、0.22.1 では、クライアント側の puppetd がハングした状態になります。strace で見ると、以下の記述が延々と表示されるという状態に。
+</p>
+<pre class="wiki">
+rt_sigprocmask(SIG_SETMASK, [], ULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], ULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], ULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], ULL, 8) = 0
+... (以下繰り返し)
+</pre>
+<p>
+0.22.1 と 0.22.2 の間で、lib/puppet/type/exec.rb にかなり修正が入ってるので、おそらく 0.22.2 では大丈夫だろうけど、<a class="ext-link" href="http://mizzy.org/linux/puppet07.html"><span class="icon"></span>前エントリ</a> で書いたように、0.22.2 ではそもそも puppetd がエラーで起動できない、という問題がある。なので、trunk 版を使うのがいい、という結論になりました。trunk 版だと問題なく実行できることを確認済み。
+</p>
+<p>
+<del>ただ、これも <a class="ext-link" href="http://mizzy.org/linux/puppet07.html"><span class="icon"></span>前エントリ</a> で書いたように、puppetrun に以下の一行を追加しないと動かないので注意。 </del><a class="ext-link" href="http://reductivelabs.com/trac/puppet/changeset/2352"><span class="icon"></span>fix された</a>。自分の修正内容と違うけど。
+</p>
+<pre class="wiki">
+require 'puppet/network/client/runner'
+</pre>
+<p>
+まだ実戦投入はやめておいた方がよさそうかな…。まだ検証段階なのでいいのですが。
+</p>

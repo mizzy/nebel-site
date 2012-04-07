@@ -1,0 +1,18 @@
+---
+layout: post
+title: "feedbringerをremixin' #4"
+date: 2005-11-23 18:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+feedbringer用greasemonkeyユーザスクリプトの<a href="/js/feedbringer2.user.js" target="_blank">白黒バージョン</a>を修正しました。
+</p>
+
+<p class="entryBody">
+白黒バージョンではアイコンを強引に入れ替えてるのですが、入れ替わるのが最初にページにアクセスした時だけで、15分毎のツリーメニューのアップデート時には、入れ替わらずにオリジナルの青いアイコンのままになってしまう、というバグを修正しました。
+</p>
+
+<p class="entryBody">
+feedbringerはprototype.jsを利用しているので、Ajax.Updater.prototype.updateContentをオーバーライドするという強引な方法で対処しました。もっとスマートなやり方があると思うのですが、他に思い浮かばなかったので。
+</p>

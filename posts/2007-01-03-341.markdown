@@ -1,0 +1,45 @@
+---
+layout: post
+title: "Net::LDAP::Abstract #0"
+date: 2007-01-03 03:55
+comments: true
+categories: 
+---
+<p>
+Net::LDAP のラッパモジュール <a class="ext-link" href="http://mizzy.org/program/net-ldap-alternative.html"><span class="icon"></span>Net::LDAP::Alternative</a> を <a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Net-LDAP-Abstract"><span class="icon"></span>Net::LDAP::Abstract</a> に変えて、少し修正しました。svn で取得するには以下のように実行して下さい。
+</p>
+<pre class="wiki">
+svn co http://svn.mizzy.org/public/library/perl/trunk/Net-LDAP-Abstract/
+</pre>
+<p>
+名称を Alternative から Abstract に変えたのは、LDAP アクセスの処理を Net::LDAP の実装よりも更に抽象化しているから、というのと、検索フィルタを <a class="ext-link" href="http://search.cpan.org/~nwiger/SQL-Abstract/lib/SQL/Abstract.pm"><span class="icon"></span>SQL::Abstract</a> ライクに書けるから、という理由からです。
+</p>
+<p>
+たとえば、Net::LDAP では
+</p>
+<pre class="wiki">
+my $msg = $ldap->search(
+    base   => 'o=southpark',
+    filter => '(|(&(!(cn=*gosuke))(sn=miyashita))(uid=miya))',
+);
+</pre>
+<p>
+とやたらと括弧の多いフィルタを自分で書かなければいけないところを、Net::LDAP::Abstract では
+</p>
+<pre class="wiki">
+my $entries = $ldap->search({
+    -or => {
+        uid => 'miya',
+        -and => {
+            sn => 'miyashita',
+            cn => { '!=' => '*gosuke' },
+        }
+    }
+});
+</pre>
+<p>
+といった感じで書けます。これは超便利。
+</p>
+<p>
+フィルタを組み立てるコードは、SQL::Abstract からそのまんまぱくってます。
+</p>

@@ -1,0 +1,16 @@
+---
+layout: post
+title: "CustomFeed::DAAP と Filter::FetchDAAP #1"
+date: 2006-09-12 23:11
+comments: true
+categories: 
+---
+<p>
+CustomFeed::DAAP と Filter::FetchDAAP を、enclosure サポートして他のプラグインとも連携できるように <a class="ext-link" href="http://trac.mizzy.org/public/changeset/262"><span class="icon"></span>修正してみた</a>。
+</p>
+<p>
+これで Filter::RewriteEnclosureURL + Publish::Feed で Podcasting したり、<a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Publish/iTunes.pm"><span class="icon"></span>Publish::iTunes</a> で直接 iTunes へ追加、とかできるはず。試してないけど。
+</p>
+<p>
+ますますクロい。
+</p>

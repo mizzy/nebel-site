@@ -1,0 +1,104 @@
+---
+layout: post
+title: "デプロイツール Archer #0"
+date: 2007-02-12 03:35
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/"><span class="icon"></span>id:tokuhirom</a> さん作のデプロイツール <a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/20060929/1159495175"><span class="icon"></span>Archer</a> を最近使い始めたのですが、これがすげーいいっす。
+</p>
+<p>
+で、この週末は更に便利に使えるように、Archer 用のプラグイン書いたりしてました。
+</p>
+<ul><li><a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Archer/lib/Archer/Plugin/SVN/Log.pm"><span class="icon"></span>Archer::Plugin::SVN::Log</a></li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Archer/lib/Archer/Plugin/SVN/Diff.pm"><span class="icon"></span>Archer::Plugin::SVN::Diff</a></li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Archer/lib/Archer/Plugin/SVN/Update.pm"><span class="icon"></span>Archer::Plugin::SVN::Update</a></li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Archer/lib/Archer/Plugin/Rsync.pm"><span class="icon"></span>Archer::Plugin::Rsync</a></li>
+<li><a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Archer/lib/Archer/Plugin/Shell.pm"><span class="icon"></span>Archer::Plugin::Shell</a></li></ul>
+<pre class="wiki">
+global:
+  work_dir: /home/miya/work
+  dest_dir: /home/miya/assurer
+
+tasks:
+  init:
+    - module: SVN::Diff
+
+    - module: Confirm
+      config:
+        msg: really update? [y/n]
+
+    - module: SVN::Update
+
+    - module: Confirm
+      config:
+        msg: really deploy? [y/n]
+
+  process:
+    - module: Rsync
+
+projects:
+  Assurer:
+    app:
+      - mizzy.org
+</pre>
+<p>
+こんな感じの設定をして、
+</p>
+<pre class="wiki">
+$ archer.pl Assurer -c assurer.yaml
+</pre>
+<p>
+とか実行すると、
+</p>
+<p>
+<ul>
+<li>/home/miya/work/Assurer にある svn co したファイルと、SVN HEAD の diff を表示。</li>
+<li>svn up するかどうか、プロンプト表示。</li>
+<li>svn up 実行。</li>
+<li>実際にデプロイするか、プロンプトを表示。</li>
+<li>ローカルの /home/miya/work/Assurer から リモートサーバ上の /home/miya/assurer へ rsync でファイルコピー。</li>
+</ul>
+</p>
+<p>
+といった動作になります。
+</p>
+<p>
+<a class="ext-link" href="http://code.mfac.jp/trac/file/Archer/examples/config.yaml"><span class="icon"></span>Archer 同梱の config.yaml</a> では、svn log, svn up, rsync は Exec::Local プラグインで実行しているのですが、この辺りの記述をできるだけ簡略化したいな、ということで、こういったプラグインをつくってみました。
+</p>
+<p>
+また、ライブドアテクノロジーセミナーの <a class="ext-link" href="http://d.hatena.ne.jp/naoya/20061214/1166063145"><span class="icon"></span>naoya さんのプレゼン</a> で、Capistrano にはシェルプロンプトを表示して、指定したコマンドを複数のリモートサーバ上で一発で実行できる、という機能があって、これがうらやましかったので、Archer プラグインとして実装してみました。
+</p>
+<pre class="wiki">
+tasks:
+  init:
+    - module: Shell
+      config:
+        role: app
+        para: 1
+
+projects:
+  mizzy.org:
+    app:
+      - www.mizzy.org
+      - svn.mizzy.org
+      - ftp.mizzy.org
+</pre>
+<p>
+といった設定をしやると、以下の様な感じで実行できます。（3つのサーバは実体が同じなので、結果が同じですが。）
+</p>
+<pre class="wiki">
+$ ./archer.pl -c shell.yaml mizzy.org
+[info] run hook init
+[debug] load Archer::Plugin::Shell
+[info] run Archer::Plugin::Shell
+shell> uptime
+[www.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+[svn.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+[ftp.mizzy.org]  02:59:34 up 4 days,  3:39,  1 user,  load average: 0.21, 0.23, 0.22
+shell> 
+</pre>
+<p>
+<a class="ext-link" href="http://code.mfac.jp/svn/Archer/"><span class="icon"></span>Archer はこちらから</a>入手できます。また、俺が書いたプラグインなんかは、<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Archer/"><span class="icon"></span>ここに置いてあります</a>。
+</p>

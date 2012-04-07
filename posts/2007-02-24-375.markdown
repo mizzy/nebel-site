@@ -1,0 +1,57 @@
+---
+layout: post
+title: "Plagger で Yahoo!Booksのランキングをとってくる"
+date: 2007-02-24 00:44
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://pythonbeginner.blog78.fc2.com/blog-entry-213.html"><span class="icon"></span>さすがにPlaggerでもこれは無理だと思いたい。PythonでYahoo!Booksのランキングをとってくる。</a> というエントリを見て、なんか釣りっぽいタイトルだけど敢えて釣られてみた。
+</p>
+<p>
+ちょっとアウトプット違うけど、Plagger なら 10 分でできた。
+</p>
+<p>
+<img src="http://mizzy.org/img/plagger-ybooks-s.jpg" alt="http://mizzy.org/img/plagger-ybooks-s.jpg" />
+</p>
+<p>
+以下の2つのファイルを用意してやるだけ。
+</p>
+<p>
+config.yaml
+</p>
+<pre class="wiki">
+plugins:
+  - module: Subscription::Config
+    config:
+      feed:
+        - url: http://books.yahoo.co.jp/ranking/general/all/all/weekly/index.html
+          meta:
+            follow_link: /book_detail/.*
+
+  - module: CustomFeed::Simple
+
+  - module: Filter::EntryFullText
+
+  - module: Publish::Gmail
+    config:
+      mailto:   xxx@gmail.com
+      mailfrom: plagger@mizzy.org
+      mailroute:
+        via: smtp
+        host: localhost
+        attach_enclosures: 1
+
+</pre>
+<p>
+EntryFullText 用 yaml
+</p>
+<pre class="wiki">
+author: Gosuke Miyashita
+handle: http:\/\/books\.yahoo\.co\.jp\/book_detail\/\d+
+extract: &lt;!-- 書籍紹介 --&gt;.+&lt;small&gt;(.*?)&lt;/small&gt;.+&lt;!-- //書籍紹介 --&gt;
+extract_capture: body
+</pre>
+<p>
+既存の設定からほぼコピペなので、10 分のうち7割ぐらいは、EFT 用 yaml の文字コードが UTF-8 じゃないといけないのに、euc-jp にしてて「なんかうまくいかねー」とかやってた時間。
+</p>

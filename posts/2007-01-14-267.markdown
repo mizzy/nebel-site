@@ -1,0 +1,34 @@
+---
+layout: post
+title: "Assurer - サーバテスティングフレームワーク #3"
+date: 2007-01-14 16:04
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Assurer"><span class="icon"></span>Assurer</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Assurer/"><span class="icon"></span>SVN</a>) を修正。主な修正点は以下の通りです。
+</p>
+<ul><li>テスト結果を保持する Assurer::Results クラスを削除。代わりに Test::TAP::Model を使うようにした。</li>
+<li>Format, Publish まわりを実装し、Format::Text, Format::HTML, Publish::Term を実装。</li>
+<li>Assurer::Test でテスト結果をターミナルに表示していたのを、Publish::Term に分離。</li></ul>
+<pre class="wiki">
+format:
+  - module: HTML
+    config:
+      css_uri: htmlmatrix.css
+
+publish:
+  - module: Term
+</pre>
+<p>
+といった設定をして、
+</p>
+<pre class="wiki">
+$ ./assurer.pl -c examples/config.yaml > tap.html
+</pre>
+<p>
+と実行すると、<a class="ext-link" href="http://mizzy.org/archives/tap.html"><span class="icon"></span>こんな感じの HTML</a> が得られます。
+</p>
+<p>
+これで大枠はだいぶ整ってきた気がする。
+</p>

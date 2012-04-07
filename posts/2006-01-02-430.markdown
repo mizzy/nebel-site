@@ -1,0 +1,92 @@
+---
+layout: post
+title: "Rails とウェブサービス（Rails 勉強中 #7）"
+date: 2006-01-02 07:55
+comments: true
+categories: 
+---
+<p class="entryBody">
+Rails とウェブサービスについては、<a href="http://d.hatena.ne.jp/secondlife/20051113/1131889978" target="_blank">川o・-・）＜2nd life - ActionWebServiceでxmlrpcサービスを作る</a>  で詳しく解説されておりますので、俺の出る幕なんかないわけですが、<a href="http://www.amazon.co.jp/exec/obidos/ASIN/097669400X/httshemizorg-22/ref=nosim" target="_blank">Rails 本</a> の通りにしてもうまく動かなかったところがあるのでその回避方法のメモと、gorou さんのところに書かれていないもので、面白いものがあったのでここでとりあげてみます。
+</p>
+
+<p class="entryBody">
+Rails 本のサンプルでは、以下のような2つのファイルを作っています。
+</p>
+
+<pre class="code">
+class ProductApi &lt; ActionWebService::API::Base
+  api_method :find_all_products,
+             :returns => [[:int]]
+  api_method :find_product_by_id,
+             :expects => [:int],
+             :returns => [Product]
+end
+</pre>
+
+<pre class="code">
+class BackendController &lt; ApplicationController
+  wsdl_service_name 'Backend'
+  web_service_api ProductApi
+  <strong>web_service_scaffold :invoke</strong>
+
+  def find_all_products
+    Product.find(:all).map{ |product| product.id }
+  end
+
+  def find_product_by_id(id)
+    Product.find(id)
+  end
+end
+</pre>
+
+<p class="entryBody">
+太字の <strong>web_service_scaffold :invoke</strong> がポイントです。こいつを設定しておくと、http://host/controller/invoke で以下のような画面が表示されます。
+</p>
+
+<p class="entryBody">
+<img src="/img/invoke01.jpg" />
+</p>
+
+<p class="entryBody">
+こんな感じで、定義されているメソッド、返り値型、引数型が一覧で表示されます。さらに、各メソッドはリンクになっているので、辿ってみると以下のような画面が表示されます。
+</p>
+
+<p class="entryBody">
+<img src="/img/invoke02.jpg" />
+</p>
+
+<p class="entryBody">
+Protocol: では、SOAP か XML-RPC が選択できます。（つまり、ActionWebService は SOAP と XML-RPC の両方に勝手に対応してくれる！）また、メソッドで定義されている引数型と数に応じて、入力フォームが表示されます。で、引数に適当に値を入れて「Invoke」を押すと、以下のような画面となります。
+</p>
+
+<p class="entryBody">
+<img src="/img/invoke03.jpg" />
+</p>
+
+<p class="entryBody">
+こんな感じで、返り値（Product オブジェクト）と、リクエスト/レスポンス XMLの内容を表示してくれます。ただし、実際にブラウザからリクエスト XMLを送っているわけではないようです。post されたパラメータをそのままメソッドに渡してるみたい。なので厳密なテストにはなりませんが、どいういったメソッドがあるのかとか、各メソッドの返り値型、引数型、リクエスト/レスポンス XMLの内容 なんかがすぐに分かるので、利用者側にはすごく便利ですね。上の例は SOAP ですが、XML-RPC を選択すれば、XML の内容も XML-RPC に合わせたものになります。
+</p>
+
+<p class="entryBody">
+さらに便利なことに、WSDL も自動生成してくれて、http://host/controller/service.wsdl でアクセスできます。なので、Ruby であれば SOAP4R で WSDL からメソッドやデータ構造を自動生成、って感じで、ウェブサービスを利用する開発者にはとてもおいしいですね。（WSDL や SOAP4R については、たださんの日記の <a href="http://sho.tdiary.net/20051124.html#p01" target="_blank">第八回XML開発者の日</a>、<a href="http://sho.tdiary.net/20051202.html#p01" target="_blank">Yahoo! デベロッパーネットワーク</a> で知りました。）
+</p>
+
+<p class="entryBody">
+あと、本の通りにやってもうまく動かなかった点について。上のスクリーンショットで実行している、SOAP での FindProductById メソッドの実行ですが、「 can't modify frozen object 」というエラーが出ます。で、なんだかよくわからんのですが、/usr/local/lib/ruby/1.8/xsd/qname.rb の74行目の
+</p>
+
+<pre class="code">
+EMPTY = QName.new.freeze
+</pre>
+
+<p class="entryBody">
+を
+</p>
+
+<pre class="code">
+EMPTY = QName.new
+</pre>
+
+<p class="entryBody">
+に変えたら動くようになりました。でも、この変更によってどういう影響があるのか自分にはよく分かりません…
+</p>

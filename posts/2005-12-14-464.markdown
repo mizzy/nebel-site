@@ -1,0 +1,33 @@
+---
+layout: post
+title: "FeedBurner に新機能"
+date: 2005-12-14 10:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.techcrunch.com/" taget="_blank">TechCrunch</a> - <a href="http://www.techcrunch.com/2005/12/13/feedburner-integrates-web-services-into-feeds/" target="_blank">FeedBurner Integrates Web Services Into Feeds</a> より。
+</p>
+
+<p class="entryBody">
+<a href="http://www.feedburner.com/" target="_blank">FeedBurner</a> に FeedFlare という新機能が追加されてます。フィードの中に、エントリに対して del.icio.us で付与されたタグとか、Technorati より取得したエントリの被リンク数とか、del.icio.us にブックマークするためのリンクなんかを埋め込んでくれます。
+</p>
+
+<p class="entryBody">
+他にもいくつか埋め込んでくれる情報はあるのですが、詳細は上記 TechCrunch のエントリを参照して下さい。
+</p>
+
+
+<p class="entryBody">
+設定は [Optimize]タブ → 左サイドメニューの [FeedFlare] から。
+せっかくある機能なので、このブログのフィードにも設定してみました。
+</p>
+
+<p class="entryBody">
+Web Services を使って他から情報をひっぱってきてフィードに埋め込む、というのは、他にも色々応用できそうですね。
+</p>
+
+<p class="entryBody">
+<strong>追記:</strong> FeedFlare を Activate したら、フィードに本文が含まれなくなってしまった…のでとりあえず今はオフにしてます。
+</p>
+

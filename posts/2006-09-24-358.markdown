@@ -1,0 +1,188 @@
+---
+layout: post
+title: "Plagger プラグインの実行フェーズ"
+date: 2006-09-24 03:58
+comments: true
+categories: 
+---
+<p>
+Plagger プラグインの実行フェーズについて整理してみたので、載せておきます。
+</p>
+
+<p>
+<strong>追記</strong><br />
+はてブで「argsもあるとうれしいとおもた」というコメントがありましたので、追加してみました。
+</p>
+
+<table>
+
+<tr>
+<th>実行フェーズ</th>
+<th>$args</th>
+<th>フェーズの役割</th>
+<th>実行例</th>
+</tr>
+
+<tr style="background-color: #bfefff">
+<td>plugin.init</td>
+<td>-</td>
+<td>プラグインの初期化処理</td>
+<td>Publish::Feedでのフィード出力用ディレクトリ作成</td>
+</tr>
+
+<tr style="background-color: #c1ffc1">
+<td>subscription.load</td>
+<td>-</td>
+<td>フィードをPlaggerの購読リストへ登録</td>
+<td>Subscription::Config でのyamlで指定されたフィードURL登録</td>
+</tr>
+
+<tr style="background-color: #c1ffc1">
+<td>customfeed.handle</td>
+<td>feed</td>
+<td>フィードのアグリゲーション（フィードデータの取得とパース）</td>
+<td>Aggregator::Simpleで RSS/Atomフィード取得とパース</td>
+</tr>
+
+<tr style="background-color: #c1ffc1">
+<td>aggreagator.filter.feed</td>
+<td>content</td>
+<td>アグリゲートフェーズでのフィード変換処理</td>
+<td>Filter::RSSTimeZoneStringでの不正なタイムゾーンの修正</td>
+</tr>
+
+<tr style="background-color: #c1ffc1">
+<td>aggregator.entry.fixup</td>
+<td>entry, feed, orig_entry, orig_feed</td>
+<td>アグリゲートフェーズでのエントリ変換処理</td>
+<td>Filter::FeedBurnerPermalinkでのpermalink修正</td>
+</tr>
+
+<tr style="background-color: #c1ffc1">
+<td>aggregator.finalize</td>
+<td>-</td>
+<td>アグリゲータの後処理</td>
+<td>Aggregator::Xangoでのフィード取得/パース処理の並列実行開始</td>
+</tr>
+
+<tr style="background-color: #FFD700">
+<td>update.entry.fixup</td>
+<td>feed, entry</td>
+<td>アグリゲート後のエントリ変換処理</td>
+<td>Filter::EntryFullTextでエントリの要約を全文へ変換する処理</td>
+</tr>
+
+<tr style="background-color: #FFD700">
+<td>update.feed.fixup</td>
+<td>feed</td>
+<td>アグリゲート後のフィード変換処理</td>
+<td>Filter::BlogPetによるBlogPetエントリのフィードからの除去</td>
+</tr>
+
+<tr style="background-color: #FFD700">
+<td>update.fixup</td>
+<td>-</td>
+<td>update.*.fixupの後処理</td>
+<td>Filter::POPFileでのPOPFileセッションのクローズ</td>
+</tr>
+
+<tr style="background-color: #FFB6C1">
+<td>smartfeed.init</td>
+<td>-</td>
+<td>スマートフィード初期化処理</td>
+<td>SmartFeedでのスマートフィードオブジェクトの生成</td>
+</tr>
+
+<tr style="background-color: #FFB6C1">
+<td>smartfeed.entry</td>
+<td>feed, entry</td>
+<td>エントリのスマートフィード処理</td>
+<td>SmartFeedでのエントリのコピー生成</td>
+</tr>
+
+<tr  style="background-color: #FFB6C1">
+<td>smartfeed.feed</td>
+<td>feed</td>
+<td>フィードのスマートフィード処理</td>
+<td>Filter::Ruleでの条件に一致しないエントリのフィードからの除去</td>
+</tr>
+
+<tr  style="background-color: #FFB6C1">
+<td>smartfeed.finalize</td>
+<td>-</td>
+<td>スマートフィード後処理</td>
+<td>SmartFeedでの生成されたスマートフィードをフィードリストへ追加</td>
+</tr>
+
+<tr style="background-color: #ddbbff">
+<td>publish.init</td>
+<td>-</td>
+<td>出力の初期化処理</td>
+<td>Publish::GmailでのPOP before SMTP処理</td>
+</tr>
+
+<tr style="background-color: #ddbbff">
+<td>publish.entry.fixup</td>
+<td>feed, entry</td>
+<td>出力前のエントリ変換処理</td>
+<td>Widget::HatenaBookmarkUsersCountでのエントリにはてなブックマークユーザ数を付加する処理</td>
+</tr>
+
+<tr style="background-color: #ddbbff">
+<td>publish.feed</td>
+<td>feed</td>
+<td>フィードの出力処理</td>
+<td>Publish::Gmailでのメール送信</td>
+</tr>
+
+<tr style="background-color: #ddbbff">
+<td>publish.entry</td>
+<td>feed, entry</td>
+<td>エントリの出力処理</td>
+<td>Publish::Deliciousでのdel.icio.usへのブックマーク登録</td>
+</tr>
+
+<tr style="background-color: #ddbbff">
+<td>publish.finalize</td>
+<td>-</td>
+<td>出力の後処理</td>
+<td>Publish::2chdatでのsubject.txtの書き出し</td>
+</tr>
+
+<tr style="background-color: #bfefff">
+<td>plugin.finalize</td>
+<td>-</td>
+<td>プラグインの後処理</td>
+<td>Search::KinoSearchでのインデックス作成完了処理</td>
+</tr>
+
+<tr style="background-color: #FFEC8B">
+<td>searcher.search</td>
+<td>query</td>
+<td>Search プラグインでの検索</td>
+<td>Search::Grep での検索処理</td>
+</tr>
+
+<tr style="background-color: #C1FFC1">
+<td>useragent.init</td>
+<td>ua</td>
+<td>Plagger::UserAgent の初期化処理</td>
+<td>UserAgent::AuthenRequest での認証情報設定</td>
+</tr>
+
+<tr style="background-color: #C1FFC1">
+<td>useragent.request</td>
+<td>ua, url, req</td>
+<td>Plagger::UserAgenet のリクエスト処理の変更</td>
+<td>UserAgent::RequestHeader でのヘッダ追加</td>
+</tr>
+
+</table>
+
+<p>
+各フェーズは上の表の順番どおりに実行されます。（searcher.search と useragent.* はちょっと特殊なので順番通りではないです。）
+</p>
+
+<p>
+間違いなどあればツッコミよろしくです。
+</p>

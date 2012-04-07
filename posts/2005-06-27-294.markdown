@@ -1,0 +1,84 @@
+---
+layout: post
+title: "del.icio.us direc.torの謎"
+date: 2005-06-27 14:23
+comments: true
+categories: 
+---
+<p class="entryBody">
+いや、謎ってほどのものじゃないんですが、噂の<a href="http://johnvey.com/features/deliciousdirector/" target="_blank">del.icio.us direc.tor</a>を使ってみて、「あれ、Javascriptから直接del.icio.us apiを叩いてるみたいだけど、どうやってるんだろう？」と疑問に思ったので、調べてみました。
+</p>
+
+<p class="entryBody">
+まず、del.icio.us direc.torは以下の様な順にHTTPリクエストを出しています。
+</p>
+
+<ol class="entryBody">
+<li>ブックマークレットからhttp://johnvey.com/features/deliciousdirector/dboot.js を呼び出して実行</li>
+<li>dboot.jsからhttp://johnvey.com/features/deliciousdirector/d.js を呼び出して実行</li>
+<li>d.jsからhttp://del.icio.us/api/posts/all を叩いて、del.icio.usの全ポストを取得</li>
+</ol>
+
+<p class="entryBody">
+最初の2つは、<a href="http://la.ma.la/blog/" target="_blank">最速インターフェース研究会</a>のma.laさんが、<a href="http://la.ma.la/blog/diary_200504140039.htm" target="_blank">[Ajax] JSAN構想とリモートデータの取得とUserJavaScript</a>でおっしゃっている通り、scriptタグを使って呼び出しているので、ドメインはどこでもいいわけですが、最後のdel.icio.us apiを叩いている部分はxmlHttpRequestを使っています。
+</p>
+
+<p class="entryBody">
+自分の理解では、xmlHttpRequestでリモートデータを取得する場合、呼び出し元のJavascriptファイルが置いてあるドメインと、呼び出し先のウェブサーバのドメインが同じじゃないといけないと思っていたのですが、この動作を見てると、そうはなっていないようです。で、d.jsのソースを見てみると、xmlHttpRequestで /api/posts/all を叩いている部分は見受けられるものの、特にdel.ico.usという指定はされていません。
+</p>
+
+<p class="entryBody">
+どうやら、一度del.icio.usを開いてからブックマークレットを実行してるところがポイントらしい、と思い、「同じじゃないといけないのは、呼び出し元のJavascriptファイルが置いてあるドメインではなく、Javascriptを呼び出しているページのドメインではないか？」という仮説を立てて、実験してみました。
+</p>
+
+<p class="entryBody">
+まず、以下の様なJavascriptファイルを用意します。
+</p>
+
+<pre class="code">
+function load() {
+  try {
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+  } catch (e) {
+    try {
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    } catch (e) {
+      xmlhttp = false;
+    }
+  }
+  if (!xmlhttp &amp;&amp; typeof XMLHttpRequest!='undefined') {
+    xmlhttp = new XMLHttpRequest();
+  }
+  if (xmlhttp) {
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 &amp;&amp; xmlhttp.status == 200) {
+	  document.body.innerHTML = xmlhttp.responseText;
+      }
+    }
+    xmlhttp.open('GET', '/');
+    xmlhttp.send(null);
+  }
+}
+
+load();
+</pre>
+
+<p class="entryBody">
+次に、こいつを呼び出すブックマークレットを作成します。<a href="javascript:void((function() {var%20element=document.createElement('script'); element.setAttribute('src', 'http://mizzy.org/js/test.js'); document.body.appendChild(element)})())">こんな感じで</a>。そしてブックマークに入れます。
+</p>
+
+<p class="entryBody">
+どこか適当なウェブサイトを開きます。この時、http://www.google.co.jp/ といったドメインのトップのページではなく、http://www.google.co.jp/imode といった感じで、ディレクトリ名やファイル名が含まれるURLにアクセスして下さい。（javascriptでトップページを読み込んで表示させる、という実験なので、最初からトップページを開いていると、ページ遷移したことが分かりません。）
+</p>
+
+<p class="entryBody">
+で、先のブックマークレットを実行します。すると、実行前に開いていたページが所属するドメインのトップページが表示されると思います。
+</p>
+
+<p class="entryBody">
+というわけで、xmlHttpRequestのクロスドメインの問題は、「呼び出し元のJavascriptファイルが置いてあるドメインと、呼び出し先のウェブサーバのドメインが同じじゃないといけない」わけではなく、「Javascriptを呼び出しているページのドメインと、呼び出し先のウェブサーバのドメインが同じじゃないといけない」わけで、Javascriptファイルがどこにあっても関係ないようです。（もしかして常識？）
+</p>
+
+<p class="entryBody">
+おそらく、ブックマークレットを使わなくても、呼び出し元のページを編集して、直接scriptタグによりJavascriptを呼び出すようにしてもいいんでしょうけど、編集できる権限があるぐらいなら、そもそもクロスドメインがどうとか考える必要はないわけで、ブックマークレットで呼び出すのが現実的なんでしょうね。
+</p>

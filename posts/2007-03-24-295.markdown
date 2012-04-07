@@ -1,0 +1,59 @@
+---
+layout: post
+title: "puppet 今試すなら バージョン 0.22.1 を使え、そして gem で入れるな"
+date: 2007-03-24 14:49
+comments: true
+categories: 
+---
+<p>
+<strong>追記</strong><br />
+<a class="ext-link" href="http://mizzy.org/linux/puppet08.html"><span class="icon"></span>これに関連した続きエントリ書きました</a>。
+</p>
+<p>
+gem がだめなわけは、puppetrun が入らないから。（0.22.1, 0.22.2 で確認。）puppetrun 使わないなら gem で構わないけど。metadata 覗いたら、executables の中に puppetrun がない。こんな感じ。
+</p>
+<pre class="wiki">
+executables:
+- puppet
+- puppetd
+- puppetmasterd
+- puppetdoc
+- puppetca  
+</pre>
+<p>
+とりあえず<a class="ext-link" href="http://reductivelabs.com/trac/puppet/ticket/561"><span class="icon"></span>チケットに入れておいた</a>。
+</p>
+<p>
+あと、最新のバージョン 0.22.2 だと、以下のエラーが出る。
+</p>
+<pre class="wiki">
+$ sudo puppetd --listen --no-client -v
+/usr/lib/ruby/site_ruby/1.8/puppet/util/config.rb:29:in `[]': Undefined configuration parameter 'authconfig' (ArgumentError)
+        from /usr/lib/ruby/site_ruby/1.8/puppet.rb:83:in `[]'
+        from /usr/bin/puppetd:360
+</pre>
+<p>
+--listen オプション使うときには、/etc/puppet/namespaceauth.conf が必要で、authconfig にはこのパスがセットされるはずなんだけど、セットされていないためのエラーっぽい。これは trunk では直ってる。
+</p>
+<p>
+もうひとつ、puppetrun 実行時のエラー。
+</p>
+<pre class="wiki">
+$ sudo puppetrun --host kenny.southpark
+Failed to load ruby LDAP library. LDAP functionality will not be available
+/usr/local/lib/ruby/gems/1.8/gems/activesupport-1.4.2/lib/active_support/core_ext/module/introspection.rb:5:in `parent': private method `split' called for :Client:Symbol (NoMethodError)
+        from /usr/local/lib/ruby/gems/1.8/gems/activesupport-1.4.2/lib/active_support/dependencies.rb:463:in `const_missing'
+        from /usr/local/bin/puppetrun:343
+        from /usr/local/bin/puppetrun:335:in `fork'
+        from /usr/local/bin/puppetrun:335
+kenny.southpark finished with exit code 1 
+</pre>
+<p>
+これは puppetrun に以下の一行を追加すれば直る。
+</p>
+<pre class="wiki">
+require 'puppet/network/client/runner'
+</pre>
+<p>
+<del>trunk でも直ってないようなので、こちらも<a class="ext-link" href="http://reductivelabs.com/trac/puppet/ticket/562"><span class="icon"></span>チケットに入れた</a>。</del> <a class="ext-link" href="http://reductivelabs.com/trac/puppet/changeset/2352"><span class="icon"></span>fix された</a>。自分の修正内容と違うけど。
+</p>

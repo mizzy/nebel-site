@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Software Design 2006年10月号に寄稿しました"
+date: 2006-09-16 20:14
+comments: true
+categories: 
+---
+<p>
+『特別企画 Plagger 3分 Hacking』の『Chapter 03: 俺流 Plagger 3分 Hacking』の中で、「Plagger で YouTube Casting」というお題で書かせて頂きました。
+</p>
+<p>
+他にも<a class="ext-link" href="http://labs.cybozu.co.jp/blog/takesako/"><span class="icon"></span>竹迫さん</a>によるとてもわかりやすい Plagger 解説やインストール方法、<a class="ext-link" href="http://blog.yappo.jp/"><span class="icon"></span>yappo さん</a>、<a class="ext-link" href="http://e8y.net/blog/"><span class="icon"></span>tomi-ru さん</a>、<a class="ext-link" href="http://d.hatena.ne.jp/t-akihito/"><span class="icon"></span>akihito さん</a>による小技集など、見所満載です。Plagger って何？という人や、これから Plagger やってみたい人は、ぜひ手にとってご覧下さい。
+</p>
+<p>
+参考URL
+</p>
+<ul><li><a class="ext-link" href="http://d.hatena.ne.jp/software_design/20060915#1155804140"><span class="icon"></span>&#91;Software Design本誌&#93;SD2006年10月号 ここに注目！</a></li>
+<li><a class="ext-link" href="http://labs.cybozu.co.jp/blog/takesako/2006/09/software_design_200610_plagger.html"><span class="icon"></span>TAKESAKO @ Yet another Cybozu Labs: 今月号のSoftware DesignでPlagger特集</a></li></ul>

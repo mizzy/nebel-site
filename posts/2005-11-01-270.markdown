@@ -1,0 +1,18 @@
+---
+layout: post
+title: "blosxom + Text::Hatena #0"
+date: 2005-11-01 23:12
+comments: true
+categories: 
+---
+<p class="entryBody">
+どこかで blosxom と Text::Hatena を組み合わせた、みたいなエントリを見かけたんだけど、具体的なやり方が何も書いてなかったので、自分で blosxom 用プラグイン作ってみた。 <a href="http://mizzy.org/archives/text_hatena" target="_blank">plugin: text_hatena</a>
+</p>
+
+<p class="entryBody">
+といっても、このままだと今まで手で書いてたエントリがおかしなことになるので、とりあえず使うのやめ。おいおい対応していこう。
+</p>
+
+<p class="entryBody">
+関係ないですが、明日 <a href="http://shibuya.pm.org/blosxom/techtalks/200511.html" target="_blank">Shibuya Perl Mongers テクニカルトーク #6</a> に行きます。見かけた方は声をかけてください。誰も俺の顔を知らないだろうけど。
+</p>

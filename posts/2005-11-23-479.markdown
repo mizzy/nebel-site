@@ -1,0 +1,22 @@
+---
+layout: post
+title: "feedbringerをremixin' #5"
+date: 2005-11-23 18:31
+comments: true
+categories: 
+---
+<p class="entryBody">
+feedbringer用greasemonkeyユーザスクリプトの<a href="/js/feedbringer2.user.js" target="_blank">白黒バージョン</a>を修正しました。俺はこっちの方を常用してるので、今後は白黒バージョンしかメンテナンスしないつもりです。
+</p>
+
+<p class="entryBody">
+修正点のひとつは、コードを見直し、少しすっきりさせたことです。（ほんの少しですが。）
+</p>
+
+<p class="entryBody">
+それと、もうひとつ大きな修正は、titleに未読数を表示するようにしました。こうすることによって、タブに未読数が表示されるので、Notifier代わりになるかな、と。
+</p>
+
+<p class="entryBody">
+こんなことやってても、そのうち本家が改善されて意味がなくなるかもしれませんが、まあJavascriptの練習ってことで。
+</p>

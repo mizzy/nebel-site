@@ -1,0 +1,45 @@
+---
+layout: post
+title: "Plagger と YouTube #2"
+date: 2006-05-13 07:44
+comments: true
+categories: 
+---
+<p class="entryBody">
+今回のネタは、最近はやりの YouTube 動画をダウンロード、変換して iPod につっこむ、を Plagger で自動化する、というものです。ゴールデンウィーク中にプラグイン作ってたのですが、<a href="http://wiki.shibuya.pl/?PlaggerConference" target="_blank">Plagger Conference</a> のライトニングトークネタとして暖めていました。以下のことが可能です。
+</p>
+
+<ul class="entryBody">
+<li>指定の検索/ソート条件で YouTube から動画ファイルを取得</li>
+<li>取得した動画を PSP または iPod 用に変換</li>
+<li>iPod 用に変換した場合は iTunes へファイルを登録</li>
+<li>または、Publish::PodCast で PodCast 用 RSS フィードを吐き出し、iTunes で取り込む</li>
+</ul>
+
+<p class="entryBody">
+もう少し詳しい説明は、 <a href="http://mizzy.org/archives/plagger_con/plagger.html" target="_blank">カンファレンスの資料</a> をご参照ください。資料で紹介したプラグインは以下から取得できます。(資料は一部発表したものから削ってます。)
+</p>
+
+
+<ul class="entryBody">
+<li><strike><a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/YouTube.pm" target="_blank">CustomFeed::YouTube</a></strike></li>
+<li><strike><a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/ConvertVideo.pm" target="_blank">Filter::ConvertVideo</a></strike></li>
+<li><strike><a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Publish/PodCast.pm" target="_blank">Publish::PodCast</a></strike></li>
+</ul>
+
+<p class="entryBody">
+<strike>ただし、Filter::ConvertVideo で実行する動画変換コマンドは <a href="http://trac.mizzy.org/public/browser/plagger/trunk/assets/plugins/Filter-ConvertVideo" target="_blank">assets</a> に分離してあるので、以下の様に svn でまとめて取得しちゃう方が楽です。</strike>
+</p>
+
+<pre class="code">
+<strike>svn co http://svn.mizzy.org/public/plagger/trunk plagger</strike>
+</pre>
+
+<p class="entryBody">
+<strong>2006/05/13 7:40 追記</strong><br />
+Plagger core での enclosure 対応に伴い、CustomFeed::YouTube は宮川さんによるブラッシュアップを経て本家 trunk にマージされました。また、Publish::PodCast は 本家 trunk の Publish::Feed に吸収されましたので、その役目を終えました。ですのでこれらのプラグインは、ここから取得せずに、<a href="http://plagger.org/" target="_blank">Plagger 本家</a> から取得して下さい。
+</p>
+
+<p class="entryBody">
+今のところ動画取得用の Plagger プラグインは、<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/GoogleVideo.pm" target="_blank">CustomFeed::GoogleVideo</a> と 上にある CustomFeed::YouTube しかないのですが、今後色々増えてくんじゃないでしょうか。
+</p>

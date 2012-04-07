@@ -1,0 +1,10 @@
+---
+layout: post
+title: "LiveLinesでfeedbringerにフィードを登録する"
+date: 2005-07-27 22:18
+comments: true
+categories: 
+---
+<p class="entryBody">
+Firefoxのextensionである<a href="http://heygom.com/extensions/?p=11" target="_blank">LiveLines</a>で、feedbringerにフィードを登録するには、Subscription URLにhttp://feedbringer.net/feed/add/?url=^U と入れてやればOK。
+</p>

@@ -1,0 +1,62 @@
+---
+layout: post
+title: "「PlaggerになくてYahoo!pipesにあるもの」は書き方が悪かったのではなく Plagger を理解してないだけ"
+date: 2007-02-27 13:08
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://pythonbeginner.blog78.fc2.com/blog-entry-214.html"><span class="icon"></span>「PlaggerになくてYahoo!pipesにあるもの」は書き方が悪かった</a> について。
+</p>
+<p>
+Plagger について理解できてないだけです。書き方の問題じゃありません。まず、
+</p>
+<blockquote>
+<p>
+  このときPublish::Gmailがおかしいなと思った。なにがおかしいかというとフィルター機能があることだ。
+</p>
+</blockquote>
+<p>
+Publish::Gmail にはフィルタ機能はありません。Plagger に実装されているものを、Publish::Gmail で利用しているだけです。
+</p>
+<p>
+また、Publish::Gmail で利用しているのは、実際はフィルタ機能ではなく、ルール機能だったりします。似たような機能でややこしいかもしれませんが、Plagger では フィルタとルールは別物です。
+</p>
+<blockquote>
+<p>
+  本来フィルターの機能はFilterが担うべきで、Publishのプラグインにつけるべき機能ではない。
+</p>
+</blockquote>
+<p>
+はい、Plagger はちゃんとそうなってますよ。
+</p>
+<blockquote>
+<p>
+  例えばBloglineからフィードを取得し、その中からいくつかのブログのフィードを各ブログごと取り出し各ブログごと異なる条件でフィルタリングしたり、はてなブックマークに登録し、残りのフィードはそのままGmailに送るということは本来的にはできないのでは無いかと考えた。
+</p>
+</blockquote>
+<p>
+できます。たとえば、mizzy.org だけローマ字変換して Gmail へ、残りはそのままはてブへ、ということであればこんな感じ。（設定はかなりはしょってますが。）
+</p>
+<pre class="wiki">
+plugins:
+  - module: Subscription::Bloglines
+
+  - module: Filter::Romanize::Japanese
+    rule:
+      expression:  $args->{feed}->title eq 'mizzy.org'
+
+  - module: Publish::Gmail
+    rule:
+      expression: $args->{feed}->title eq 'mizzy.org'
+
+  - module: Publish::HatenaBookmark
+    rule:
+      expression: $args->{feed}->title ne 'mizzy.org'
+</pre>
+<p>
+この例では、2つの Publish プラグインの出力対象フィードが別だから、プラグイン毎に rule 設定してるけど、両プラグインが同じフィードを出力するのであれば、Filter::Rule プラグインでフィルタすれば、rule を指定する必要がなくなる。
+</p>
+<p>
+まあ、この辺りは分かりやすくはないから、誤解するのもしょうがいない気がするけれど、設定例だけ見て、そこから推測したものがあたかも実際の Plagger の仕様であるかのように書くのはやめようよ。
+</p>

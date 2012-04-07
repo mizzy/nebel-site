@@ -1,0 +1,22 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::TinyURL"
+date: 2006-04-02 19:46
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/TinyURL.pm" target="_blank">P::P::Filter::TinyURL</a> を意味もなくアップデート。
+</p>
+
+<p class="entryBody">
+feed の link, entry の link, entry の enclosure の中から、どの URL を変換するかを指定できるようにしてみた。
+</p>
+
+<p class="entryBody">
+けど、このプラグインって、CustomFeed::GoogleVideo の結果を iTunes に取り込むためにやむなく必要になって作ったものなので、これ以外の有効な使い方が思いつかない。なので、このプラグイン自体の実装の方向性もいまいち定まらない感じ。
+</p>
+
+<p class="entryBody">
+Tiny URL に変換するのに外部サービス使ってるのがキモイので、0.8 の Server and Database 対応が完了したら、Plagger 自前で処理するようにするといいのかな。でも、現状の使い途だけだったら、そこまでする必要もないか。
+</p>

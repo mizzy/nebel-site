@@ -1,0 +1,48 @@
+---
+layout: post
+title: "開発合宿と Plagger と Google Video"
+date: 2006-03-26 06:32
+comments: true
+categories: 
+---
+<p class="entryBody">
+現在、<a href="http://solvalou.net/" target="_blank">オオヒダさん</a>、<a href="http://yasuhisa.com/could/" target="_blank">ヤスヒサさん</a>、<a href="http://purpr.in/" target="_blank">purprin さん</a>、<a href="http://vgzh.dtdns.net/mt/index.html" target="_blank">モイモラさん</a>、ボンヌさん、タロさんと伊東の温泉旅館で開発合宿中です。
+</p>
+
+<p class="entryBody">
+何をやるかまったく考えないまま来てしまったのですが、プログラマだけでなくデザインや Flash などに詳しいクリエータも一緒なので、お互い最近プライベートで作っているものを見せ合ったり、こんなのおもしろいよね、などと話しているだけでもとても刺激になります。で、色々話しているうちに自分の合宿のテーマは、「Plagger で Google Video の検索結果を取得して、それを iPod で取り込むようなものをつくる」と決めました。決めた時には既に夜遅い時間だったのですが。
+</p>
+
+<p class="entryBody">
+とりあえず今回は形にすることを最優先にしたため、まだまだブラッシュアップが必要ですが、一応 iPod に取り込むという目標は達成できたので、合宿の成果としてプログラムを公開します。
+</p>
+
+<ul class="entryBody">
+<li><a href="http://mizzy.org/archives/GoogleVideo.pm" target="_blank">Plagger::Plugin::CustomFeed::GoogleVideo</a></li>
+<li><a href="http://mizzy.org/archives/PodCast.pm" target="_blank">Plagger::Plugin::Publish::PodCast</a></li>
+<li><a href="http://mizzy.org/archives/TinyURL.pm" target="_blank">Plagger::Plugin::Filter::TinyURL</a></li>
+</ul>
+
+<p class="entryBody">
+P::P::CustomFeed::GoogleVideo では、config.yaml 中で指定した検索条件にしたがって、Google Video から MediaRSS を取得してパースしています。
+</p>
+
+<p class="entryBody">
+P::P::Publish::PodCast では、PodCast フィードを生成します。このフィードを iTunes に登録してビデオをダウンロード、iPod に取り込むということをやってます。現在 Plagger::Entry には enclosure 用のアクセサがないため、$entry->meta->{enclosure} に enclosure 関連の情報を突っ込んで処理する、ということをやっているのですが、今後宮川さんが Plagger コアで eclosure 対応してくれる、とのことでした。
+</p>
+
+<p class="entryBody">
+また、P::P::Publish::PodCast は P::P::Publish::Feed で吸収できるかな、と思ったのですが、P::P::Publish::Feed で利用している XML::Feed::Entry は enclosure に対応していないので、XML::RSS を使うことにしました。それ以外の部分は宮川さんのコードをほとんどそのまま利用させて頂いてます。
+</p>
+
+<p class="entryBody">
+あと、P::P::Filter::TinyURL は、enclosure の URL を TinyURL に変換するために作りました。なんでこんなことをするかというと、Google Video の URL は長すぎて、iTunes に登録するとエラーとなってしまうためです。また、拡張子がないとやはり怒られるので、TinyURL にダミーで拡張子をつける処理もしています。これは以前モイモラさんがはまった際に、みんなで解決策を考えた、という経緯があったので、今回ははまらずに済みました。
+</p>
+
+<p class="entryBody">
+ちなみに、CustomFeed::GoogleVideo と　Publish::Gmail を組み合わせると<a href="http://mizzy.org/img/video_gmail.png" target="_blank">こんな感じになります</a>。もちろんメール中のリンクをクリックすれば Google Video のページに飛んで、すぐに動画を見ることができます。
+</p>
+
+<p class="entryBody">
+とりあえず形にしただけで、まだまだブラッシュアップが必要なので、commit はしてません。宮川さんや他の開発者の方々と相談しながら、いいものにしていきたいな、と思ってます。あと、YouTube にも対応させたいですね。
+</p>

@@ -1,0 +1,87 @@
+---
+layout: post
+title: "ajaxで「戻る」「進む」（feedbringerをremixin' #7）"
+date: 2005-11-23 18:28
+comments: true
+categories: 
+---
+<p class="entryBody">
+feedbringer 使うのやめた、とか言っておきながら、feedbringer remix ネタ。別に feedbringer じゃなくても良かったのですが、 <a href="http://www.onjava.com/pub/a/onjava/2005/10/26/ajax-handling-bookmarks-and-back-button.html" target="_blank">ONJava.com: AJAX: How to Handle Bookmarks and Back Buttons</a> を見てたら実験したくなったのと、そういや feedbringer 使うのやめた理由のひとつは、「戻る」「進む」ボタンが使えないからだったなぁ、ということを思い出したので、上記 URL にあるテクニックを feedbringer に適用してみることにした。
+</p>
+
+<p class="entryBody">
+いつものごとく、greasemonkey で remix です。 <a href="http://mizzy.org/js/feedbringer_enable_back_and_forth.user.js" target="_blank">feedbringer_enable_back_and_forth.user.js</a>
+</p>
+
+<p class="entryBody">
+実験ということもあり、自分のスキル不足もあってかなりいいかげんなスクリプトですが、簡単に解説を。
+</p>
+
+<pre class="code">
+<strong>// feedbringer_enable_back_and_forth.user.js から抜粋</strong>
+
+var js = document.createElement("script");
+js.language = "javascript";
+js.src = "http://mizzy.org/js/dhtmlHistory.js";
+document.body.appendChild(js);
+</pre>
+
+<p class="entryBody">
+まずこの部分では、上記 ONJava.com サイトで紹介されている、 <a href="http://codinginparadise.org/projects/dhtml_history/latest.zip" target="_blank">Really Simply History framework</a> のdhtmlHistory.js を読み込んでいます。
+</p>
+
+<pre class="code">
+<strong>// dhtmlHistory.js から抜粋</strong>
+
+dhtmlHistory.initialize();
+dhtmlHistory.addListener(historyChange);
+
+function historyChange(newLocation, historyData) {
+    $('main').innerHTML = historyData;
+}
+</pre>
+
+<p class="entryBody">
+dhtmlHistory.js の最後に、上の6行を追加しています。本来であればユーザスクリプト側に書くべきなんでしょうが、dhtmlHistory.js を読み込み終わってから実行しないエラーとなるため、面倒なのでこっちに書いちゃいました。読み込み完了してから実行する方法がよくわからんし。
+</p>
+
+<p class="entryBody">
+ここは dhtmlHistorty オブジェクトの初期化処理ですね。 dhtmlHisotry.addListener が重要なとこで、「戻る」「進む」ボタンを押した時に、どういった処理を実行するのか定義します。ここでやっていることは、後ほど出てくる dhtmlHistory.add によって記録された historyData を、 id が main であるコンテナに書き戻す、ということをやっています。
+</p>
+
+<pre class="code">
+<strong>// feedbringer_enable_back_and_forth.user.js から抜粋</strong>
+
+Ajax.Updater.prototype.extend(Ajax.Request.prototype).extend({
+  ...
+  updateContent: function() {
+     ...
+     if (receiver) {
+       if (this.options.insertion) {
+         new this.options.insertion(receiver, response);
+       } else {
+         receiver.innerHTML = response;
+         <strong>
+         var date = new Date();
+         dhtmlHistory.add('key' + date.getTime() , response);
+         </strong>
+       }
+     }
+  ...
+</pre>
+
+<p class="entryBody">
+ユーザスクリプトで prototype.js の Ajax.Updater を上書きしています。太字の部分を追加しただけですね。xhtmlHttpRequest のロードが完了した時点で、dhtmlHistory.add を実行して、 location.hash の値と、それにひもづくデータを historyStorage オブジェクトに格納、でもって location.hash をここで指定された値に書き換える、ということをやってます。
+</p>
+
+<p class="entryBody">
+スクリプトの解説は以上です。これで「戻る」「進む」ボタンを押すと、最初の方に出てきた dhtmlHistory.addListener で指定された historyChange が実行されて、変更された location.hash にひもづく historyData を historyStorage オブジェクトから引っ張り出して、id が main であるコンテナに書き戻す、という具合になります。
+</p>
+
+<p class="entryBody">
+今回の例では id=main コンテナ決めうちで書き換えしてますが、 dhtmlHistory.add で格納できる historyData は、 文字列だけじゃなくオブジェクトも指定できるので、 やろうと思えばもっと複雑なこともできますね。
+</p>
+
+<p class="entryBody">
+上記 ONJava.com サイトによると、<a href="http://www.backbase.com/" target="_blank">Backbase</a> や <a href="http://www.dojotoolkit.org/" target="_blank">Dojo</a> なんかは、こういったヒストリフレームワークが実装されているようです。prototype.js にも実装してほしいっすね。
+</p>

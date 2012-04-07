@@ -1,0 +1,140 @@
+---
+layout: post
+title: "FizzBuzz アセンブラ版 for x86/Linux"
+date: 2007-05-13 21:01
+comments: true
+categories: 
+---
+[竹迫さん](http://labs.cybozu.co.jp/blog/takesako/2007/05/fizzbuzz_x86.html)、[Yappo さん](http://subtech.g.hatena.ne.jp/yappo/20070511/1178907299) に触発されて、FizzBuzz アセンブラ版 for x86/Linux をつくってみた。
+
+20年ほど前に Z80 でアセンブラをちょっとかじった程度の知識しかないので、ベストには程遠いコードだと思います。だれかもっといいコードを教えてください。
+
+最初竹迫さんのコードと同じように書けるかな、と思ったのですが、Windows とちがって、画面に表示するだけで EAX, EBX, ECX, EDX レジスタ使うので、竹迫さんのように BX レジスタを見張り役に、CX レジスタをカウンタに、ってことができませんでした。
+
+また、とりあえず書いただけで疲れたので、コードゴルフにチャレンジする気力はありません。
+
+    global  _start
+    
+    _start:
+            mov     si, 0
+    
+    mawasu: 
+            call    space
+            inc     si
+            mov     ax, si
+            
+            mov     di, 3
+            xor     edx, edx
+            div     di
+            cmp     dx, 0
+            je      pfizz
+    
+            mov     ax, si
+            mov     di, 5
+            xor     edx, edx
+            div     di
+            cmp     dx, 0
+            je      pbuzz
+    
+            call    num
+            cmp     si, 100
+            jb      mawasu
+    
+    pfizz:
+            call    fizz
+    
+            mov     ax, si
+            mov     di, 5
+            xor     edx, edx
+            div     di
+            cmp     dx, 0
+            je      pbuzz
+            
+            jmp     mawasu
+    
+    pbuzz:
+            call    buzz
+            jmp     mawasu
+    
+    num:
+            mov     ax, si
+    
+            mov     di, 100
+            cmp     ax, di
+            jnge    num2
+    
+            jmp     end
+            
+    num2:
+            mov     di, 10
+            cmp     ax, di
+            jnge    num3
+            
+            xor     edx, edx
+            div     di
+            add     ax, 48
+            call    print
+            
+    num3:   
+            mov     ax, si
+            mov     di, 10
+            xor     edx, edx
+            div     di
+            mov     al, dl
+            add     al, 48
+            call    print
+            ret
+            
+    fizz:
+            mov     al, 0x46
+            call    print
+            mov     al, 0x69
+            call    print
+            mov     al, 0x7a
+            call    print
+            call    print
+            ret
+            
+    buzz:
+            mov     al, 0x42
+            call    print
+            mov     al, 0x75
+            call    print
+            mov     al, 0x7a
+            call    print
+            call    print
+            ret
+            
+    space:
+            mov     al, 0x20
+            call    print
+            ret
+            
+    print:
+            push    eax
+            mov     eax, 4
+            mov     ebx, 1
+            mov     ecx, esp
+            mov     edx, 1
+            int     0x80
+            pop     eax
+            ret
+            
+    end:    
+            mov     al, 0x0a
+            call    print
+            
+            mov     al, 1
+            mov     bl, 0
+            int     0x80
+
+nasm を使ってこんな感じで動かすことができます。
+
+    $ nasm -f elf fizzbuzz.asm
+    $ ld -s -o fizzbuzz fizzbuzz.o
+    $ ./fizzbuzz 
+
+![fizzbuzz.asm](/files/fizzbuzz.jpg)
+
+書いていてアセンブラの TMTOWTDI っぷりは Perl の比じゃないと思った。
+

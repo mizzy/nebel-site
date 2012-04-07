@@ -1,0 +1,8 @@
+---
+layout: post
+title: "blosxom から typo へ"
+date: 2007-05-06 06:10
+comments: true
+categories: 
+---
+色々あって、<a href="http://typosphere.org/">typo</a> へ移行してみた。

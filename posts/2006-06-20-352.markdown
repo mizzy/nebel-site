@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Text::Trac - Trac Wiki 記法パーサ #2"
+date: 2006-06-20 15:07
+comments: true
+categories: 
+---
+<p>
+昨日の時点では実装されていなかった autolink まわりを <a class="ext-link" href="http://d.hatena.ne.jp/drawnboy/"><span class="icon"></span>id:drawnboy さん</a> が実装してくれて、最低限の機能は実装されたかな、という状態になりましたので、とりあえず <a class="ext-link" href="http://search.cpan.org/~mizzy/Text-Trac/"><span class="icon"></span>CPAN に up</a> しました。
+</p>
+<p>
+id:drawnboy さんには autolink まわりだけではなく、他にも色々実装してもらい、大変助かりました。ありがとうございます！
+</p>
+<p>
+Yappo さんご所望の挙動をカスタマイズできる機能は、これから実装をどうするかを含めて検討しますので、もう少しお待ちください。
+</p>
+<p>
+挙動カスタマイズ機能も必要だけど、タグの class 設定とか、リンクの target 設定とかをカスタマイズできるようにもしたい。
+</p>

@@ -1,0 +1,23 @@
+---
+layout: post
+title: "Net::Amazon::ECS"
+date: 2006-10-17 00:02
+comments: true
+categories: 
+---
+<p>
+Plagger で Amazon Web Service をつかって、発売日を Publish::iCal して Google Calendar で表示したり、今日・明日発売する商品を Publish::Gmail してるのですが、なんか最近 Google Calendar に表示される商品数が少ないな、と思ったら、AWS3.0 で ReleaseDate が取得できていない模様。（そもそも結果の XML に ReleaseDate が存在しない。一部の商品は ReleaseDate 取得できるけど、取得できない方が圧倒的に多い。）しかも、以前には確かに ReleaseDate が取得できていた商品も、なぜか取得できなくなってます。でも同じ商品でも、ECS4.0 ならちゃんと日付が取得できるんですよね。
+</p>
+<p>
+で、問い合わせは<a class="ext-link" href="http://forums.prospero.com/am-assocdevxml"><span class="icon"></span>ディスカッションボード</a>に投稿しろ、と<a class="ext-link" href="http://www.amazon.co.jp/gp/feature.html?docId=451209"><span class="icon"></span>ここ</a>に書いてあったのでディスカッションボードを覗いてみても、どこから投稿していいのかさっぱり分からないし、あまり動きが活発でもなさそうで、素早い対応は期待できなさそう…そもそも AWS3.0 自体が古い API なわけだし、ということで、ECS4.0 対応の<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Net-Amazon-ECS"><span class="icon"></span>Net::Amazon::ECS</a> をつくってみました。検索してみても公開されているものはなさそうだったので。（あったら誰か教えてください。）
+</p>
+<p>
+といっても、とりあえず自分がやりたいこと（Plagger で発売日を iCal に Publish したり、今日・明日発売の商品情報をメールで飛ばしたり）に最低限必要な機能しか実装してないです。あと、今のところ CPAN にあげる予定はありません。
+</p>
+<p>
+ついでに野良プラグインの <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/AmazonWebService.pm"><span class="icon"></span>CustomFeed::AmazonWebService</a> を Net::Amazon::ECS に対応させた <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/AmazonECS.pm"><span class="icon"></span>CustomFeed::AmazonECS</a> もつくりました。
+</p>
+<p>
+<strong>追記</strong><br />
+なんかはてなの中の人が、ECS4.0 対応のモジュール作っていて、CPAN に up 予定らしい。なので近いうちにこれは必要なくなりそうですね。期待。
+</p>

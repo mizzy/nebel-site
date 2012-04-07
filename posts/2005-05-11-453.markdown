@@ -1,0 +1,83 @@
+---
+layout: post
+title: "Sack of Ajax"
+date: 2005-05-11 13:04
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://www.twilightuniverse.com/2005/05/sack-of-ajax/" target="_blank">Sack of Ajax</a>というJavascriptライブラリがあるんですね。Simple AJAX Code Kitの略だそうです。
+</p>
+
+<p class="entryBody">
+同じ様なajax Javascriptライブラリの<a href="http://prototype.conio.net/" target="_blank">prototype.js</a>（厳密にはprototyps.jsは、ajaxだけのライブラリではないんですけどね）と比較してみると、prototype.jsでは
+</p>
+
+<pre class="code">
+new Ajax.Updater(
+    'id', 
+    '/url',
+    { 
+      parameters: value,
+      onLoading: function(request){loading()} 
+    });
+</pre>
+
+<p class="entryBody">
+となるコードが、
+</p>
+
+<pre class="code">
+var mydata = value;
+ajax = new sack('/url');
+ajax.element = 'id';
+ajax.onLoading = function(){loading()};
+ajax.runAjax(mydata);
+</pre>
+
+<p class="entryBody">
+といった形で書けるようです。これはresponseTextを直接特定のエレメントにはめ込む例ですね。
+</p>
+
+<p class="entryBody">
+responseTextを一旦変数に入れて何かしたい場合は、<a href="http://mizzy.org/program/htmlPrototype02.html" target="_blank">「Catalystでajax - 補足」</a>で触れた例を使うと、prototype.jsでは、
+</p>
+
+<pre class="code">
+new Ajax.Request(
+    '/deislde/index.cgi',
+    {
+      method: 'GET',
+      onComplete: function(request){
+        eval('tagsListObj = ' +  request.responseText);
+	displayTags();
+      }
+    });
+</pre>
+
+<p class="entryBody">
+というコードが、Sackの方では
+</p>
+
+<pre class="code">
+ajax = new sack('/delside/index.cgi');
+ajax.method = 'GET';
+var response = ajax.response;
+ajax.onCompletion = function() {
+		        eval('tagsListObj = ' +  response);
+		        displayTags();
+                    };
+ajax.runAjax();
+</pre>
+
+<p class="entryBody">
+といった感じになるようです。（ここで挙げたコードは、たぶんこうだろうというのを書いただけで、実際には試していませんです。）
+</p>
+
+<p class="entryBody">
+prototypeでは、オブジェクトをnewすると同時に必要なパラメータを全部与えて即実行、という感じですが、Sackではオブジェクトをnewしてから、必要なパラメータを1つづつセットして、任意のタイミングで実行、という感じですね。
+</p>
+
+<p class="entryBody">
+俺はどちらかというと、Sackの方が好みなんですが、prototypeの方はフォームデータをシリアライズするメソッドなどがあって便利なので、両方組み合わせるとより快適ににajaxできるんではないでしょうか。
+</p>

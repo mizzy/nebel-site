@@ -1,0 +1,56 @@
+---
+layout: post
+title: "lighttpd の認証を LDAP で"
+date: 2006-05-21 15:17
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/" target="_blank">おうち trac</a> が認証を一切せずに、誰でも wiki の書き換えができたり、ticket の発行ができたり、という状態だったので、それはまずかろうってことで認証かけることにした。
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/linux/trac_and_lighty.html" target="_blank">「trac を lighttpd + FastCGI で動かす」</a> で触れたとおり、trac は lighttpd 上で動いているので、認証は lighttpd で設定します。やりかたは lighttpd のサイトにある <a href="http://www.lighttpd.net/documentation/authentication.html" target="_blank">「Using Authentication Module: mod_auth」</a> の通りなので、あまり難しいことはないのですが、とりあえずやったことをメモ。
+</p>
+
+<p class="entryBody">
+うちの Linux サーバ上で動いているサービスは、ほとんどが LDAP で認証しているので、lighttpd も LDAP で認証するようにします。
+</p>
+
+<p class="entryBody">
+まず、lighty のデフォルト configure オプションでは、auth_ldap が disable になってるので、以下の様にして再インストール。
+</p>
+
+<pre class="code">
+$ ./configure --with-ldap
+$ make
+$ sudo make install
+</pre>
+
+<p class="entryBody">
+でもって、/usr/local/etc/lighttpd.conf を書き換え。関連する部分だけ抜き出すとこんな感じ。
+</p>
+
+<pre class="code">
+server.modules              = (
+                               "mod_auth",
+                               "mod_fastcgi",
+                              )
+
+auth.backend = "ldap"
+auth.backend.ldap.hostname = "kenny"
+auth.backend.ldap.base-dn = "ou=people,o=southpark"
+auth.backend.ldap.filter = "(uid=$)"
+
+auth.require = ( "/public/login" =>
+                 (
+                   "method"  => "basic",
+                   "realm"   => "trac admin area",
+                   "require" => "user=xxx"
+                  )
+                )
+</pre>
+
+<p class="entryBody">
+これで lighty を再起動すれば OK。あとは<a href="http://projects.edgewall.com/trac/wiki/TracPermissions" target="_blank">「Trac Permissions」</a> を参照しながら trac-admin コマンドでパーミッション設定。<a href="http://projects.edgewall.com/trac/wiki/WebAdmin" target="_blank">Web Admin Plugin</a> を導入している場合は trac-admin 使わずにウェブから設定。
+</p>

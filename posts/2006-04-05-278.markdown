@@ -1,0 +1,59 @@
+---
+layout: post
+title: "Plagger::Plugin::Filter::Amazon"
+date: 2006-04-05 21:19
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/Amazon.pm" target="_blank">P::P::Filter::Amazon</a> を作ってみました。<a href="http://mizzy.org/program/iTunesRecentPlay01.html" target="_blank">以前 CustomFeed::iTunesRecentPlay に Amazon Web Service からの情報取得機能をつけた</a> のですが、宮川さんから「Filter でやったほうがよい」というコメントを頂きましたので、Filter プラグインとして分離しました。
+</p>
+
+<p class="entryBody">
+Amazon から情報を取得して、entry に link, icon, summary をセットします。
+</p>
+
+<p class="entryBody">
+設定はこんな感じになります。
+</p>
+
+<pre class="code">
+  - module: Filter::Amazon
+    config:
+      keywords:
+        - title
+        - meta: artist
+        - meta: album
+      associate_id: xxxxxxx-22
+      developer_token: XXXXXXXXXXXXXXXXXXXX
+      locale: jp
+      mode: music
+</pre>
+
+<p class="entryBody">
+上の設定だと、$entry-&gt;title, $entry-&gt;meta-&gt;{artist}, $entry-&gt;meta-&gt;{album} を検索キーワードとします。
+</p>
+
+<p class="entryBody">
+この検索キーワード指定のフォーマットには、少し悩みました。このフォーマットだと、<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/GoogleVideo.pm" target="_blank">CustomFeed::GoogleVideo</a> や <a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/YouTube.pm" target="_blank">CustomFeed::YouTube</a> で使われている様な、$entry->meta->{enclosure}->{url} といった深いハッシュには対応できないのですが、特殊なケースだと思うので、とりあえず考えないことにしました。
+</p>
+
+<p class="entryBody">
+あと悩んだのは名称ですね。Filter::Amazon にするか、 Filter::AWS にするか、 Filter::AmazonWebService にするか。とりあえず Net::Amazon に合わせてみました。
+</p>
+
+<p class="entryBody">
+<strong>追記</strong><br />
+IRC で宮川さんからアドバイス頂いたのでメモ。
+</p>
+
+<ul class="entryBody">
+<li>Filter::AmazonWebService に名称を変える。</li>
+<li>検索ワードは config.yaml で設定せずに、Filter::AWS で制約を設けて、metadata を見るようにする。music, books などの mode も metadata に入れる。</li>
+<li>曲名を入れて検索するとヒットしないことがあるので、その場合は曲名を抜いて検索しなおす。</li>
+</ul>
+
+<p class="entryBody">
+<strong>更に追記</strong><br />
+<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/AmazonWebService.pm" target="_blank">P::P::Filter::AmazonWebService</a> として作り直した。まだ音楽のみ対応。
+</p>

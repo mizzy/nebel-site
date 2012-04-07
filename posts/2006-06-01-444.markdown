@@ -1,0 +1,27 @@
+---
+layout: post
+title: "Qooqle Video Clippers!"
+date: 2006-06-01 17:14
+comments: true
+categories: 
+---
+<p class="entryBody">
+隣の席のオオヒダさんが、早速 JugemKey 認証 API を利用したステキサービスを作ってくれちゃいました。<a href="http://clippers.qooqle.jp/" target="_blank">Qooqle Video Clippers!</a> 
+</p>
+
+<p class="entryBody">
+YouTube のお気に入り動画をがんがんクリップしてタグづけたりコメントつけたり、人気の動画を一覧で見たり RSS で購読したりできちゃいます。
+</p>
+
+<p class="entryBody">
+<a href="http://clippers.qooqle.jp/tag/%E3%83%81%E3%83%A7%E3%82%B3%E3%83%9C%E3%83%BC%E3%82%A4" target="_blank">こんな風に特定のタグで見れば</a>、YouTube まとめサイトっぽくも使えるし。
+</p>
+
+
+<p class="entryBody">
+Clippers! は参加型で集合知な感じなのが、他の見るだけの YouTube 系サービスと一線を画してますね。今後どう発展していくのか楽しみです。
+</p>
+
+<p class="entryBody">
+認証は JugemKey だけではなく、はてな認証 API にも対応してるので、はてなユーザも登録なしで使えますよ。
+</p>

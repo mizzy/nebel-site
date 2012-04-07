@@ -1,0 +1,48 @@
+---
+layout: post
+title: "View Tickets のデフォルトを変える (trac tips #1)"
+date: 2006-09-03 03:49
+comments: true
+categories: 
+---
+<p>
+うちでは <a class="ext-link" href="http://trac.mizzy.org/public/"><span class="icon"></span>公開用 trac</a> の他に、プライベートな trac もあって、Wiki をメモ代わりにしたり、Tickets で TODO 管理（プログラミングとか関係なく、日常のこととかも）してたりします。
+</p>
+<p>
+で、TODO 管理は Milestone でおおざっぱにカテゴリつくっていて、View Tickets ではカテゴリ別に未消化チケットを見るために 『<a class="report" href="/report/3">{3}</a> All Tickets by Milestone』を見ることが多いので、このページをデフォルトにしようと思ったら、どこをカスタマイズしていいか分からずに意外と手間取ったので、ここにもメモしておきます。
+</p>
+<p>
+と言っても、わかってしまえば単純で、/usr/local/lib/python2.4/site-packages/trac/ticket/report.py をいじるだけです。（最初は /usr/local/share/trac/templates にあたりをつけてカスタマイズ法を探っていたので、結構時間かかりました…）
+</p>
+<p>
+70 行目付近に以下の様な記述があります。
+（ちなみにうちで使ってる trac のバージョンは 0.9.2 です。）
+</p>
+<pre class="wiki">
+    def get_navigation_items(self, req):
+        if not req.perm.has_permission('REPORT_VIEW'):
+            return
+        yield 'mainnav', 'tickets', '<a href="%s">View Tickets</a>' \
+              <strong>% util.escape(self.env.href.report())</strong>
+</pre>
+<p>
+この太字の行を次の様に変えてやれば OK です。
+</p>
+<pre class="wiki">
+              <strong>% util.escape(self.env.href.report(3))</strong>
+</pre>
+<p>
+『<a class="report" href="/report/1">{1}</a> Active Tickets』をデフォルトにしたい場合にはこんな感じで。
+</p>
+<pre class="wiki">
+              <strong>% util.escape(self.env.href.report(1))</strong>
+</pre>
+<p>
+<a class="ext-link" href="http://subtech.g.hatena.ne.jp/miyagawa/20060816/1155663714"><span class="icon"></span>宮川さんの様に</a> Query をデフォルトにしたい場合にはこんな感じで。
+</p>
+<pre class="wiki">
+              <strong>% util.escape(self.env.href.query())</strong>
+</pre>
+<p>
+この辺りのカスタマイズ方法って、どこかにまとまってたりしないのかな？
+</p>

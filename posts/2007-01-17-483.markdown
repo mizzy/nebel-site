@@ -1,0 +1,80 @@
+---
+layout: post
+title: "Assurer - サーバテスティングフレームワーク #4"
+date: 2007-01-17 00:10
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Assurer"><span class="icon"></span>Assurer</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Assurer/"><span class="icon"></span>SVN</a>) を修正。テストのターゲットとなるホストを、以下の3つのパターンのいずれかで指定できるようにしてみました。
+</p>
+<h3 id="config.yaml中のテストプラグイン設定で直接指定">config.yaml 中のテストプラグイン設定で直接指定</h3>
+<pre class="wiki">
+test:
+  - module: HTTP
+    config:
+      host: svn.mizzy.org
+      content: It works!
+</pre>
+<p>
+一番オーソドックスなパターンですね。
+</p>
+<h3 id="コマンドラインオプションで指定">コマンドラインオプションで指定</h3>
+<pre class="wiki">
+test:
+  - module: HTTP
+    config:
+      content: It works!
+</pre>
+<p>
+といった感じで config.yaml には host を書かずに、
+</p>
+<pre class="wiki">
+$ ./assurer.pl --config=configy.yaml --host=svn.mizzy.org
+</pre>
+<p>
+とコマンド実行時に指定。同じテストを複数のホストに対して実行する場合、いちいち config.yaml を書き換えるよりも、こっちの方が楽ですね。
+</p>
+<h3 id="config.yamlでターゲットホストをリストで指定">config.yaml でターゲットホストをリストで指定</h3>
+<pre class="wiki">
+test:
+  - module: HTTP
+    config:
+      content: It works!
+
+hosts:
+  - svn.mizzy.org
+  - trac.mizzy.org
+</pre>
+<p>
+2番目のパターンと同じ用に、テストプラグインの設定には host を記述しませんが、別なところにターゲットホストをリストアップしておきます。複数のホストに対して一気に実行するのであれば、この方法が楽ですね。
+</p>
+<p>
+これの変形で、
+</p>
+<pre class="wiki">
+test:
+  - module: HTTP
+    role: web
+    config:
+      contnet: It works!
+
+  - module: MySQL
+    role: mysql
+
+hosts:
+  web:
+    - svn.mizzy.org
+    - trac.mizzy.org
+  mysql:
+    - mysql.mizzy.org
+</pre>
+<p>
+といった感じで設定すると、HTTP のテストは svn.mizzy.org と trac.mizzy.org に、MySQL のテストは mysql.mizzy.org に対して実行される、という動作になります。（MySQL テスト用プラグインはまだ存在しませんが。）
+</p>
+<p>
+複数の役割の異なるホストに対してテストを実行するには、このパターンで。
+</p>
+<p>
+最後のやつは <a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/20060929/1159495175"><span class="icon"></span>Archer</a> からのインスパイヤです。
+</p>

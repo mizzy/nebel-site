@@ -1,0 +1,18 @@
+---
+layout: post
+title: "JavaScript DB"
+date: 2005-05-26 12:11
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://jsdb.sourceforge.net/usarho.html" target="_blank">JavaScript DB</a>なるものを発見。名前の通り、Javascriptでできていて、クライアントサイドで動くDBエンジンですよ。これはおもしろそう。
+</p>
+
+<p class="entryBody">
+<a href="http://mizzy.org/program/myDelicious02.html" target="_blank">このツール</a>に使えそうだなぁ。現状では、特定のタグを持つブックマークを絞り込む時に、forループでまわして正規表現マッチング、なんてことをしているのですが、この辺りの処理を簡略化できそう。それに今後、関連するタグで絞り込んだり、検索したりの機能もつけたかったので、大いに威力を発揮しそうです。
+</p>
+
+<p class="entryBody">
+問題は、どれぐらいクライアントサイドに負担がかかるのか、ってところですね。まだ試していないのですが、早速週末辺りにいじってみよう。
+</p>

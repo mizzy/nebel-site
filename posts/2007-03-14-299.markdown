@@ -1,0 +1,28 @@
+---
+layout: post
+title: "Plagger について本に書きました"
+date: 2007-03-14 22:51
+comments: true
+categories: 
+---
+<p>
+タイトルは <a class="ext-link" href="http://www.9-ten.co.jp/bookdata/1654.php"><span class="icon"></span>MASHUP++</a> です。その名の通り、マッシュアップを主題とした本なのですが、主に自分でマッシュアップな開発をしてみたい、という方向けの本で、自分は「マッシュアップとプラガブルなフレームワーク」をテーマに、Plagger プラグインの開発方法について書きました。
+</p>
+<p>
+内容としては、プラグイン開発の基礎知識として、
+</p>
+<ul><li>内部データ形式である Plagger::Feed と Plagger::Entry</li>
+<li>フィードデータがどの様に入力、加工、出力されるのか</li>
+<li>プラグインの用途と種類にはどんなものがあるのか</li>
+<li>各プラグインの関係や実行フェーズ、実行順序</li></ul>
+<p>
+といったことを解説しています。また、後半は
+</p>
+<ul><li>各フェーズの実際のプラグインソースコードを引用しながらの解説</li>
+<li>プラグインの雛形生成、ドキュメント、テストの書き方といったプラグイン開発の流れ</li></ul>
+<p>
+といった感じになっています。プラグインを開発してみたいけど、どこから手をつけていいのかわからない、という方に是非ご覧頂きたいです。
+</p>
+<p>
+他にも <a class="ext-link" href="http://vgzh.dtdns.net/"><span class="icon"></span>さうなまん</a> さん、<a class="ext-link" href="http://www.koui.net/"><span class="icon"></span>鹿倉公維</a> さん、<a class="ext-link" href="http://graffiti-web.org/"><span class="icon"></span>セトウナオ</a> さん、<a class="ext-link" href="http://pickles.tv/"><span class="icon"></span>タナカミノル</a> さんといった <a class="ext-link" href="http://www.amazon.co.jp/dp/4872835905"><span class="icon"></span>.fla</a> の執筆陣による Flash を主体としたマッシュアップ（タナカさんは今回は Flash ではないですが）や、<a class="ext-link" href="http://www.catwalk.co.jp/"><span class="icon"></span>CATWALK</a> の三宅涼さん、澤久裕昭さんによる、これぞ正当なマッシュアップ、といった感じの PHP と JavaScript によるマッシュアップ、そして、タナカミノルさんと<a class="ext-link" href="http://www.tsumuji.net"><span class="icon"></span>原央樹</a> さんによる、<a class="ext-link" href="http://gainer.cc/"><span class="icon"></span>Gainer</a>というハードウェアを使ったマッシュアップなど、バリエーション豊かなマッシュアップがソースコードつきで解説されています。必読。
+</p>

@@ -1,0 +1,16 @@
+---
+layout: post
+title: "Plagger::Rule::Ahead"
+date: 2006-08-26 23:47
+comments: true
+categories: 
+---
+<p>
+Plagger の Rule まわりの実装は今までちゃんと見たことなかったので、勉強も兼ねて <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Rule/Ahead.pm"><span class="icon"></span>Plagger::Rule::Ahead</a> を実装してみた。 前エントリの <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Filter/FutureEvents.pm"><span class="icon"></span>Filter::FutureEvents</a> と同様のことを、Rule ベースで実現します。現在時刻よりも<strong>後</strong>に発生するイベントを持つエントリを抽出、ということで Ahead という名前にしてみました。イベントを持っていないエントリの場合には、エントリの更新時刻をチェックします。
+</p>
+<p>
+Filter::FutureEvents も Rule::Ahead も <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Event.pm"><span class="icon"></span>Plagger::Event</a> があることを前提としてるので、そのままでは 本家 trunk では動作しません。ご注意を。
+</p>
+<p>
+ 
+</p>

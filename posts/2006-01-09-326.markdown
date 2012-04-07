@@ -1,0 +1,56 @@
+---
+layout: post
+title: "tt プラグイン（というか Template::Parser ）の謎の挙動"
+date: 2006-01-09 16:12
+comments: true
+categories: 
+---
+<p class="entryBody">
+bloxsom のフレーバを Template-Toolkit で処理するための<a href="http://mizzy.org/program/blosxomTT.html" target="_blank">プラグイン</a>が謎の挙動をしていて、昨日のエントリの permalink ページがエラーとなっていました。
+</p>
+
+<p class="entryBody">
+で、原因となる箇所は特定できたのですが、原因がさっぱり分からないので、どなたかご存知の方は教えてください。
+</p>
+
+<p class="entryBody">
+まず、プラグインの処理の概要ですが、tt プラグインの interpolate() の中で、$template にフレーバの内容をつっこんで、同じプラグイン内の parse() に渡しています。parse() では、Template::Parser を利用して、TT のディレクティブからパラメータをひろって配列につっこんでいます。その後も処理があるのですが、今回の問題とは関係がないので省略。問題のある部分を抜粋すると以下の様な感じです。
+</p>
+
+<pre class="code">
+sub interpolate {
+    return sub {
+        my $template = shift;
+
+        # 省略
+
+        my @params = parse($template);
+
+        # 省略
+    }
+}
+
+sub parse {
+    my $template = shift;
+    my $parser = Template::Parser->new;
+    my $tokens = $parser->tokenise_directive($template);
+
+    # 省略
+}
+</pre>
+
+<p class="entryBody">
+で、何が問題かというと、interpolate() 内の $template が、parse() の $parser->tokenise_directive($template) を実行すると空になってしまうのです。それも、$template がある程度長くなった場合のみ。（具体的に何byte 以上かは調べてないのですが。）
+</p>
+
+<p class="entryBody">
+parse() 内の $template は、 interpolate() 内の $template のコピーのはずなので、直接 interpolate() の $template はいじってないし、Template::Parser のソースを見ても、渡された $template をいじっているようには見えないんですよね。
+</p>
+
+<p class="entryBody">
+また、問題が発生する $template の内容と同一のデータを使って、blosxom のプラグインという形ではなく、単一のプログラムを書いて実行してみると、正常に処理できるんですよね。謎です。
+</p>
+
+<p class="entryBody">
+とりあえず長さが問題だということと、parse() には $template の中身をすべて渡す必要がなく、TT の ディレクティブだけ渡せばいいので、そういった処理をするように修正してしのいでいます。（それでも挙動がおかしいところがあるのですが。）
+</p>

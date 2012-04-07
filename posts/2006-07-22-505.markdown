@@ -1,0 +1,158 @@
+---
+layout: post
+title: "Fedora Core 4 への Courier-IMAP の導入"
+date: 2006-07-22 19:45
+comments: true
+categories: 
+---
+<p>
+訳あって Fedora Core 4 上でメールサーバを構築する必要があったので、<a class="ext-link" href="http://www.courier-mta.org/imap/"><span class="icon"></span>Courier-IMAP</a> を導入しました。mizzy.org のサーバでも使っていて慣れているし、今のところトラブルもないので安心して利用できるので。
+</p>
+<p>
+RPM は嫌いなんですが、Fedora Core を使うのであれば、できる限り RPM で入れた方がいいよな、と思い RPM パッケージを探したのですが、Courier-IMAP のソース（ソース RPM ではない）から RPM パッケージを作成できることが判明。ただ、ソース付属の INSALL 読んだだけですんなりインストールできたわけではないので、ここに導入メモを残しておきます。
+</p>
+<h3 id="expectのインストール">expect のインストール</h3>
+<p>
+expect に依存してるので、入ってなければインストール。
+</p>
+<pre class="wiki">
+$ sudo yum install expect
+</pre>
+<h3 id="libtool-ltdl-develのインストール">libtool-ltdl-devel のインストール</h3>
+<p>
+Courier-IMAP は <a class="ext-link" href="http://www.courier-mta.org/authlib/"><span class="icon"></span>Courier-Authlib</a> に依存してるのですが、Courier-Authlib の RPM パッケージ作成時に、libtool-ltdl-devel がないと、最後の最後に以下の様なエラーが出ます。
+</p>
+<pre class="wiki">
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /var/tmp/courier-authlib-0.58-1.4-root
+error: Installed (but unpackaged) file(s) found:
+   /usr/lib/libltdl.a
+   /usr/lib/libltdl.la
+   /usr/lib/libltdl.so
+   /usr/lib/libltdl.so.3
+   /usr/lib/libltdl.so.3.1.0
+</pre>
+<p>
+なので、まずは yum で libtool-ltdl-devel をインストール。
+</p>
+<pre class="wiki">
+$ sudo yum install libtool-ltdl-devel
+</pre>
+<h3 id="Courier-Authlibのインストール">Courier-Authlib のインストール</h3>
+<p>
+<a class="ext-link" href="http://www.courier-mta.org/?download.php~authlib"><span class="icon"></span>ここから</a> Courier-Authlib のソースをダウンロード。展開はせずにそのまま
+</p>
+<pre class="wiki">
+$ sudo rpmbuild -ta courier-authlib-0.58.tar.bz2
+</pre>
+<p>
+を実行。しばらくビルド作業が続き、以下の様に複数の RPM パッケージを生成して完了。
+</p>
+<pre class="wiki">
+Wrote: /usr/src/redhat/SRPMS/courier-authlib-0.58-1.4.src.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-devel-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-userdb-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-ldap-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-mysql-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-pgsql-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-pipe-0.58-1.4.i386.rpm
+Wrote: /usr/src/redhat/RPMS/i386/courier-authlib-debuginfo-0.58-1.4.i386.rpm
+Executing(%clean): /bin/sh -e /var/tmp/rpm-tmp.17424
++ umask 022
++ cd /usr/src/redhat/BUILD
++ cd courier-authlib-0.58
++ rm -rf /var/tmp/courier-authlib-0.58-1.4-root
++ exit 0
+</pre>
+<p>
+このうち courier-authlib と courier-authlib-devel は必須なのでインストールしておきます。
+</p>
+<pre class="wiki">
+$ rpm -Uvh /usr/src/redhat/RPMS/i386/courier-authlib-0.58-1.4.i386.rpm
+$ rpm -Uvh /usr/src/redhat/RPMS/i386/courier-authlib-devel-0.58-1.4.i386.rpm
+</pre>
+<p>
+後は必要なものを適宜インストール。
+</p>
+<h3 id="gamin-develのインストール">gamin-devel のインストール</h3>
+<p>
+Courier-IMAP の RPM パッケージを作成しようとすると、
+</p>
+<pre class="wiki">
+error: Failed build dependencies:
+        /usr/include/fam.h is needed by courier-imap-4.1.1-1.4.i386
+</pre>
+<p>
+と怒られるので、このファイルが含まれる gamin-devel をインストールします。
+</p>
+<pre class="wiki">
+$ sudo yum install gamin-devel
+</pre>
+<h3 id="Courier-IMAPのインストール">Courier-IMAP のインストール</h3>
+<p>
+ソースから Perl を入れている場合には、生成された RPM パッケージをインストールしようとすると、
+</p>
+<pre class="wiki">
+error: Failed dependencies:
+        /usr/local/bin/perl is needed by courier-imap-4.1.1-1.4.i386
+</pre>
+<p>
+と怒られるので、PATH から /usr/local を外しておきます。
+</p>
+<pre class="wiki">
+$ export PATH=/bin:/usr/bin
+</pre>
+<p>
+で、いよいよ Courier-IMAP の  RPM パッケージの作成ですが、
+</p>
+<pre class="wiki">
+$ sudo rpmbuild -ta courier-imap-4.1.1.tar.bz2
+</pre>
+<p>
+と実行すると、
+</p>
+<pre class="wiki">
+configure: WARNING: === Do not compile Courier-IMAP as root.  Compile
+configure: WARNING: === Courier-IMAP as a non-root user then su to
+configure: WARNING: === root before running make install.  You must now
+configure: WARNING: === remove this entire directory and then extract the
+configure: WARNING: === source code from the tarball as a non-root user
+configure: WARNING: === and rerun the configure script.  If you have read
+configure: WARNING: === the INSTALL file you should have known this.  So
+configure: WARNING: === you better read INSTALL again.
+configure: error: aborted.
+error: Bad exit status from /var/tmp/rpm-tmp.46388 (%prep)
+</pre>
+<p>
+と怒られるので sudo を外すと、
+</p>
+<pre class="wiki">
+$ rpmbuild -ta courier-imap-4.1.1.tar.bz2
+error: Failed to rename /usr/src/redhat/SPECS/rpm-spec.oF7pub to /usr/src/redhat/SPECS/rpm-spec.oF7pub: Permission denied: No such file or directory
+</pre>
+<p>
+と怒られる。
+</p>
+<p>
+<a class="ext-link" href="http://www.courier-mta.org/?FAQ.html~rpm"><span class="icon"></span>http://www.courier-mta.org/?FAQ.html~rpm</a> に対処方法が書いてあるので、これにしたがって non-root ユーザで以下の様に実行。
+</p>
+<pre class="wiki">
+$ mkdir $HOME/rpm
+$ mkdir $HOME/rpm/SOURCES
+$ mkdir $HOME/rpm/SPECS
+$ mkdir $HOME/rpm/BUILD
+$ mkdir $HOME/rpm/SRPMS
+$ mkdir $HOME/rpm/RPMS
+$ mkdir $HOME/rpm/RPMS/i386
+echo "%_topdir    $HOME/rpm" >> $HOME/.rpmmacros
+rpmbuild -ta courier-imap-4.1.1.tar.bz2
+</pre>
+<p>
+RPM パッケージが生成されるので、インストール。
+</p>
+<pre class="wiki">
+$ sudo rpm -Uvh /home/miya/rpm/RPMS/i386/courier-imap-4.1.1-1.4.i386.rpm
+</pre>
+<p>
+ここまでやって、よし、設定して起動するか、と思ったところで、<a class="ext-link" href="http://dovecot.org/"><span class="icon"></span>Dovecot</a> が既にインストールされていて起動していることに気づいた…せっかく Courier 入れたけど、Dovecot 使ったことないので、いい機会なのでこっちを使うことにした。
+</p>

@@ -1,0 +1,23 @@
+---
+layout: post
+title: "PLAYLOG HACKS with Plagger #2"
+date: 2006-03-07 22:57
+comments: true
+categories: 
+---
+<p class="entryBody">
+Plagger Plugin の <a href="http://plagger.org/trac/browser/trunk/plagger/lib/Plagger/Plugin/CustomFeed/iTunesRecentPlay.pm" target="_blank">CustomFeed::iTunesRecentPlay</a> をアップデート。
+</p>
+
+<p class="entryBody">
+前回廃止した reload_period ですが、ライブラリが大きいとメモリ食いまくるからあった方がいいかも、と宮川さんから助言があったため、復活しました。ただし、Rule::Fresh と合わせてパラメータ名は duration とし、分単位で指定するようにしています。
+</p>
+
+<p class="entryBody">
+また、otsune さんからリクエストあがっていた、URL を指定しての iTunes Music Library.xml の取得処理の実装は見送ることにしました。というのも、iTunes を動かしていないどこかのサーバで plagger を動かす場合、直接 iTunes が動いているマシンから HTTP GET で iTunes Music Library.xml を取得することはないでしょうから、必ずどこかにファイルを移すことになると思います。であれば、plagger を動かすサーバに直接ファイルをアップして、 config.yaml の library_path でパスを指定すれば事足りるかな、と。
+</p>
+
+<p class="entryBody">
+あと、ローカルファイルの場合はファイルハンドルを while で回して処理、URL 指定の場合は一度変数にデータを格納してから処理、という違いがあり、この違いをエレガントに吸収する仕組みがすぐに思いつかなかった、という理由もあったりします。
+</p>
+

@@ -1,0 +1,30 @@
+---
+layout: post
+title: "The Inbox Makeover with ajax 構想"
+date: 2005-11-30 02:33
+comments: true
+categories: 
+---
+<p class="entryBody">
+7ヶ月近く完全放置の <a href="http://mizzy.org/?topic=/program/ajaxWebMail" target="_blank">ajax なウェブメール</a>ですが、そもそもネイティブアプリ（この場合は Wanderlust ）と同じような操作性のものを作ろうと考えたのが敗因のような気がします。（ウェブメールに限らず、ajax でネイティブアプリと同じようなものを作る、という発想は何か間違っているのではないかと最近思う。）
+</p>
+
+<p class="entryBody">
+で、どうせなら Wanderlust とは全然違う操作性で、もっと使い勝手が良くなるようなウェブメールを作ればいいんじゃね、と。そのためには現在の自分自身のメール処理のスタイルを変えないとだめなんだろうな、という考えに至り、そういや <a href="http://www.rubyist.net/~matz/" target="_blank">Matz にっき</a>で <a href="http://www.rubyist.net/~matz/20050903.html" target="_blank">The Inbox Makeover</a> というエントリがあったな、と思い出しました。
+</p>
+
+<p class="entryBody">
+これがなんだか非常に良さげな感じがするので、このメール処理メソッドに特化した操作性のウェブメールを作るといいんじゃないだろうか、と思い至ったわけです。
+</p>
+
+<p class="entryBody">
+さらに、このメール処理メソッドを実行するには、分類ベースのメールボックスから検索ベースのメールボックスへの移行も必要だろうな、ということで、<a href="http://projects.netlab.jp/ximapd/" target="_blank">ximapd</a> と組み合わせるととてもいいものができあがるんじゃないだろうか、とまだ何もしていないくせに、ちょっとワクワクしていたりします。
+</p>
+
+<p class="entryBody">
+さらにさらに、ximapd は Ruby ベースなので、ウェブメールも Ruby on Rails なんかで実装してみるとおもしろそうだな、と妄想が広がるばかりです。（別にサーバとクライアントを同じ言語にする必然性はまったくないんだけど…）
+</p>
+
+<p class="entryBody">
+…というわけで、　まだ思いついただけでなんにもしていないのですが、本気で作ってみようかな、と思いはじめている自分がいます。といってもすぐには時間がとれないので、正月休みあたりに、Rails の勉強も兼ねてやってみようかな、と。
+</p>

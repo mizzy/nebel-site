@@ -1,0 +1,28 @@
+---
+layout: post
+title: "DBIx::Class のカスタム JOIN ではまる"
+date: 2006-03-27 12:42
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://search.cpan.org/~mstrout/DBIx-Class-0.06000/lib/DBIx/Class/ResultSet.pm#from" target="_blank">DBIx::Class::ResultSet の from メソッドの説明</a> にしたがって、カスタム JOIN を試みるものの、どうしても join type が指定できない、という現象にはまる。 
+</p>
+
+<p class="entryBody">
+ドキュメント上では -join-type => 'inner|left|right' って書いてあって、この通りに記述してるのに、全然指定通りの JOIN ができない。で、色々ソース眺めてたら、DBIx::Class::ResultSource のソースにこんな記述が。
+</p>
+
+<pre class="code">
+return [ { $as => $self->related_source($join)->from,
+           <strong>-join_type => $type</strong> }
+         $self->resolve_condition($rel_info->{cond}, $as, $alias) ];
+</pre>
+
+<p class="entryBody">
+-join-type じゃなくて -join_type かよ！これで 3,4 時間無駄にしました…。-join_type に変えたらうまくいきましたよ。
+</p>
+
+<p class="entryBody">
+自分の様な犠牲者をこれ以上出さないために、Matt S Trout にドキュメントなおしといてね、とメールしておきました。
+</p>

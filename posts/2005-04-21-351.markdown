@@ -1,0 +1,104 @@
+---
+layout: post
+title: "SiteBar 3.3を試してみた"
+date: 2005-04-21 22:34
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://sitebar.org/" target="_blank">SiteBar</a>という、PHPでできていて、自分でサーバに設置して利用できるオンラインブックマークツールを試してみました。
+</p>
+
+<p class="entryBody">
+以下に簡単に設置方法をメモしておきます。PHPとMySQLが使える環境であれば、レンタルサーバでも設置できると思います。
+</p>
+
+<p class="entryBody">
+<a href="http://sitebar.org/downloads.php" target="_blank">ダウンロードページ</a>からSiteBar-3.3.tar.bz2をダウンロードして展開、適当なディレクトリにmvします。
+</p>
+
+<p class="entryBody">
+$ bzip2 -dc SiteBar-3.3.tar.bz2|tar xvf -<br />
+$ mv SiteBar-3.3 /path/to/htdocs/sitebar<br />
+$ cd /path/to/htdocs/sitebar<br />
+$ sudo chown nobody:nobody inc (Apacheの起動ユーザ/グループに書き込み権限が必要なため）<br />
+</p>
+
+<p class="entryBody">
+次に、http://yourhost/sitebar/index.php にアクセスして設定を行います。
+</p>
+
+<p class="entryBody">
+<img class="screenshot" src="/img/sitebar_install.jpg" float="left" />
+環境に合わせて設定して下さい。データベースが存在しない場合には、[Create Database]を栗kkすることで、作成することができます。
+</p>
+
+<p class="entryBody">
+設定項目入力後、[Check Settings]をクリックすることで、設定が正しいかどうか確認できます。設定が正しければ、 [Write To File]をクリックして設定を保存します。
+</p>
+
+<p class="entryBody">
+すると、Your database does not contain SiteBar tables.と表示されますので、[Install]をクリックしてください。
+<br class="screenshot" />
+</p>
+
+<hr />
+
+<p class="entryBody">
+<img class="screenshot" src="/img/sitebar_after_install.jpg" float="left" />
+[Install]をクリック後、この様な画面になります。
+</p>
+
+<p class="entryBody">
+[Setup]をクリックして、適当に設定してください。
+</p>
+
+<p class="entryBody">
+設定が終わると、ログインした状態になるはずです。普段はこの画面をサイドバーに表示させて利用する、という形になるのですが、Firefoxのextensionがあるので、次はこのextensionを入れてみます。
+<br class="screenshot" />
+</p>
+
+<hr />
+
+<p class="entryBody">
+<img class="screenshot" src="/img/sitebar_sidebar.jpg" float="left" />
+extensionはここのサイトに行ってインストールします。
+<a href="http://sitebarsidebar.knowledge-emporium.com/" target="_blank">http://sitebarsidebar.knowledge-emporium.com/</a>
+</p>
+
+<p class="entryBody">
+インストールすると、サイドバーに左の様な画面を出すことができます。
+</p>
+
+<p class="entryBody">
+上部一番左にあるチェックマークアイコンをクリックして、Sitebar Hostの設定をします。http://yourhost/sitebar/index.php という形で、自分で設置したSiteBarのURLを設定します。
+</p>
+
+<p class="entryBody">
+設定を終えたら、Log Inをクリックして、セットアップ時に設定したメールアドレスとパスワードでログインします。
+</p>
+
+<p class="entryBody">
+一番基本的な使い方ですが、現在見ているサイトをブックマークに追加するには、上部左から3番目の家アイコンをクリックします。Admin's Bookmarksというリンクを右クリックするとメニューが出てきて、フォルダを追加したり、色々とできます。
+</p>
+
+<p class="entryBody">
+あとはご自身で色々と試してみてください。
+<br class="screenshot" />
+</p>
+
+<p class="entryBody">
+で、軽く使ってみて感じたのは、こりゃ常用するのは無理だな、ってことです。
+</p>
+
+<p class="entryBody">
+自分がオンラインブックマークとして常用しているのは、<a href="http://www.spurl.net" target="_blank">Spurl</a>のFirefox extensionなのですが、Spurlではフォルダによる分類に加えてタギングすることもでき、タグによるブックマーク検索ができたり、タグを絞り込んでいくインターフェースがすごく使い勝手がよかったりと、オンラインブックマークとしてはかなりできの良いものになっています。（ソーシャルブックマークとしての評価はまた別ですが。）
+</p>
+
+<p class="entryBody">
+この階層+タギングによる分類が恐ろしく便利で、SiteBarの様にフォルダでしか分類できないものや、<a href="http://del.icio.us/" target="_blank">del.icio.us</a>の様にタグでしか分類でないものは、自分用オンラインブックマークとして使う気にはなれません。（もちろん、ソーシャルブックマークとしてのdel.icio.usはすばらしっすよ。）
+</p>
+
+<p class="entryBody">
+ただ、Spurlはサイドバーを表示させる時のレスポンスがいまいち悪いんですよね。自サーバで自分専用に設置できるSiteBarの方がその辺は勝ってます。Spurlがもっとレスポンスが良くなるか、SiteBarがタギングできるようになると最高なんですけどねぇ。
+</p>

@@ -1,0 +1,21 @@
+---
+layout: post
+title: "Assurer のプロジェクトサイト立ち上げました"
+date: 2007-01-18 01:19
+comments: true
+categories: 
+---
+<p>
+irc#assurer@freenode での会話が盛り上がったので、勢いで <a class="ext-link" href="http://assurer.jp/trac"><span class="icon"></span>ドメインを取得して、独立した trac と svn repos を立ち上げてみました</a>。（最低限の体裁だけ。しかも <a class="ext-link" href="http://plagger.org/"><span class="icon"></span>plagger.org</a> からコピペ。）
+</p>
+<p>
+<a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/"><span class="icon"></span>id:tokuhirom</a> さんからの contribute で、テストプラグインも増えてます。また、<a class="ext-link" href="http://blog.yappo.jp/"><span class="icon"></span>信頼のおける Yappo</a> さんから、Publish::File プラグインを提供してもらいました。感謝感謝。
+</p>
+<p>
+IRC での会話の流れで、テストだけではなく監視もカバーする、という方向性で行くことになりました。会話の断片はこちらで参照できます。
+</p>
+<ul><li><a class="ext-link" href="http://d.hatena.ne.jp/tokuhirom/20070117/1169018818"><span class="icon"></span>http://d.hatena.ne.jp/tokuhirom/20070117/1169018818</a></li>
+<li><a class="ext-link" href="http://subtech.g.hatena.ne.jp/yappo/20070117/1169031325"><span class="icon"></span>http://subtech.g.hatena.ne.jp/yappo/20070117/1169031325</a></li></ul>
+<p>
+なんか略称がヒドイことになってます…（その略称に OK を出したのは自分ですが…）
+</p>

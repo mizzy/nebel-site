@@ -1,0 +1,18 @@
+---
+layout: post
+title: "blosxomでtagging #4"
+date: 2005-04-18 23:12
+comments: true
+categories: 
+---
+<p class="entryBody">
+taggingプラグインをアップデート。現在自分がいるカテゴリ内のエントリにあるタグだけを表示できる様にしてみました。カテゴリ移動時に左のtagsメニューにご注目頂ければ、どんな動作かおわかりになるかと思います。download: <a href="/archives/tagging">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+カテゴリ名の表示には、<a href="http://hail2u.net/archives/blugins.html#categories" target="_blank">hail2u.net kyoさんのcategoriesプラグイン</a>を更に改造したものを使わせて頂いております。
+</p>
+
+<p class="entryBody">
+次の目標。タグが増えてくると目的のタグを探すのがつらくなるので、タグの絞込みができるフォームをつける。もちろん、Javascript + xmlHttpRequest + DOMを利用して、文字入力するたびにダイナミックに候補が絞り込まれていく様にする。（前も違う言葉で同じようなこと言ってた気がするけど...）
+</p>

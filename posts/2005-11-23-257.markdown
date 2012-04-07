@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Bloglines用greasemonkeyユーザスクリプト"
+date: 2005-11-23 18:34
+comments: true
+categories: 
+---
+<p class="entryBody">
+俺は<a href="http://www.bloglines.com" target="_blank">Bloglines</a>を愛用しているのですが、フォルダが一階層しか作れないので、登録フィード数が増えてくると、ひとつのフォルダ開くだけで、縦にスクロールする量が大きくてなって、うざいんですよね。なので、一度に開くフォルダはひとつだけにしたいのですが、いちいち閉じて開いてするのもまたうざいです。
+</p>
+
+<p class="entryBody">
+そこで、<a href="http://greasemonkey.mozdev.org/" target="_blank">greasemonkey</a>を利用して、フォルダを開いた時に、他のフォルダをすべて自動で閉じるようなユーザスクリプトを作ってみました。<a href="http://mizzy.org/js/bloglines_folder_open_close.user.js" target="_blank">bloglines_folder_open_close.user.js</a>
+</p>
+
+<p class="entryBody">
+うん、いい感じ。
+</p>

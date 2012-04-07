@@ -1,0 +1,31 @@
+---
+layout: post
+title: "Plagger::Plugin::Publish::iTunes"
+date: 2006-07-30 05:08
+comments: true
+categories: 
+---
+<blockquote>
+<p>
+  待ってました〜！Filter::FFmpeg！<br />
+  Windows環境でもバッチリ動きました。<br />
+  <br />
+  &lt;... 中略 ...&gt;<br />
+  <br />
+  エンコード後にダイレクトにiTunesに登録するようにするには、Publish系のプラグインで実装する形になるのかなぁ？
+  <cite>from: <a class="ext-link" href="http://d.hatena.ne.jp/shimibow/20060728"><span class="icon"></span>SHIMIBOW’S HATENA DIARY - plagger &amp; ffmpeg</a></cite>
+</p>
+</blockquote>
+<p>
+こういった反応を頂けると、つくった甲斐がありますね。開発者冥利に尽きます。
+というわけで、うれしいのでお礼として <a class="ext-link" href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/Publish/iTunes.pm"><span class="icon"></span>Publish::iTunes</a> つくりました。
+</p>
+<p>
+設定はこれだけです。
+</p>
+<pre class="wiki">
+  - module: Publish::iTunes
+</pre>
+<p>
+ただ、問題がひとつあって、iTunes で表示される動画のタイトルが、ファイル名になっちゃうんですよね。ffmpeg の -title オプションでタイトルつけても、iTunes では表示されないようです。携帯動画変換君では、付属の ATOMChanger.exe でタイトルつけているようなんですが、同じことが perl でできるのかどうか、調べてみる必要がありますね。
+</p>

@@ -1,0 +1,19 @@
+---
+layout: post
+title: "Plagger と YouTube #1"
+date: 2006-04-30 00:41
+comments: true
+categories: 
+---
+<p class="entryBody">
+YouTube の HTML が変更されていたので、<a href="http://trac.mizzy.org/public/browser/plagger/trunk/lib/Plagger/Plugin/CustomFeed/YouTube.pm" target="_blank">Plagger::Plugin::CustomFeed::YouTube</a> を修正。ついでに以下の機能もつけました。
+</p>
+
+<ul class="entryBody">
+<li>取得する検索結果ページ数を指定できるようにした。（デフォルトは1ページ。）</li>
+<li>ソート条件を指定できるようにした。（デフォルトはアップロード日時。）</li>
+</ul>
+
+<p class="entryBody">
+<a href="http://wiki.shibuya.pl/?PlaggerConference" target="_blank">Plagger Conference</a> のライトニングトークで、「Plagger &amp; YouTube（仮）」というお題でしゃべります。もちろん、CustomFeed::YouTube のことだけ話してもおもしろくないので、これ以上のことを考えてます。お楽しみに。
+</p>

@@ -1,0 +1,28 @@
+---
+layout: post
+title: "svk のインストールではまる"
+date: 2006-03-04 23:53
+comments: true
+categories: 
+---
+<p class="entryBody">
+正確には svk ではなく、subversion の perl binding のインストールではまったのでメモ。svk をインストールしようとすると、「SVN::Core がねーよ、subversion の perl binding をちゃんと入れとけ」みたいなことを言われたので、subversion のソースディレクトリで make swig-pl; make check-swig-pl したところで、以下の様なエラーが大量に出る。
+
+</p>
+
+<p class="code">
+../../../../../subversion/bindings/swig/perl/native/t/4pool......Can't load '/home/miya/src/subversion-1.1.4/subversion/bindings/swig/perl/native/blib/arch/auto/SVN/_Core/_Core.so' for module SVN::_Core: /home/miya/src/subversion-1.1.4/subversion/bindings/swig/perl/native/blib/arch/auto/SVN/_Core/_Core.so: undefined symbol: svn_swig_pl_thunk_config_enumerator at /usr/local/lib/perl5/5.8.7/i686-linux/DynaLoader.pm line 230.
+</p>
+
+<p class="entryBody">
+「undefined symbol: svn_swig_pl_thunk_config_enumerator」と出てるので、こいつが含まれるライブラリがリンクされてないんだろうな、と思いまずはライブラリ探し。これは libsvn_swig_perl-1.so であることを発見。で、ldd _Core.so を実行してみると、案の定このライブラリがリンクされてない。
+</p>
+
+<p class="entryBody">
+というわけで、subversion/bindings/swig/perl/native/Makefile の LOADLIBS の行の最後に、-lsvn_swig_perl-1 を追加して make swig-pl; make check-swig-pl すると今度はエラーもなくチェック完了。このまま make install で無事インストールができた。
+</p>
+
+<p class="entryBody">
+<strong>追記</strong><br />
+あとで最初からやりなおしてみたら、最初から Makefile に -lsvn_swig_perl-1 があった。なんだったんだろう？
+</p>

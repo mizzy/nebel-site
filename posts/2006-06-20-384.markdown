@@ -1,0 +1,104 @@
+---
+layout: post
+title: "Text::Trac - Trac Wiki 記法パーサ #1"
+date: 2006-06-20 00:26
+comments: true
+categories: 
+---
+<h3 id="Text::Tracをblosxomから呼び出してみるテスト">Text::Trac を blosxom から呼び出してみる テスト</h3>
+<p>
+Text::Trac が形になってきたので、実際に文章を書いてテストしてみる。
+</p>
+<h4 id="もういっちょ見出しのテスト">もういっちょ見出しのテスト</h4>
+<p>
+paragraph 1<br />
+paragraph 1<br />
+paragraph 1
+</p>
+<p>
+paragraph 2<br />
+paragraph 2<br />
+paragraph 2
+</p>
+<ul><li>リスト 1</li>
+<li>リスト 2</li>
+<li>リスト 3</li></ul>
+<ol start="1"><li>リスト 1</li>
+<li>リスト 2</li>
+<li>リスト 3</li></ol>
+<dl>
+<dt>定義リスト1</dt>
+<dd>
+内容その1
+</dd>
+<dt>定義リスト2</dt>
+<dd>
+内容その2
+</dd>
+</dl>
+<p>
+上の内容は実際にはこんな感じで書いてます。
+</p>
+<pre class="wiki">
+= Text::Trac を blosxom から呼び出してみる テスト =
+
+== もういっちょ見出しのテスト ==
+
+paragraph 1[[BR]]
+paragraph 1[[BR]]
+paragraph 1
+
+paragraph 2[[BR]]
+paragraph 2[[BR]]
+paragraph 2
+
+ * リスト 1
+ * リスト 2
+ * リスト 3
+
+ 1. リスト 1
+ 1. リスト 2
+ 1. リスト 3
+
+ 定義リスト1::
+   内容その1
+ 定義リスト2::
+   内容その2
+</pre>
+<p>
+blosxom からは以下の様なプラグインで Text::Trac を呼び出してます。
+</p>
+<pre class="wiki">
+# Blosxom Plugin: text_trac
+# Author: Gosuke Miyashita &lt;miya at mizzy.org&gt;
+# Version: 2006-06-20
+# Blosxom Home/Docs/Licensing: http://www.blosxom.com/
+
+package text_trac;
+
+use strict;
+use Text::Trac;
+
+sub start {
+  1;
+}
+
+sub story {
+  my($pkg, $path, $filename, $story_ref, $title_ref, $body_ref) = @_;
+
+  if ( $meta::syntax eq 'trac' ){
+      my $parser = Text::Trac-&gt;new( min_heading_level =&gt; 3 );
+      $parser-&gt;parse($$body_ref);
+      $$body_ref = $parser-&gt;html;
+  }
+
+  return 1;
+}
+
+1;
+
+__END__
+</pre>
+<p>
+Text::Trac 自体はもうちょいで CPAN にアップできると思います。ただし、Yappo さんご所望の機能はもう少し時間ください。
+</p>

@@ -1,0 +1,22 @@
+---
+layout: post
+title: "blosxomでtagging #1"
+date: 2005-04-13 22:32
+comments: true
+categories: 
+---
+<p class="entryBody">
+blosxomでtaggingに対応するプラグインを書いてみました。使い方とか全然書いてないし、まだ作りかけなのですが、置いておきます。<a href="/archives/tagging">taggingプラグイン</a>
+</p>
+
+<p class="entryBody">
+タグづけは<a href="http://www.blosxom.com/plugins/meta/meta.htm" target="_blank">meta plugin</a>を利用して、entryファイルのタイトルの次の行に、「meta-tags: tag1, tag2, tag3, ...」といった形で記述します。
+</p>
+
+<p class="entryBody">
+$tagging::listで、このサイトのサイドにあるように、タグの一覧と出現回数をリストします。今はこれだけです。今後、タグごとにエントリを表示したり検索したり、といったことができるようにしようと思います。
+</p>
+
+<p class="entryBody">
+このプラグインを作ろうと思ったきっかけですが、流行に追随した、ってのもあるのですが、カテゴリによる分類だけだと、どうしても後からカテゴリを見直し/変更したくなり、変更してしまうとpermalinkが変わってしまって、全然permanentじゃなくなる、という問題があるので、カテゴリは後から見直す必要がない様におおざっぱな分類にして、細かな分類はタグで行うのがいいかな、と思ったからです。
+</p>

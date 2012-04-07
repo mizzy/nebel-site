@@ -1,0 +1,53 @@
+---
+layout: post
+title: "Assurer - サーバテスティングフレームワーク #2"
+date: 2007-01-08 01:19
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://trac.mizzy.org/public/browser/library/perl/trunk/Assurer"><span class="icon"></span>Assurer</a> (<a class="ext-link" href="http://svn.mizzy.org/public/library/perl/trunk/Assurer/"><span class="icon"></span>SVN</a>) をまた修正。
+</p>
+<p>
+プラグインの実行フェーズを、test, format, publish の3つにわけてみました。
+</p>
+<pre class="wiki">
+test:
+  - module: HTTP
+    name: http://svn.mizzy.org/ #0
+    config:
+      url: http://svn.mizzy.org/
+      match: It works!
+
+format:
+  - module: HTML
+
+publish:
+  - module: Mail
+
+</pre>
+<p>
+こんな感じで config.yaml を書くと、テスト結果を HTML でフォーマットしてメールで飛ばす、みないな動作になることを意図しています。（まだ Format::HTML や Publish::Mail はつくってないですが。）
+</p>
+<pre class="wiki">
+format:
+  - module: Text
+
+publish:
+  - module: File
+</pre>
+<p>
+とかやると、テキスト形式でファイルに吐き出すとか、そんな感じで。
+</p>
+<p>
+単にターミナルに結果を表示するだけであれば、format と publish は必要ないです。
+</p>
+<p>
+これにともなって、プラグインのネームスペースも、Plugin::Test::*, Plugin::Format::*, Plugin::Publish::* の3つに分割しています。
+</p>
+<p>
+また、Assurer::Results というクラスも新たに追加しました。Plugin::Test::* によるテスト結果を保持しておいて、Plugin::Format::* に渡すためのクラスです。
+</p>
+<p>
+こんな感じで遅々としてますが、少しづつ前進しています。
+</p>

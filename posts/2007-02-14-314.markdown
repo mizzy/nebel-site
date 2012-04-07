@@ -1,0 +1,13 @@
+---
+layout: post
+title: "デブサミ出張 Shibuya イベント"
+date: 2007-02-14 21:58
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://shibuya.pm.org/blosxom/techtalks/200702.html"><span class="icon"></span>デブサミ出張 Shibuya イベント</a>で、Assurer についてしゃべってきました。発表資料を<a class="ext-link" href="http://mizzy.org/archives/assurer_devsumi.pdf"><span class="icon"></span>ここに置いておきます</a>。
+</p>
+<p>
+感想とか書きたいのですが、嘔吐下痢性の風邪にやれられて、一日何も食べることができず、打ち上げにも参加できないぐらい体調悪いので、今日はこの辺で。
+</p>

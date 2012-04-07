@@ -1,0 +1,64 @@
+---
+layout: post
+title: "Javascriptの皮を被ったXML #2"
+date: 2005-07-02 15:18
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="http://mizzy.org/program/javaScriptOverXml01.html" target="_blank">Javascriptの皮を被ったXML #1</a>の続きです。del.icio.us direc.torのGreasemonkey版<a href="http://mizzy.org/js/dboot.user.js" target="_blank">dboot.user.js</a>のHTMLを外部ファイルに分離し、GM_xmlhttpRequestでHTMLを取得するようにしてみました。
+</p>
+
+<pre class="code">
+// ==UserScript==
+// @name            del.icio.us direc.tor greasemonkey user script
+// @namespace       http://mizzy.org/
+// @description     When open a folder in bloglines, close other folders.
+// @include         http://del.icio.us/mizzy/director
+// ==/UserScript==
+
+var d;
+GM_xmlhttpRequest({
+		  method: 'GET',
+		  url: 'http://mizzy.org/director/ui.html',
+		  onload: function(r){
+		      d = r.responseText;
+		      init();
+		  },
+		  });
+
+function init() {
+
+	var i, a, main;
+
+	document.body.innerHTML = "";
+	document.body.innerHTML = d;
+	
+	for(i=0; (a = document.getElementsByTagName("link")[i]); i++) {
+	  if(a.getAttribute("rel").indexOf("style") != -1) {
+	    a.disabled = true;
+	  }
+	}
+	
+	var ns = document.createElement("link");
+	ns.rel = "stylesheet";
+	ns.type = "text/css";
+	ns.href = "http://johnvey.com/features/deliciousdirector/d.css";
+	document.body.appendChild(ns);
+	
+	var js = document.createElement("script");
+	js.language = "javascript";
+	js.src = "http://johnvey.com/features/deliciousdirector/d.js";
+	document.body.appendChild(js);
+	
+	document.title += " (Direc.tor)";
+}
+</pre>
+
+<p class="entryBody">
+前回のものと比べると、コードの前半部分がかなりすっきりしましたね。実際に試してみたい方は、<a href="http://mizzy.org/js/dboot.mizzy.user.js" target="_blank">こちら</a>。
+</p>
+
+<p class="entryBody">
+このエントリ、前回とまとめちゃった方が良かったすね。予想外にあっさりうまくいってしまいました。
+</p>

@@ -1,0 +1,45 @@
+---
+layout: post
+title: "FFmpeg::Command - A wrapper class for ffmpeg command line utility #2"
+date: 2006-07-31 13:51
+comments: true
+categories: 
+---
+<p>
+<a class="ext-link" href="http://search.cpan.org/~mizzy/FFmpeg-Command-0.01/"><span class="icon"></span>FFmpeg-Command-0.01</a> を CPAN にアップしました。
+</p>
+<p>
+エラーハンドリングのために、system() での実行をやめて、IPC::Run::start() を利用するようにしました。
+ただ、これによる弊害がひとつあって、ffmpeg コマンド実行時に表示される、以下の様な実行状態が見えなくなるんですよね。
+</p>
+<pre class="wiki">
+Seems that stream 0 comes from film source: 1000.00 (1000/1) -> 10.00 (10/1)
+Input #0, flv, from 'mizzy.flv':
+  Duration: 00:00:07.9, bitrate: N/A
+  Stream #0.0: Video: flv, yuv420p, 320x240, 10.00 fps(r)
+Output #0, mp4, to 'mizzy.mp4':
+  Stream #0.0: Video: h264, yuv420p, 320x240, q=2-31, 600 kb/s, 10.00 fps(c)
+Stream mapping:
+  Stream #0.0 -> #0.0
+[h264 @ 0x40424010]using cpu capabilities MMX
+Press [q] to stop encoding
+frame=   35 q=24.0 size=     263kB time=3.5 bitrate= 616.7kbits/s
+</pre>
+<p>
+というのも、この内容は標準エラー出力に対して出力されているのですが、FFmpeg::Command ではエラーの内容を捕捉するために、
+</p>
+<pre class="wiki">
+start [ command, options ], \$in, \$out, \$err;
+</pre>
+<p>
+といった感じで IPC::Run::start() を実行して、標準エラー出力への出力を $err に格納しています。そのせいで標準エラー出力への出力内容が、画面に表示されなくなってしまっています。
+</p>
+<p>
+これが標準エラー出力ではなく、標準出力に対して出力されていれば、
+</p>
+<pre class="wiki">
+start [ command, options ], \$in, undef, \$err;
+</pre>
+<p>
+と実行してやることにより、エラーを捕捉しつつ実行状態を画面に表示、ってことができるんですけどね…なんで標準出力ではなく標準エラー出力なんだろう…
+</p>

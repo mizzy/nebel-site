@@ -1,0 +1,35 @@
+---
+layout: post
+title: "feedbringerをremixin' #0"
+date: 2005-11-23 18:29
+comments: true
+categories: 
+---
+<p class="entryBody">
+俺はbloglinesを常用しているのですが、動作が重かったり、bloglinesおじさんがしばしば登場したりしても、他に魅力的なウェブベースのフィードアグリゲータがなかったので、特に乗り換えは考えていませんでした。
+</p>
+
+<p class="entryBody">
+そんな俺が、はじめて乗り換えてもいいかな、と思えるアグリゲータに出会いました。
+ソーシャルブックマーク経由で知った<a href="http://feedbringer.net" target="_blank">feedbringer</a>というやつです。
+</p>
+
+<p class="entryBody">
+まだできたてのαサービスということもあり、色々不満はあったりしますが、ベースの部分は非常に自分好みなので、今後の改良に期待しつつ、期待するだけでなく自分でremixして使いやすくしていこうかな、と考えていたりします。
+</p>
+
+<p class="entryBody">
+そこでremixの初手として、cssを入れ替えるためのgreasemonkeyスクリプトを作ってみました。まずは見た目から、ってことで。<a href="/js/feedbringer.user.js" target="_blank">feedbringer.user.js</a>
+</p>
+
+<p class="entryBody">
+user cssでやってもいいんでしょうけど、単一のサイトに適用するのであれば、greasemonkeyの方がやりやすいですし、javascriptをつかえば、デフォルトで適用されたスタイルを全部無効にできるので、こちらの手法を採用しました。
+</p>
+
+<p class="entryBody">
+とはいうものの、まだ全然cssの方は書いていないのですが…今後cssを書きつつ、javascriptで機能面のremixもしていこうかな、と考えています。いつもの通り、途中で投げ出すことも大有りですが、feedbringerを常用するようになれば、継続的にremixしていけるかな、と。そのためには、魅力的なサービスの提供をぜひお願いしたいです。＞ feedbringer開発元様
+</p>
+
+<p class="entryBody">
+とりあえずは、HTMLがdiv厨っぽい感じなので、これを何とかしてもらいたいなぁ…
+</p>

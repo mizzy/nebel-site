@@ -1,0 +1,31 @@
+---
+layout: post
+title: "ソーシャルブックマークのRSSをブラウザのブックマークに取り込む #1"
+date: 2005-04-24 01:44
+comments: true
+categories: 
+---
+<p class="entryBody">
+<a href="/program/rss2xbel00.html">前回のエントリ</a>で、RSSをXBELに変換するゲートウェイについて触れましたが、Firefoxを使う限りにおいてはLive Bookmarks機能を使えばそれで済むので、せっかっく作ったゲートウェイがあまり意味がないことに気づきました。
+</p>
+
+<p class="entryBody">
+それもなんだか悔しいので、今度は<a href="http://del.icio.us/" target="_blank">del.icio.us</a>の<a href="http://del.icio.us/doc/api" target="_blank">API</a>を利用して、自分がpostしたブックマークをすべて、XBELに変換するためのゲートウェイを作りました。
+</p>
+
+<p class="entryBody">
+<a href="/del2xbel/index.cgi" target="_blank">サンプル</a>と<a href="/archives/del2xbel.tar.gz">ソース</a>
+</p>
+
+<p class="entryBody">
+前回と違って、タグ毎にフォルダを分けるようにしています。Firefoxの<a href="http://extensionroom.mozdev.org/more-info/booksync" target="_blank">Bookmarks Synchronizer extension</a>で取り込んで、サイドバーに表示すると、こんな感じでタグ別にフォルダ分けして表示されます。
+</p>
+
+<p class="entryBody">
+<img src="/img/del2xbel.jpg" />
+</p>
+
+<p class="entryBody">
+これはLive Bookmarksではできないことなので、ちょっと満足しました。まあ、色々と足りないところはあるのですが、自分は<a href="http://www.spurl.net" target="_blank">Spurl</a>サイドバーで満足してるので、これを使うことはないですね。なので、要望があれば改良していきますが、なければこのままほっときます。
+</p>
+
