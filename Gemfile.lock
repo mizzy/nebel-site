@@ -1,0 +1,33 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.2.1)
+      i18n (~> 0.6)
+      multi_json (~> 1.0)
+    blankslate (2.1.2.4)
+    exifr (1.1.2)
+    ffi (1.0.11)
+    i18n (0.6.0)
+    json (1.6.5)
+    liquid (2.2.2)
+    multi_json (1.1.0)
+    pygments.rb (0.2.6)
+      rubypython (~> 0.5.3)
+    rakuten (0.1.1)
+      activesupport
+      i18n
+      json (>= 1.4.6)
+    redcarpet (2.1.1)
+    rubypython (0.5.3)
+      blankslate (>= 2.1.2.3)
+      ffi (~> 1.0.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  exifr
+  liquid (= 2.2.2)
+  pygments.rb
+  rakuten
+  redcarpet
