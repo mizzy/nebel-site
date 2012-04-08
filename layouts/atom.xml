@@ -19,7 +19,7 @@
     <updated>{{ feed.date }}</updated>
     <id>http://mizzy.org/{{ feed.data.link}} </id>
     <content type="html"><![CDATA[
-{{ feed.content }}]
+{{ feed.content }}
 ]]></content>
   </entry>
 {% endfor %}
