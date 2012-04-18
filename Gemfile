@@ -4,4 +4,5 @@ gem 'redcarpet'
 gem 'pygments.rb'
 gem 'exifr'
 gem 'rakuten'
-
+gem 'guard-shell'
+gem 'guard-livereload'
