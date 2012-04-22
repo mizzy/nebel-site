@@ -46,8 +46,8 @@ body {
     padding-top: 1em;
     padding-left: 10%;
     padding-right: 10%;
-    background-image:url(/images/background.jpg);
     color: #222;
+    background-color: #dddddd;
 }
 
 h1.site-title {
@@ -99,6 +99,7 @@ h1.entry-title a {
 
 .content {
     margin-top: 1em;
+    line-height: 1.5em;
     h1 {
         font-size: 20px;
     }
