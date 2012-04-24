@@ -69,6 +69,13 @@ h1 a {
     color: #222;
 }
 
+h2 {
+   margin-top: 1em;
+   margin-bottom: 1em;
+   border-left: solid 5px #000000;
+   padding-left: 0.3em;
+}
+
 time {
     font-size: .9em;
     line-height: 1.2em;
@@ -110,7 +117,7 @@ p {
     margin-bottom: 1em;
 }
 
-.content a {
+a {
     font-weight: bold;
     color: #000;
 }
