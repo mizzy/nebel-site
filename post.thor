@@ -7,7 +7,7 @@ class Post < Thor
     file = sprintf "posts/%04d-%02d-%02d-%s.markdown", time.year, time.month, time.day, title
     File.open(file, "w") do |f|
       f.puts "---"
-      f.puts "title: "
+      f.puts "title: #{title}"
       f.puts "date: #{time}"
       f.puts "---"
     end
