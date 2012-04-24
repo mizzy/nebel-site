@@ -24,7 +24,7 @@ git clone して、必要な gems を bundle install します。nebel も一緒
  * layouts/post.html
    * エントリのテンプレートなので、適宜修正してください。
  * layouts/atom.xml
-   * Atom フィードのテンプレートなｔので、適宜修正してください。
+   * Atom フィードのテンプレートなので、適宜修正してください。
  * static/
    * 静的ファイル置き場。画像、CSS、JavaScript など、好きなファイルを置いてください。サブディレクトリも作成できます。
 
