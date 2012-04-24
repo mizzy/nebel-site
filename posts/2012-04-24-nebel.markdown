@@ -1,0 +1,103 @@
+---
+title: nebel で静的サイト作成
+date: 2012-04-24 19:52:36 +0900
+---
+
+[stellar](/blog/2012/04/07/1/) という静的サイトジェネレータをつくっていたのですが、[名前がモロ被りな gem](https://rubygems.org/gems/stellar) があったので、[nebel](https://github.com/mizzy/nebel) と名前を変更しました。
+
+nebel の方は、静的サイト生成に利用するコマンドと、確認用のテストサーバコマンドのみを含んでいて、実際のサイト生成用のテンプレートやユーティリティツールは、[nebel-site](https://github.com/mizzy/nebel-site) の方にあります。(Jekyll と Octopress のような関係です。)
+
+使い方は [nebel-site の README](https://github.com/mizzy/nebel-site/blob/master/README.md) にまとめてあるのですが、こちらのブログに日本語でまとめておきます。
+
+## セットアップ
+
+git clone して、必要な gems を bundle install します。nebel も一緒に入ります。
+
+
+    $ git clone git://github.com/mizzy/nebel-site.git
+    $ cd nebel-site
+    $ bundle install
+
+
+## ファイルの修正や作成
+
+ * layouts/post.html
+   * エントリのテンプレートなので、適宜修正してください。
+ * layouts/atom.xml
+   * Atom フィードのテンプレートなｔので、適宜修正してください。
+ * static/
+   * 静的ファイル置き場。画像、CSS、JavaScript など、好きなファイルを置いてください。サブディレクトリも作成できます。
+
+## エントリファイルの作成
+
+以下のような内容でエントリファイルを作成します。ファイル名は、.md か .markdown で終わっていれば、何でもいいです。
+
+    ---
+    title: エントリのタイトル
+    date: 2012-04-24 18:15:59 +0900
+    ---
+    
+    エントリの本文。Markdown 記法が使えます。
+    
+
+## nebel コマンドの実行
+
+    $ bundle exec nebel
+
+nebel コマンドを実行すると、posts 以下のエントリファイルを処理して、生成されたファイルを public 以下に配置します。また、static ディレクトリ以下のファイルもすべて、public 以下にコピーされます。
+
+
+## テストサーバで確認
+
+以下のコマンドでテストサーバが立ち上がるので、http://localhost:5000/ にアクセスすると、生成されたコンテンツの確認ができます。
+
+    $ bundle exec nebel-server
+
+
+## コンテンツの公開
+
+public ディレクトリ以下のファイルを、お好きなサーバにアップロードしてください。
+
+
+## ユーティリティツール
+
+更に便利に利用するためのユーティリティツールも同梱してます。
+
+### エントリファイルの作成
+
+thor post:create で、エントリファイルを作成します。
+
+    $ thor post:create entry-title
+
+と実行すると、posts/2012-04-24-entry-title.markdown といったファイル名で、以下の様な内容のファイルを作成し、さらにエディタで開いてくれます。(ただし Mac のみ。)
+
+
+    ---
+    title: entry-title
+    date: 2012-04-24 19:25:34 +0900
+    ---
+    
+### nebel コマンドの自動実行
+
+同僚の [@banyan](https://github.com/banyan) が Guardfile をつくってくれたので、ファイルが変更されると自動的に nebel コマンドを実行して、コンテンツを再生成します。
+
+    $ bundle exec nebel-server
+
+[guard-livereload](https://github.com/guard/guard-livereload) も利用しているので、ブラウザでの自動リロードにも対応してます。
+
+
+### テストサーバ起動＆諸々自動化
+
+    $ thor server:start
+
+を実行すると、以下の一連の処理が自動的に実行されます。
+
+ * テストサーバの起動
+ * ブラウザで http://localhost:5000/ を開く
+ * ファイル変更を検知して自動生成
+ * ブラウザの自動リロード
+
+
+こんな感じで、かなり便利になった。
+
+ 
