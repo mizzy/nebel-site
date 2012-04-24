@@ -6,8 +6,9 @@ guard 'shell' do
 end
 
 guard 'livereload' do
-  watch(/layouts\/(.+)/)
-  watch(/static\/(.+)/)
-  watch(/posts\/(.+)/)
-  watch(/plugins\/(.+)/)
+  watch(%r{layouts/(.+)})
+  watch(%r{static/(.+)})
+  watch(%r{posts/(.+\.md$)})
+  watch(%r{posts/(.+\.markdown$)})
+  watch(%r{plugins/(.+)})
 end
