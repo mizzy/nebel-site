@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Blog Title]]></title>
+  <link href="http://example.jp/atom.xml" rel="self"/>
+  <link href="http://example.jp/"/>
+  <updated>{{ feeds[0].date }}</updated>
+  <id>http://example.jp/</id>
+  <author>
+    <name><![CDATA[Blog Title]]></name>
+    
+  </author>
+  <generator uri="https://github.com/mizzy/stellar/">Stellar</generator>
+
+{% for feed in feeds %}
+  <entry>
+    <title type="html"><![CDATA[{{ feed.title }}]]></title>
+    <link href="http://example.jp{{ feed.link }}" />
+    <updated>{{ feed.date }}</updated>
+    <id>http://example.jp{{ feed.link }} </id>
+    <content type="html"><![CDATA[
+{{ feed.content }}
+]]></content>
+  </entry>
+{% endfor %}
+
+</feed>

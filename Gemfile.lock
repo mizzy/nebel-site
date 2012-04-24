@@ -1,0 +1,60 @@
+GIT
+  remote: git://github.com/mizzy/nebel.git
+  revision: da199ca907364f7c31b1f52fb65ecf37adcc95fb
+  specs:
+    nebel (0.0.1)
+      liquid (= 2.2.2)
+      redcarpet
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activesupport (3.2.1)
+      i18n (~> 0.6)
+      multi_json (~> 1.0)
+    addressable (2.2.7)
+    blankslate (2.1.2.4)
+    em-websocket (0.3.6)
+      addressable (>= 2.1.1)
+      eventmachine (>= 0.12.9)
+    eventmachine (0.12.10)
+    exifr (1.1.2)
+    ffi (1.0.11)
+    guard (1.0.1)
+      ffi (>= 0.5.0)
+      thor (~> 0.14.6)
+    guard-livereload (0.4.2)
+      em-websocket (>= 0.2.0)
+      guard (>= 0.10.0)
+      multi_json (~> 1.0)
+    guard-shell (0.4.0)
+      guard (>= 0.2.0)
+    i18n (0.6.0)
+    json (1.6.5)
+    liquid (2.2.2)
+    multi_json (1.1.0)
+    pygments.rb (0.2.6)
+      rubypython (~> 0.5.3)
+    rakuten (0.1.1)
+      activesupport
+      i18n
+      json (>= 1.4.6)
+    redcarpet (2.1.1)
+    rubypython (0.5.3)
+      blankslate (>= 2.1.2.3)
+      ffi (~> 1.0.7)
+    thor (0.14.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  exifr
+  guard-livereload
+  guard-shell
+  liquid (= 2.2.2)
+  nebel!
+  pygments.rb
+  rakuten
+  redcarpet
+  thor
