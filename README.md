@@ -59,6 +59,10 @@ Execute this command and you can see generated contents with http://localhost:50
 $ bundle exec nebel-server
 ```
 
+## Publish your contents
+
+Upload files in public directories to any servers you like.
+
 
 ## Utilities
 
