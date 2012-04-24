@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/mizzy/nebel.git
+  revision: da199ca907364f7c31b1f52fb65ecf37adcc95fb
+  specs:
+    nebel (0.0.1)
+      liquid (= 2.2.2)
+      redcarpet
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -45,6 +53,8 @@ DEPENDENCIES
   guard-livereload
   guard-shell
   liquid (= 2.2.2)
+  nebel!
   pygments.rb
   rakuten
   redcarpet
+  thor

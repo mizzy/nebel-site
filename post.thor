@@ -1,3 +1,5 @@
+require 'bundler/setup'
+
 class Post < Thor
   desc "create", "create new post"
   def create(title)
