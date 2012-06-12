@@ -4,3 +4,4 @@ public
 .vimeo-cache
 .pygments-cache
 .bundle
+.DS_Store
