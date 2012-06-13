@@ -4,7 +4,7 @@ require 'guard'
 class Server < Thor
   desc "start", "start server"
   def start
-    pid = Process.spawn("nebel-server")
+    pid = Process.spawn("nebel -s")
     trap("INT") {
       Process.kill(9, pid) rescue Errno::ESRCH
       exit 0

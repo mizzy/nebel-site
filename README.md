@@ -56,7 +56,7 @@ Execute this command and you can see generated contents with http://localhost:50
 
 
 ```
-$ bundle exec nebel-server
+$ bundle exec nebel -s
 ```
 
 ## Publish your contents
@@ -96,7 +96,7 @@ $ bundle exec guard
 
 thor server:start runs following things.
 
- * Runs nebel-server
+ * Runs `nebel -s`
  * Opens http://localhost:5000/ with your browser
  * Executes bundle exec guard
 
