@@ -1,0 +1,25 @@
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Blog Title</title>
+<link rel="stylesheet" href="/css/fonts.css" type="text/css" charset="utf-8">
+<link rel="stylesheet/tass" type="text/x-tass" href="/css/style.tass"/>
+<script type="text/javascript" src="/js/tass.js"></script>
+<link href="/atom.xml" rel="alternate" title="Blog Title" type="application/atom+xml">
+</head>
+<body>
+<h1 class="site-title"><a href="/">Blog Title</a></h1>
+
+{% for archive in archives %}
+<ul>
+  <li>
+    <span class="time">
+      <time>{{ archive.date_formatted }}</time>
+    </span>&raquo;
+    <a href="{{ archive.link }}">{{ archive.title }}</a>
+  </li>
+</ul>
+{% endfor %}
+
+</body>
+</html>
