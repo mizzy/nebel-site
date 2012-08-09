@@ -1,0 +1,42 @@
+---
+title: 札幌Ruby会議2012 と YAPC::Asia Tokyo 2012 で登壇します
+date: 2012-08-07 00:05:03 +0900
+---
+
+[札幌Ruby会議2012](http://sapporo.rubykaigi.org/) と [YAPC::Asia Tokyo 2012](http://yapcasia.org/2012/) で登壇することになりました。
+
+札幌Ruby会議と YAPC::Asia Tokyo 2012 前夜祭では、「Sqale の裏側」というタイトルで、[ペパボ](http://www.paperboy.co.jp/) が提供する PaaS「[Sqale](http://sqale.jp/)」のアーキテクチャなどについて話します。
+
+ * [札幌Ruby会議2012でのトークアジェンダ](http://sapporo.rubykaigi.org/2012/ja/schedule/details/48.html)
+ * [YAPC::Asia Tokyo 2012でのトークアジェンダ](http://yapcasia.org/2012/talk/show/048d468c-ab9e-11e1-a3b5-2a656aeab6a4)
+
+どちらのカンファレンスも内容的には同じ話をする予定で、Ruby/Perl 成分がほとんどなく、主に以下のようなキーワードについてお話をすることになるかと思います。
+
+ * Puppet/Chef
+ * Resque
+ * Unicorn
+ * AWS(EC2, ELB, RDS, Route53)
+ * Patched version of OpenSSH
+ * Patched version of Linux kernel
+ * OpenResty(ngx_openresty)
+ * Redis
+ * Git
+ * LXC
+ * etc.
+
+なので、Ruby や Perl も興味あるんだけど、PaaS の中身やミドルウェア、Linux カーネル などにより興味がある、という方はぜひ聞きに来てください。
+
+また、[YAPC::Asia Tokyo 2012 本編でも登壇](http://yapcasia.org/2012/talk/show/79991522-db79-11e1-be22-0d4e6aeab6a4) します。
+
+こちらの方は、クロージング直前のいわゆるキーノートスピーチ的なもので、上の「Sqale の裏側」と異なり、技術的な成分はだいぶ薄めです。タイトルも「How Perl Changed My Life」と、どこかで聞いたことがある上に、時期を逸した感もありますが、タイトル通り、Perl や Perl コミュニティが自分の技術者人生に与えた影響についてお話させて頂く予定です。
+
+このクロージング直前の枠、過去のトークを並べてみると、
+
+ * [Keynote](http://tokyo.yapcasia.org/sessions/keynote.html) by Larry Wall 氏
+ * [Perl Program Repair Shop and Red Flags](http://tokyo2007.yapcasia.org/sessions/2007/02/perl_program_repair_shop_and_r.html) by Mark Jason Dominus 氏
+ * [Perl Is unDead](http://conferences.yapcasia.org/ya2008/user/780) by Michael Schwern 氏
+ * [Why I Stick With Perl](http://conferences.yapcasia.org/ya2009/user/1681) by Jonathan Rockway 氏
+ * [The Tale of Plack](http://yapcasia.org/2010/talks/63D5EA98-BC8C-11DF-8791-B9FC0F276C45) by miyagawa さん
+ * [Managing A Band Of Hackers](http://yapcasia.org/2011/talk/66) by hidek さん 
+
+とまあすごい顔ぶれで、なんで自分なんかが選ばれたんだろう、という感じなんですが、気負わず自分らしい話ができればいいな、と思っています。
