@@ -1,11 +1,11 @@
 ---
-title: スクショをとってコメントつけて Git にアップする Automator Workflow つくってみた
+title: スクショをとってコメントつけて Git にアップする Automator Application つくってみた
 date: 2012-08-26 01:03:23 +0900
 ---
 
-Gyazo にコメントつけてアップしたい、といった要望があって、それと似たようなことを実現する Automator Wokflow をつくってみた。
+Gyazo にコメントつけてアップしたい、といった要望があって、それと似たようなことを実現する Automator Application をつくってみた。
 
-このワークフローを起動すると、
+この Application を起動すると、
 
 {% img /images/2012/08/screenshot01.png %}
 
@@ -17,9 +17,9 @@ Gyazo にコメントつけてアップしたい、といった要望があっ�
 
 実際にこれを使ってスクショを GitHub にあげてみた履歴が[こちら](https://github.com/mizzy/screenshots/commits/master) 。
 
-Automator Workflow は [こちらからダウンロード](https://github.com/mizzy/screenshots-to-git-with-comments/zipball/master) できます。利用の際には、画像保存先となる Git リポジトリがあるディレクトリ部分を適宜修正してください。
+Application は [こちらからダウンロード](https://github.com/mizzy/screenshots-to-git-with-comments/zipball/master) できます。利用の際には、画像保存先となる Git リポジトリがあるディレクトリ部分を適宜修正してください。
 
-以下、Automator Workflow の各パーツを参考のために貼り付けておきます。
+以下、Automator Application の各パーツを参考のために貼り付けておきます。
 
 {% img https://raw.github.com/mizzy/screenshots/master/shot-20120826010951.png %}
 
