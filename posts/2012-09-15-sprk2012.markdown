@@ -1,5 +1,5 @@
 ---
-title: 「Sqale の裏側」資料 #sprk2012
+title: 「Sqale の裏側」資料 at 札幌 Ruby 会議 2012
 date: 2012-09-15 20:50:15 +0900
 ---
 
