@@ -1,0 +1,39 @@
+---
+title: YAPC::Asia 2012 Tokyo 前夜祭
+date: 2012-09-30 20:47:56 +0900
+---
+ブログを書くまでが YAPC、ってことで、ぼちぼち書いていきます。まずは前夜祭から。
+
+[Sqale の裏側](http://yapcasia.org/2012/talk/show/048d468c-ab9e-11e1-a3b5-2a656aeab6a4) というタイトルで、ペパボが提供する Ruby/Rack アプリが動く PaaS [Sqale](http://sqale.jp/) の裏側のアーキテクチャについてお話してきました。
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/14492929" width="597" height="486" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/mizzy/inside-sqales-backend-at-yapcasia-tokyo-2012" title="Inside Sqale&#39;s Backend at YAPC::Asia Tokyo 2012" target="_blank">Inside Sqale&#39;s Backend at YAPC::Asia Tokyo 2012</a> </strong> from <strong><a href="http://www.slideshare.net/mizzy" target="_blank">Gosuke Miyashita</a></strong> </div>
+
+<iframe width="640" height="360" src="http://www.youtube.com/embed/lxvT8mcilE4" frameborder="0" allowfullscreen></iframe>
+
+YAPC で Perl がまったく出てこない話をしたのは、これがはじめてです。こんなトークを採択してくださって、本当にありがとうございます。
+
+内容的には、[札幌 Ruby 会議 2012](http://sapporo.rubykaigi.org/2012/ja/schedule/details/48.html) でお話しした内容とほとんど同じで、Sqale で利用している技術のうち、主に以下の3つについてお話しました。
+
+ * LXC やカーネルパッチなどの OS レイヤー
+ * ウェブプロキシのダイナミックルーティングを Nginx + Lua + Redis で実現
+ * SSH のルーティングを如何に実現しているか
+
+スライドで紹介したリンクについて、こちらにもまとめておきます。
+
+ * [Sqale で利用しているカーネルパッチ](https://github.com/paperboy-sqale/sqale-patches)
+ * [ひろやん](https://github.com/hiboma) が Nginx + Lua + Redis について書いている [はてダエントリ](http://d.hatena.ne.jp/hiboma/searchdiary?word=nginx%20lua%20redis)
+ * [OpenSSH Script Auth Patch](https://github.com/mizzy/openssh-script-auth)
+ * SSH ルーティングの着想を得た [GitHub CTO のブログエントリ](https://github.com/blog/530-how-we-made-github-fast)
+ * [@lamanotrama](http://twitter.com/lamanotrama) さんによる [サーバ構築自動化(on AWS) Sqale の場合](https://docs.google.com/presentation/d/11QekgeD-ex8RWVABGWsn3VGcHWq6HDnSVZzZskPWNeg/present#slide=id.p)
+
+SSH Router 実現のためにあてている OpenSSH パッチ、似たようなパッチが実は、RedHat 系ディストリビューションで入る OpenSSH にあたっているのですが、期待している挙動と微妙に異なるため、独自にパッチをあてることにしました。
+
+また、Heroku では SSH Router と同じことを実現するために [Twisted](http://twistedmatrix.com/trac/) を使っている、という情報を刺身が中の人から仕入れてきたので調べてみたところ、[twisted.conch.ssh](http://twistedmatrix.com/documents/8.2.0/api/twisted.conch.ssh.html)  という、SSHv2 実装がありました。
+
+独自パッチをあてる方式は、OpenSSH へのアップデートに追従するのがきついので、Twisted ベースに切り替えることも検討しており、そのために [funnel](https://github.com/mizzy/funnel) というものを開発中です。（まだ API 検討中なのと、動作確認コード書いただけですが。）
+
+funnel という名称は、GitHub 社で Git のルーティングを実現しているライブラリの名前が Chimney で、それの類義語からとっています。アニメとかからとったわけではないです。
+
+札幌 Ruby 会議 2012 でも、YAPC::Asia Tokyo 2012 でも聞き逃したけど、やっぱり生で聞きたい、という方、ご安心ください。12/7, 8 に行われる、RubyConf.tw 2012 でも [同じ内容でプレゼン](https://github.com/rubytaiwan/rubyconf.tw/blob/master/2012/speakers/schedule.md) する予定です。台湾でお待ちしています。
+
+札幌 Ruby 会議 2012 で登壇したペパボの同僚、[hsbt](https://github.com/hsbt), [kentaro](https://github.com/kentaro), [kyanny](https://github.com/kyanny) も、同様に RubyConf.tw 2012 で登壇します。
