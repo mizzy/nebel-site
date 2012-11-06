@@ -10,7 +10,7 @@
     <name><![CDATA[Blog Title]]></name>
     
   </author>
-  <generator uri="https://github.com/mizzy/stellar/">Stellar</generator>
+  <generator uri="https://github.com/mizzy/nebel/">Nebel</generator>
 
 {% for feed in feeds %}
   <entry>
