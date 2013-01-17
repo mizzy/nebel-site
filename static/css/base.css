@@ -200,3 +200,11 @@ a {
     font-weight: bold; }
   .content .talk-design .color .white {
     color: #fff; }
+ 
+pre { 
+      font-size: 12px;
+      background-color: #eeeeee;
+      border: 1px solid #777777;
+      border-radius: 3px;
+      padding: 0.8em 0.8em;
+}
