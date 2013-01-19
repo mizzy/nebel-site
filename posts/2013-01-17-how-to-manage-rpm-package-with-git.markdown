@@ -8,7 +8,7 @@ date: 2013-01-17 18:05:44 +0900
 <blockquote class="twitter-tweet"><p>弊社ではtinderbox+gitですべて統一させてる</p>&mdash; trombik (@trombik) <a href="https://twitter.com/trombik/status/284200636021608449" data-datetime="2012-12-27T07:34:46+00:00">December 27, 2012</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-という tweet を見て気になったので調べてみたところ、 [Tinderbox](https://wiki.freebsd.org/Tinderbox) はどうやら FreeBSD の ports を自動ビルドするためのシステムのようで、RPM でもこんなのないのかなー、と探してみたものの見つけられなかったし、Tinderbox が自分が求めてるものなのかどうかもいまいちピンと来なかったので、プロトタイプ的なものをつくってみることに。
+という tweet を見て気になったので調べてみたところ、 [Tinderbox](http://tinderbox.marcuscom.com/) はどうやら FreeBSD の ports を自動ビルドするためのシステムのようで、RPM でもこんなのないのかなー、と探してみたものの見つけられなかったし、Tinderbox が自分が求めてるものなのかどうかもいまいちピンと来なかったので、プロトタイプ的なものをつくってみることに。
 
 現在 RPM パッケージの管理は、[こんな感じで](https://github.com/paperboy-sqale/sqale-yum) ソース/バイナリパッケージを直接リポジトリに突っ込んじゃってるんだけど、これだと以下のような問題がある。
 

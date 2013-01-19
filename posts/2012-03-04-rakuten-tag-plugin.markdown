@@ -12,18 +12,18 @@ This is inspired by [Amazon Plugin for Octopress](http://zanshin.net/2011/08/24/
 
 You can use this plugin like this.
 
-	{% raw %}{{ "nikondirect:10000349" | rakuten_large_image }}{% endraw %}
+	{% raw %}{{ "nikondirect:10000641" | rakuten_large_image }}{% endraw %}
 
-{{ "nikondirect:10000349" | rakuten_large_image }}
+{{ "nikondirect:10000641" | rakuten_large_image }}
 
-	{% raw %}{{ "nikondirect:10000349" | rakuten_medium_image }}{% endraw %}
+	{% raw %}{{ "nikondirect:10000641" | rakuten_medium_image }}{% endraw %}
 
-{{ "nikondirect:10000349" | rakuten_medium_image }}
+{{ "nikondirect:10000641" | rakuten_medium_image }}
 
-	{% raw %}{{ "nikondirect:10000349" | rakuten_small_image }}{% endraw %}
+	{% raw %}{{ "nikondirect:10000641" | rakuten_small_image }}{% endraw %}
 
-{{ "nikondirect:10000349" | rakuten_small_image }}
+{{ "nikondirect:10000641" | rakuten_small_image }}
 
-	{% raw %}{{ "nikondirect:10000349" | rakuten_link }}{% endraw %}
+	{% raw %}{{ "nikondirect:10000641" | rakuten_link }}{% endraw %}
 
-{{ "nikondirect:10000349" | rakuten_link }}
+{{ "nikondirect:10000641" | rakuten_link }}
