@@ -1,5 +1,5 @@
 ---
-title: GitHub に coderwall の Organizations ができてる
+title: GitHub に coderwall バッヂの Organizations ができてる
 date: 2013-01-30 01:04:31 +0900
 ---
 
