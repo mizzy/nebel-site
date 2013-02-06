@@ -147,7 +147,7 @@ no_master=1 # このホストはマスターにしない
 
 オフィシャルドキュメントの [Requirements](http://code.google.com/p/mysql-master-ha/wiki/Requirements) からいくつかピックアップして超意訳。
 
-MHA を動作させるためには、以下の設定が必要。[masterha_manager](http://code.google.com/p/mysql-master-ha/wiki/masterha_manager) や [masterha_check_repl](http://code.google.com/p/mysql-master-ha/wiki/masterha_check_repl) 実行時に自動的にチェックしてくれる。
+MHA を動作させるためには、以下の設定が必要。[masterha_manager](http://code.google.com/p/mysql-master-ha/wiki/masterha_manager) や [masterha\_check\_repl](http://code.google.com/p/mysql-master-ha/wiki/masterha_check_repl) 実行時に自動的にチェックしてくれる。
 
  * root で各ノード間での SSH 公開鍵認証ができること
    * masterha\_check\_ssh コマンドでチェックできる
