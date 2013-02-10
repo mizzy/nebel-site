@@ -22,6 +22,6 @@ date: 2013-02-11 00:54:51 +0900
 
 ## 合わせて読みたい
 
-[すぐに宮崎あおいを見れるGoogle Chromeの拡張作った。- soh335 memo](http://soh335.hatenablog.com/entry/2013/02/10/011039)
-
 [すぐに吉高由里子を見れるGoogle Chromeの拡張作った。 - パルカワ2](http://blog.hisaichi5518.com/entry/2013/02/01/003820)
+
+[すぐに宮崎あおいを見れるGoogle Chromeの拡張作った。- soh335 memo](http://soh335.hatenablog.com/entry/2013/02/10/011039)
