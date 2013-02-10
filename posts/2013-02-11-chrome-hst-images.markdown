@@ -13,7 +13,7 @@ date: 2013-02-11 00:54:51 +0900
 そんな時のために、ハッブル宇宙望遠鏡撮影画像を素早く表示する必要があった。
 なので、ハッブル宇宙望遠鏡撮影画像をすぐ見れるGoogle Chromeの拡張を作った。
 
-{% img /images/2013/02/chrome-hst-image.png %}
+{% img /images/2013/02/chrome-hst-image.jpg %}
 
 [mizzy/chrome-hst-images - GitHub](https://github.com/mizzy/chrome-hst-images)
 
