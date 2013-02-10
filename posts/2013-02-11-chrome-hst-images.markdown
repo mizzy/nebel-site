@@ -15,11 +15,9 @@ date: 2013-02-11 00:54:51 +0900
 
 {% img /images/2013/02/chrome-hst-image.jpg %}
 
-[mizzy/chrome-hst-images - GitHub](https://github.com/mizzy/chrome-hst-images)
-
-
 「だめだ。もうやってらねー」って時は、空の tab を表示すればすぐハッブル宇宙望遠鏡撮影画像に会える。最高。結婚したい。
 
+[mizzy/chrome-hst-images - GitHub](https://github.com/mizzy/chrome-hst-images)
 
 ## 合わせて読みたい
 
