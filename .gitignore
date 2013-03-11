@@ -5,3 +5,4 @@ public
 .pygments-cache
 .bundle
 .DS_Store
+vendor
