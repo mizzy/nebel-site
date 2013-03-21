@@ -9,6 +9,10 @@ date: 2013-03-22 02:19:00 +0900
 
 というわけで、[Test Kitchen](https://github.com/opscode/test-kitchen) みたいに、同時にいくつも VM を立ててテストを走らせる、ってなことをやりたいんだけど、会社では KVM ベースの VM を利用してるので、VirtualBox ベースの Vagrant は使えないし、そもそもテストを動かす大元のホストも VM なので、VirtualBox どころか KVM も利用できない。
 
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
 なので、まずは LXC のシステムコンテナをさくさくと作るための Puppet モジュールを書いてみた。
 
 [puppet-lxc-test-box](https://github.com/mizzy/puppet-lxc-test-box)
@@ -57,3 +61,11 @@ $ ssh root@172.16.0.2
 同梱している lxc パッケージは Scientifix Linux 6.2 + Kernel 2.6.32-358.2.1.el6.x86_64 上でビルドしたものなので、RedHat 6 系以外ではたぶん動かないし、カーネルバージョンが違うと動かないかもしれない。
 
 これでテスト用のシステムコンテナを量産できるようになったので、次は実際にテストする仕組みを作り込む。
+
+----
+KVM な VM の上で KVM な VM は動かせない、と思っていたら、[@usrm](https://twitter.com/ursm) さんから、最近のカーネルであればネストできるはず、という情報をいただきました。
+
+<blockquote class="twitter-tweet"><p>@<a href="https://twitter.com/gosukenator">gosukenator</a> 最近のカーネルであれば KVM のネストはできるはずです <a href="http://t.co/HZf5HhhUYs" title="http://networkstatic.net/nested-kvm-hypervisor-support/">networkstatic.net/nested-kvm-hyp…</a></p>&mdash; Keita Urashima (@ursm) <a href="https://twitter.com/ursm/status/314802865313042432">March 21, 2013</a></blockquote>
+
+とても有益な情報ありがとうございます！今度試してみよう。
+
