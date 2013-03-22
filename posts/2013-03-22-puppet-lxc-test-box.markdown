@@ -26,26 +26,22 @@ $ git clone git://github.com/mizzy/puppet-lxc-test-box.git lxc-test-box
 $ git clone git://github.com/duritong/puppet-sysctl.git sysctl
 ```
 
-sysctl モジュールそのままだとエラーになるので、sysctl/manifests/value.pp の適当な位置に以下を書いておく。
+以下のように、Exec リソースのデフォルト値と、システムコンテナのホスト名と IP アドレスを書いたマニフェスト lxc-test-box.pp を作成。
 
 ```
-Exec {
-  path => '/sbin:/usr/sbin',
-}
-```
+include lxc-test-box
 
-[lxc-test-box/manifets/init.pp](https://github.com/mizzy/puppet-lxc-test-box/blob/master/manifests/init.pp) に以下のように、システムコンテナのホスト名と IP アドレスを書いておく。
+Exec { path => '/sbin:/usr/sbin:/bin:/usr/sbin' }
 
-```
-  lxc::setup { 'base':   ipaddress => '172.16.0.2' }
-  lxc::setup { 'manage': ipaddress => '172.16.0.3' }
-  lxc::setup { 'smtp':   ipaddress => '172.16.0.4' }
+lxc-test-box::lxc::setup { 'base':   ipaddress => '172.16.0.2' }
+lxc-tets-box::lxc::setup { 'manage': ipaddress => '172.16.0.3' }
+lxc-test-box::lxc::setup { 'smtp':   ipaddress => '172.16.0.4' }
 ```
 
 マニフェストを流し込む。
 
 ```
-$ sudo puppet apply --modulepath=. -e 'include lxc-test-box'
+$ sudo puppet apply --modulepath=. lxc-test-box.pp
 ```
 
 これで、ホスト OS への lxc パッケージのインストール、ブリッジインターフェース br0 の作成、IP マスカレードの設定を行い、指定されたホスト名と IP アドレスでシステムコンテナを作成し、コンテナの起動までしてくれる。所要時間は、コンテナひとつあたり5分ぐらい。
@@ -53,10 +49,10 @@ $ sudo puppet apply --modulepath=. -e 'include lxc-test-box'
 起動したら、
 
 ```
-$ ssh root@172.16.0.2
+$ ssh root@base.lxc-test-box
 ```
 
-で、パスワードは root でログインできる。テスト目的なのでホストOSとは通信できるけど、外部からは通信できない。ただし、ホスト OS で IP マスカレードの設定はしてあるので、コンテナから外部への通信は可能。
+で、ログインできる。ログイン用の鍵は Puppet で設定済み。（ただし、鍵は /root/.ssh 以下に置いてあるので、必要ならそこからコピーを。）テスト目的なのでホストOSとは通信できるけど、外部からは通信できない。ただし、ホスト OS で IP マスカレードの設定はしてあるので、コンテナから外部への通信は可能。
 
 同梱している lxc パッケージは Scientifix Linux 6.2 + Kernel 2.6.32-358.2.1.el6.x86_64 上でビルドしたものなので、RedHat 6 系以外ではたぶん動かないし、カーネルバージョンが違うと動かないかもしれない。
 
