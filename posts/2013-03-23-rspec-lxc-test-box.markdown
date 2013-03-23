@@ -42,7 +42,7 @@ end
 
 実際にコンテナに SSH でアクセスしてテストするので、別に LXC じゃなくても、KVM でも VirtualBox でも VMWare でも物理マシンでも OK だし、Puppet だろうが Chef だろうが CFEngine だろうがシェルスクリプトだろうが手動での構築だろうが、どんな構築手段でも利用できる。
 
-[Test Kitchen](https://github.com/opscode/test-kitchen) で同じようなことできるんだから、おとなしく Puppet じゃなくて Chef 使えばいいじゃん、って思われるかもしれないけど、Test Kitchen はなんか大げさすぎて肌に合わない。見通しがいい小さなツールを組み合わせるのが好きなので、[puppet-lxc-test-box](/blog/2013/03/22/1/) とかこれとか作ってる。
+[Test Kitchen](https://github.com/opscode/test-kitchen) で同じようなことできるんだから、おとなしく Puppet と LXC じゃなくて Chef と Vagrant 使えばいいじゃん、って思われるかもしれないけど、Test Kitchen はなんか大げさすぎて肌に合わない。見通しがいい小さなツールを組み合わせるのが好きなので、[puppet-lxc-test-box](/blog/2013/03/22/1/) とかこれとか作ってる。
 
 これと同じようなことは、実は [@hiboma](https://twitter.com/hiboma) が既に Sqale で Chef と組み合わせてやっていて、色々参考にさせてもらった。Chef Casual Talk とかがあれば、たぶんこの辺の話をしてくれるんじゃないかな。
 
