@@ -64,4 +64,4 @@ Finished in 0.99715 seconds
 6 examples, 0 failures
 ```
 
-Red Hat 系 Linux 前提のつくりになってしまっているので、他のディストリビューションや OS で利用したい、という方は、ぜひプルリクエストください。
+<strike>Red Hat 系 Linux 前提のつくりになってしまっているので、他のディストリビューションや OS で利用したい、という方は、ぜひプルリクエストください。</strike> → [Debian 系 OS 対応プルリクエスト](https://github.com/mizzy/serverspec/pull/1) をいただいたので、マージして対応しました！
