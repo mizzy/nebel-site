@@ -3,6 +3,10 @@ title: Puppet や Chef で構築したサーバを RSpec でテストする
 date: 2013-03-23 22:34:15 +0900
 ---
 
+
+**追記** ここに書いてあることを実現する [serverspec](https://github.com/mizzy/serverspec) という gem をつくりました。詳しくは[こちらのエントリ](/blog/2013/03/24/3/)で。
+
+
 Puppet マニフェストをリファクタリングするからテスト書くぞ、ってことで、 [puppet-lxc-test-box](/blog/2013/03/22/1/) に書いたように、テストするためのシステムコンテナを簡単に作る仕組みをつくったので、今度は実際にテストコードを書くためのベースをつくってみた。
 
 [rspec-lxc-test-box](https://github.com/mizzy/rspec-lxc-test-box)
