@@ -2,6 +2,7 @@
 title: Testing servers provisioned by Puppet or Chef with RSpec
 date: 2013-03-24 02:29:42 +0900
 ---
+**Note:** I made [serverspec](https://github.com/mizzy/serverspec) gem for this purpose. Please see the entry [serverspec - a rubygem for testing provisioned servers with RSpec](/blog/2013/03/24/4/).
 
 [I've made a Puppet module for creating LXC system containers](/blog/2013/03/24/1/).Next I've tried to the basis for writing test code easily.
 
