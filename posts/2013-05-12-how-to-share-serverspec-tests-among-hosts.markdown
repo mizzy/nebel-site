@@ -2,9 +2,8 @@
 title: serverspec のテストをホスト間で共有する方法
 date: 2013-05-12 03:06:48 +0900
 ---
-[Provisioning Frameworks Casual Talks vol.1](http://togetter.com/li/501076) なるものが行われ、話題の中心は Puppet や Chef じゃなくむしろ serverspec だったんじゃないか、という流れだったようなんですが、登壇依頼のお声がまったくかからなかった serverspec 作者です、こんにちは。（あと、日本で Puppet を広めたのはいったい誰だと思ってるんでしょうね。）
 
-今日は serverspec のテストをホスト間で共有する方法について説明します。
+今回は serverspec のテストをホスト間で共有する方法について説明します。
 
 serverspec-init を実行して生成されるひな形ファイルは以下のようになっています。
 
