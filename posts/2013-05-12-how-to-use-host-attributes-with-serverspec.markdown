@@ -3,7 +3,8 @@ title: serverspec でホスト固有の属性値を扱う方法
 date: 2013-05-12 22:05:26 +0900
 ---
 
-**注意！ ここで解説する方法は、現在の最新リリースである v0.2.26 ではまだ利用できません。[host-attributes ブランチ](https://github.com/mizzy/serverspec/tree/host-attributes) にあるバージョンでのみ利用できます。**
+**注意！ ここで解説する方法は v0.3.0 から利用できます。**
+
 
 [Provisioning Frameworks Casual Talks vol.1 に行ってきた #pfcasual - TAKUMI SAKAMOTO'S BLOG](http://blog.takus.me/2013/05/12/provisioning-frameworks-casual-talks-001/) で触れられている attributes 周りについて、この辺は必要になるだろうなー、と前から思ってはいたので、それを実現するための極々簡単な仕組みを [試験的に実装してみた](https://github.com/mizzy/serverspec/pull/98) 。
 
