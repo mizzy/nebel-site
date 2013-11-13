@@ -3,6 +3,9 @@ title: serverspec でホスト固有の属性値を扱う方法
 date: 2013-05-12 22:05:26 +0900
 ---
 
+**注意！ v0.11.0 からは attr, attr\_set ではなく、property, set_property とメソッド名が変更になります。attr, attr\_set は近い将来使えなくなります。 [詳しくはこちら](http://serverspec.org/advanced_tips.html)。 **
+
+
 **注意！ ここで解説する方法は v0.3.0 から利用できます。**
 
 
