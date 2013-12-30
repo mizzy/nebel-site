@@ -1,0 +1,131 @@
+---
+title: 2013年の振り返り
+date: 2013-12-31 01:45:45 +0900
+---
+
+2012年はターニングポイント的な年だったし、自分自身注目を浴びることも多く、エンジニアとしてピークで後は落ちていくだけなんじゃないかと思ったので、珍しく[振り返りエントリ](http://mizzy.org/blog/2012/12/31/1/) を書いてみたわけですが、どうやらピークは今年だったようなので、また振り返りエントリを書いてみます。
+
+----
+
+## 3分で常松
+
+2013年に自分が生み出した最大の成果がこの言葉ですね。残念ながら流行語大賞にはノミネートすらされませんでしたが、一部ではとても高い評価を頂いているようです。
+
+この言葉が生まれたのは2012/2/13でした。
+
+<blockquote class="twitter-tweet" lang="en"><p>3分で常松</p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/statuses/304232126373588994">February 20, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+この日は奇しくも妻の誕生日でして、2月13日はまた別の意味で忘れられない日となりました。
+
+言葉の由来は、一度飲み会で限られた人に話した以外は、長らくベールにつつまれたままだったのですが、先日ついに公表しました。
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/search?q=%233%E5%88%86%E3%81%A7%E5%B8%B8%E6%9D%BE&amp;src=hash">#3分で常松</a> の由来は、mirakuiさんの「3分でイナフ」と「俺の常松フォルダが火を噴くぜ」の合わせ技です。</p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/statuses/416370050648395776">December 27, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+上記ツイートにあるように、[@mirakui](twitter.com/mirakui) さんの以下の2つが元ネタとなっています。
+
+* [3分でイナフ](https://speakerdeck.com/mirakui/quan-zi-dong-parametatiyuningusan?slide=19)
+* [俺の常松フォルダが火を噴くぜ](http://diary.mirakui.com/post/43078265670)
+
+上述の飲み会で話した場には mirakui さんもいらっしゃったのですが、お気づきではなかったようで、「えー、そうだったんですか！？」という反応でした。
+
+以下、由来公表に対するみなさんからの反応です。
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/search?q=%233%E5%88%86%E3%81%A7%E5%B8%B8%E6%9D%BE&amp;src=hash">#3分で常松</a> の説明を見ても謎が謎を呼ぶだけだった。さすがserverspecより上をいくだけあって敷居が高いぜ…!</p>&mdash; songmu (@songmu) <a href="https://twitter.com/songmu/statuses/416376341152272384">December 27, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="en"><p>「3分でイナフ」と「俺の常松フォルダが火を噴くぜ」の組合せで <a href="https://twitter.com/search?q=%233%E5%88%86%E3%81%A7%E5%B8%B8%E6%9D%BE&amp;src=hash">#3分で常松</a> が出現したという由来、何度見返してもわからないし、まだ何か謎が隠されてるか、もしくは超次元の問題っぽい</p>&mdash; Wataru MIYAGUNI (@gongoZ) <a href="https://twitter.com/gongoZ/statuses/416376829490896897">December 27, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/search?q=%233%E5%88%86%E3%81%A7%E5%B8%B8%E6%9D%BE&amp;src=hash">#3分で常松</a> の由来やっと把握したけど、把握したように思えてやっぱり良くわからなかった</p>&mdash; そのっつ (SEO Naotoshi) (@sonots) <a href="https://twitter.com/sonots/statuses/416395793499582464">December 27, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+----
+
+## serverspec
+
+3分で常松に次ぐ成果がこれですね。これについては色んなところで話したので省略。どうせもうみんな飽きてるでしょ？
+
+----
+
+## 登壇イベント
+
+最近はお声がけ頂いたイベントには出るけど、自分から名乗りを上げる、ということはほとんどしてなくて、それでもこれだけの数のイベントでお話をさせて頂けて、本当にありがたいです。（「第2回 コンテナ型仮想化の情報交換会＠東京」だけは、[@ten_forward](https://twitter.com/ten_forward) さんと [@matsumotory](https://twitter.com/matsumotory) さんにお会いしたかったので、自分から名乗りを上げて登壇しました。）
+
+ * [qpstudy 2013.01 DevOpsをぶち壊せ〜DevOps言うな〜](http://atnd.org/event/201301qpstudy)
+   * [DevOps とは何か 何であるべきか](http://www.slideshare.net/mizzy/dev-ops-qpstudy)
+ * [GREE Teck Talk#02 GitHub:E Casual Talk](http://techtalk2.labs.gree.jp/)
+   * ペパボでの GitHub の使い方について発表
+ * [カヤック社内勉強会で Maglica についてプレゼン](http://www.slideshare.net/mizzy/maglica-techkayac)
+ * [hbstudy#45 serverspecが拓いたサーバテストの世界](http://heartbeats.jp/hbstudy/2013/06/hbstudy45.html)
+   * [発表資料](http://www.slideshare.net/mizzy/serverspec-hbstudy45)
+ * [July Tech Festa 2013](http://www.techfesta.jp/)
+   * [serverspec: Chef/Puppetと一緒に使うサーバテストのためのテスティングフレームワーク](http://www.techfesta.jp/p/program-2.html#A30)
+   * [発表資料](http://www.slideshare.net/mizzy/serverspec-jtf2013)
+ * [Testing Casual Talks #1](http://atnd.org/events/40914)
+   * serverspecによるテスト駆動サーバ構築＋CI
+   * デモが中心なので発表資料なし
+ * [第2回 コンテナ型仮想化の情報交換会＠東京](http://atnd.org/events/40915)
+   * [Sqaleでcgroupsにfork bomb対策を入れた話](https://speakerdeck.com/mizzy/sqaledecgroupsnifork-bombdui-ce-woru-retahua-at-di-2hui-kontenaxing-jia-xiang-hua-falseqing-bao-jiao-huan-hui-dong-jing)
+ * [WEBエンジニア・クリエイターのための「第5弾　週末ランサーズ」～クラウド環境構築最速選手権～](http://atnd.org/event/E0021065)
+   * [サーバプロビジョニングのこれまでとこれから](https://speakerdeck.com/mizzy/future-of-server-provisioning)
+ * [秋のエンジニアぶつかり稽古 2013](http://kiban.doorkeeper.jp/events/6799)
+   * 「俺の本気を見せるプレゼンタイム」で大学生活についてのプレゼン。
+
+来年も既に登壇イベントが2つほど決まっております。
+
+----
+
+## Immutable Infrastructure
+
+インフラ系界隈での今年一番のトピックがこれですね。[インフラ系技術の流れ](http://mizzy.org/blog/2013/10/29/1/) というエントリで、このトピックの日本での盛り上がりに微力ながら貢献させて頂きました。
+
+この流れで [configspec というツール](http://mizzy.org/blog/2013/11/25/1/) をつくってみたのですが、「Immutable Infrastcuture 用」と謳ってるのは半分煽りだし、そもそも RSpec で副作用のある何かをやる、というのは、[@r7kamura](http://twitter.com/r7kamura) 氏の RSpec アートにインスパイアされたハイコンテキストなネタのつもりだったのですが、割とまじめに受け止められている方も多いようで、せっかくなので開発を続けてみようと思います。
+
+ただし、コアな部分は [SpecInfra](https://github.com/serverspec/specinfra) という別 gem に切り出したので、こちらの開発が今後メインになりそうです。
+
+----
+
+## Rebuild にゲスト出演
+
+<blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/gosukenator">@gosukenator</a> あした11時から、どうすか cc <a href="https://twitter.com/naoya_ito">@naoya_ito</a></p>&mdash; Tatsuhiko Miyagawa (@miyagawa) <a href="https://twitter.com/miyagawa/statuses/347948235471613952">June 21, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+こんな感じのノリで、[Rebuild: 14: DevOps with Docker, chef and serverspec (naoya, mizzy)](http://rebuild.fm/14/) に呼んでいただきました。Docker まだ触ってもないのに、Docker をメインとした回に呼ばれてしまって、少しでも触っとこうと思ったのですが、結局触らないまま収録当日を迎えました。
+
+また、上述の Immutable Infrastructure エントリ絡みで、[Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)](http://rebuild.fm/25/) にも呼んで頂きました。
+
+今最もWeb系エンジニアに影響力のあるポッドキャストにゲスト出演させてもらい、大変光栄です。
+
+----
+
+## 最も活発な GitHub ユーザーランキング
+
+[Most active GitHub users](http://git.io/top) に載りました。現在106位で、101位にはペパボ技術基盤チームメンバーである [@hsbt](http://twitter.com/hsbt) さん、241位には同じくチームメンバーの [あんちぽ](http://twitter.com/kentaro) さんが載っています。
+
+![Most active GitHub users](/images/2013/12/github-ranking.png)
+
+アクティビティが多ければいいというわけではないんでしょうが、常日頃から社内では、OSS に貢献しろ、自分のコードをオープンにしろ、ってなことを僕ら3人は言っているので、このようなランキングに載るということは、それを自ら実践している証になり、これでまた社内で偉そうなことが言えます。
+
+
+----
+
+## 論文執筆をはじめました
+
+<blockquote class="twitter-tweet" lang="en"><p>serverspecとか見てると普通に論文書けそうだなぁ。論文書いて国際会議通してジャーナル書くのも面白いね。</p>&mdash; MATSUMOTO, Ryosuke (@matsumotory) <a href="https://twitter.com/matsumotory/statuses/360036222053253121">July 24, 2013</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+という matsumotory さんのツイートがきっかけになって、それまで考えたこともなかった論文執筆について考えるようになり、matsumotory さんにお会いした時にも、この辺について聞いたりしてみたのですが、まだ先のことかなー、と考えていたら、[これ](http://iot.ipsj.or.jp/news/iot24-cfp) に出してみませんか？と誘われたので、じゃあやってみます、って感じで、「serverspec: 宣言的記述でサーバの状態をテスト可能な汎用性の高いテストフレームワーク」というタイトルで論文書いて発表することになりました。
+
+----
+
+## 2014 年に向けて
+
+上記の論文発表が控えていますし、雑誌に載る原稿の執筆もはじめました。それから、ChefConf や Velocity なんかで serverspec の話をしたいなー、と思っているので、CFP 出してみるつもりです。
+
+2012 年は注目されることが多かったけど、大学行ったとか、ペパボの技術者評価制度とか、ペパボでの GitHub の使い方とか、YAPC でクロージングキーノートつとめたとか、そういった自分の技術力とかプロダクトとは直接関係ない部分で注目されていて、それはそれでありがたいことだけど、エンジニアであるからには、技術力やプロダクトで評価されたい、と思っていたので、2013 年は serverspec を世に出したことで、それが達成できてよかったです。
+
+また、論文執筆という、今まで考えたこともなかった道が開けたので、きっかけをつくってくださった matsumotory さんに感謝しつつ、新しい可能性を模索していけたらと思います。
+
+もうすぐ39歳、40歳一歩手前だけど、エンジニアとしてまだまだやれそうだ。
