@@ -1,0 +1,27 @@
+---
+title: ChefConf 2014 に来てます
+date: 2014-04-17 10:22:04 -0700
+---
+
+今日は最終日で、昨日は Serverspec: The Simplest Server Testing Tool Ever というタイトルでプレゼンしてきました。海外でははじめての serverspec プレゼンなので、もっと基本的な、具体的な使い方とかデモといった内容にした方がいいのかなー、と思いつつも、そういうのはオフィシャルサイトとか見れば割と十分だし、自分以外の人でも話せる内容なので、開発者ならではの、開発をはじめたきっかけとか、開発する上での哲学とか、今後どうしていきたいのか、みたいな話をしました。([大体いい感じになるKeynoteテンプレート「Azusa」](http://memo.sanographix.net/post/82160791768) を使わせてもらいました。ありがとうございます。あと、mirakui さんの真似して entypo や fontawesome も使ってみました。)
+
+<div style="width: 65%">
+<script async class="speakerdeck-embed" data-id="32f62ac0a7db0131c1eb06aa2e69a5d0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+</div>
+
+英語台本棒読みだし、Splunk の方から質問された内容が、なんかテストカバレッジのことを聞かれてるんだけど、全然理解できなくて若干へこんでいたら、[@yumano](https://twitter.com/yumano) さんに間に入っていただいて話を聞いてみると、serverspec そのもののテストカバレッジの話かと思ってたら、Chef レシピに対するカバレッジ、という話で、言ってることはまあわかるようなわからないような、という感じで、日本語で聞かれたとしてもすぐに把握できなさそうな内容だなー、みたいなことがあったりしつつも、プレゼン中に serverspec を知ってる人、使ってる人に手を挙げてもらったら、ちらほらいらっしゃったり、プレゼン後も何人かの方が、serverspec 使ってるよ、いいツールだね、と声をかけてくれたり、握手したり、一緒に写真を撮ったり、他の方のプレゼンでも serverspec について言及されたりで、海外でも使われてるなー、というのは以前からわかってはいたけど、それを強く実感しました。
+
+特に今回一番お会いしたかった、[Test Kitchen](http://kitchen.ci/) Author の [@fnichol](https://twitter.com/fnichol) さんとお話しすることができて、serverspec のステッカーを渡したらとても喜んでくれ、代わりに Test Kitchen や Sensu のステッカーをもらうことができました。（Sensu Author の [@portertech](https://twitter.com/portertech) さんは、@fnichol さんと同じ [Heavy Water Operations, LLC](http://hw-ops.com/) 所属）
+
+![stickers](https://pbs.twimg.com/media/BlYRAFjCcAAO1NL.jpg)
+
+（この並びだと、mirakui さんが便利 DevOps ツール四天王の一角を占めてるような感じになってる。）
+
+今日もカンファレンス会場をふらふらしていて、@fnichol さんが何人かの方と話しているところに通りがかったら、今ちょうど serverspec の話をしてたんだよ、みたいなことがあって、その場にいた方にステッカー渡したりしてました。
+
+それから、Chef Original Author で CTO でもある [@adamhjk](https://twitter.com/adamhjk) 氏と一緒に写真を撮りました。（しかも撮ってくれたのが CEO の [@barry_crist](https://twitter.com/barry_crist) 氏）
+
+<blockquote class="twitter-tweet" lang="en"><p>With .<a href="https://twitter.com/adamhjk">@adamhjk</a> taken by .<a href="https://twitter.com/barry_crist">@barry_crist</a> . Thanks a lot! <a href="http://t.co/emSqlVrvZM">pic.twitter.com/emSqlVrvZM</a></p>&mdash; Gosuke Miyashita (@gosukenator) <a href="https://twitter.com/gosukenator/statuses/456861368751124480">April 17, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+カンファレンス以外にも、初日は Oracle Arena に NBA を観に行ったり、[@kosaki55tea](https://twitter.com/kosaki55tea) さんに誘って頂いておいしいお肉を食べに行ったり、前々職時代に大変お世話になった方に蟹をごちそうしてもらったり、今日の夕方は [@niw](https://twitter.com/niw) さんからお誘い頂いたので Twitter 社に遊びに行く予定だったりと、明日帰国という短いサンフランシスコ滞在期間だけど、とても満喫しています。（[@miyagawa](https://twitter.com/miyagawa) さんとはすれ違いになってしまってお会いできなかったのは残念でしたが。）
