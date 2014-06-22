@@ -3,6 +3,18 @@ title: Dockerコンテナに入るなら SSH より nsinit が良さそう
 date: 2014-06-22 19:21:44 +0900
 ---
 
+## 追記
+
+[はてブでつっこみもらいました](http://b.hatena.ne.jp/entry/mizzy.org/blog/2014/06/22/1/) が、実行するカレントディレクトリは /var/lib/docker/execdriver/native/$id を使うのが正しいようです。（情報読み違えてた。）こちらには `container.json` があるので、ソースツリーからコピーしてくる必要ないですね。
+
+また、コンテナ ID 取得は、`docker ps -q --no-trunc` の方が良い、とも教えていただきました。
+
+つっこみにしたがって、最後の方の説明とシェル関数書き換えました。
+
+つっこみありがとうございます！
+
+---
+
 ## tl; dr
 
 タイトルまま
@@ -52,32 +64,19 @@ $ sudo -s
 # docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 917756ba04a2        ubuntu:14.04        /bin/bash           51 minutes ago      Up 51 minutes                           lonely_tesla
-# cd /var/lib/docker/containers/9177*/root
-# cp $GOPATH/src/github.com/docker/libcontainer/sample_configs/minimal.json ./container.json
+# cd /var/lib/docker/execdriver/native/9177*
 # nsinit exec /bin/bash
 daemon@koye:/$
 ```
 
-ソースツリーに含まれる `minimal.json` をコピーして `config.json` という名前で置かないと
+cd して nsinit、ってやるのは、一般ユーザからだとパーミッションの関係でタブ補完が効かなくてだるいので、シェル関数書いてみた。
 
 ```
-2014/06/22 10:33:57 open container.json: no such file or directory
-```
-
-といったエラーが出る。やり方は [docker/libcontainer/sample_configs](https://github.com/docker/libcontainer/tree/master/sample_configs) の README に書いてあった。
-
-ファイルの内容はまだちゃんと見てない。
-
-上のように、cd して cp して nsinit、ってやるのはだるいので、シェル関数書いてみた。
-
-```sh
 docker-attach()
 {
-  id=`sudo docker inspect $1 | grep '"ID"' | awk '{ print $2 }' \
-        | sed -e 's/\"//g' | sed -e 's/,//'`
-  rootfs=/var/lib/docker/containers/$id/root
-  sudo cp $GOPATH/src/github.com/docker/libcontainer/sample_configs/minimal.json $rootfs/container.json
-  sudo sh -c "cd $rootfs && $GOPATH/bin/nsinit exec $2"
+  id=`sudo docker ps -q --no-trunc $1`
+  root=/var/lib/docker/execdriver/native/$id
+  sudo sh -c "cd $root && $GOPATH/bin/nsinit exec $2"
 }
 ```
 
