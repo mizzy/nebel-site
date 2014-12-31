@@ -9,7 +9,7 @@ date: 2014-12-31 00:36:46 +0900
 
 * Serverspec が Black Duck Open Source Rookies of the Year 2013 に選ばれた（2013 だけど発表は 2014 年だった）。
 * Serverspec の論文書いた。
-* Developers Sumiit 2014 で登壇した。
+* Developers Summit 2014 で登壇した。
 * フリーランスになった。
 * #ChefConf 2014 で登壇した。
 * WEB+DB PRESS に寄稿した。
