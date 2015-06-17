@@ -1,0 +1,117 @@
+---
+title: Walter + Wercker + DigitalOcean による Serverspec CI
+date: 2015-06-16 21:59:14 +0900
+---
+
+[フリーランスになって1年が経った](/blog/2015/04/01/1/) というエントリで少しだけ触れた、仕事でも絡んでいる [Walter](https://github.com/walter-cd/walter) を自分はどう使っているのか、という話を書きます。
+
+## TL;DR
+
+* Serverspec/Specinfra 本体のインテグレーションテストに Walter を [Wercker](http://wercker.com/) と組み合わせて利用している
+* Wercker は並列実行サポートしてないけど、Walter と組み合わせることで並列実行できて便利
+  * Docker on CoreOS, CentOS 6.5, CentOS 7.0, Ubuntu 14.04, FreeBSD 10.1 の各 VM を使ったテストを並列で実行してる
+* ローカルでも実行できて便利 （Wercker v2 でもできるようになってるけど、Walter の場合は Docker 環境なくてもできる）
+
+## Walter + Wercker
+
+Dogfooding のため、Walter を Wercker と組み合わせて [Serverspec/Specinfra 本体のインテグレーションテスト](https://github.com/serverspec/serverspec-integration-test) に使用している。
+
+どのように利用しているかというと、wercker.yml で以下のように walter を実行している。
+
+```
+box: mizzy/serverspec-base@0.0.6
+build:
+  steps:
+    - script:
+        name: Run walter
+        code: ./$WORKING_DIR/walter -c ./$WORKING_DIR/pipeline.yml
+  after-steps:
+    - wantedly/pretty-slack-notify:
+        webhook_url: $SLACK_WEBHOOK_URL
+```
+
+Walter の設定が書かれた [pipeline.yml](https://github.com/serverspec/serverspec-integration-test/blob/master/pipeline.yml) はこんな感じ（一部抜粋）。
+
+```
+  - name: Make $HOME/.ssh directory
+    type: command
+    command: mkdir -p $HOME/.ssh
+    only_if: test "$WERCKER" = "true"
+  - name: Put SSH publick key
+    type: command
+    command: echo "$DIGITALOCEAN_SSH_KEY_PUBLIC" > $HOME/.ssh/id_rsa.pub
+    only_if: test "$WERCKER" = "true"
+```
+
+Walter を使うと、手元でも Wercker 上でも同じ処理が実行できるので、リポジトリを push しなくても設定通りに動くか確認できるので便利。とは言え、手元と Wercker 上では微妙に処理内容が異なったりするので、そいう場合は上のように `only_if` で Wercker 上かそうじゃないかを判断してコマンドを実行したりしている。
+
+Wercker v2 でも手元でテストできるけど Docker 使うし、Serverspec/Specinfra のインテグレーションテストは性質上 Docker 不要なので、間に入るレイヤーが一段少ない、という意味で Walter でやる方が個人的には楽。
+
+## 並列実行
+
+実際にテストを走らせるところは、DigitalOcean 上に各 OS 毎に VM を立ててテストしており、以下のように記述することで並列実行している。
+
+```
+  - name: Parallel builds each OSes
+    parallel:
+      - name: Build CoreOS
+        type: command
+        directory: $WORKING_DIR
+        command: vagrant up coreos --provider=digital_ocean && ./apply-itamae-and-serverspec-to-docker.sh
+        only_if: test "$WERCKER_GIT_REPOSITORY" != "serverspec"
+      - name: Build CentOS 6.5
+        type: command
+        command: vagrant up centos65 --provider=digital_ocean && bundle exec itamae ssh --host centos65 --vagrant recipe.rb \
+          && DIGITALOCEAN=true rake spec:centos65
+        directory: $WORKING_DIR
+      - name: Build CentOS 7.0
+        type: command
+        command: vagrant up centos70 --provider=digital_ocean && bundle exec itamae ssh --host centos70 --vagrant recipe.rb && \
+          DIGITALOCEAN=true rake spec:centos70
+        directory: $WORKING_DIR
+      - name: Build Ubuntu 14.04
+        type: command
+        command: vagrant up ubuntu1404 --provider=digital_ocean && bundle exec itamae ssh --host ubuntu1404 --vagrant recipe.rb \
+          && DIGITALOCEAN=true rake spec:ubuntu1404
+        directory: $WORKING_DIR
+      - name: Build FreeBSD 10.1
+        type: command
+        command: vagrant up freebsd --provider=digital_ocean && DIGITALOCEAN=true rake spec:freebsd
+        directory: $WORKING_DIR
+```
+
+CoreOS, CentOS 6.5, CentOS 7.0, Ubuntu 14.04, FreeBSD 10.1 の VM を DigitalOcean 上で起動し、[Itamae](http://itamae.kitchen/) でプロビジョニングし、Serverspec でテストを実行している。
+
+直列に実行すると Wercker の制限時間内（たしか25分だったかな）に終わらないけれど、Walter を利用して並列実行することで、時間内に完了している。
+
+Wercker でテストしたログがどんな感じかは [こちら](https://app.wercker.com/#buildstep/55801d169e5d0cdb4600d0dd) で参照できる。これを見てもらうとわかるように、並列実行している部分は、以下のスクショのようになっていて見づらい。
+
+<img src="/images/2015/06/wercker.png" alt="Walter + Wercker" style="width: 100%;" />
+
+テストがすべて通った場合はいいけど、失敗した場合はどこで失敗してるのかが探しにくい。これは次に紹介する、Slack 通知と組み合わせることで解決している。
+
+## Slack 通知
+
+Walter には Slack や HipChat に通知する機能が組み込まれている。
+
+ビルドの各フェーズを Walter では「ステージ」と呼んでいるが、以下のように、ステージ毎の結果を通知するようになっている。
+
+<img src="/images/2015/06/walter-success.png" alt="Walter + Wercker with Slack" style="width: 50%;" />
+
+失敗したステージは以下のように赤く表示される。
+
+<img src="/images/2015/06/walter-fail.png" alt="Walter with Slack" style="width: 50%;" />
+
+この例だと CoreOS 上の Docker コンテナに対するテストが失敗してることがわかるので、一番下の Wercker による通知のリンクを踏んでビルドページに飛び、CoreOS 部分のみに絞り込んで失敗した原因を調べることができる。
+
+## 今後の展望
+
+今のところ、Wercker との組み合わせは自分にとって十分なので、今後は Jenkins なんかと組み合わせて、必要な機能があれば追加していこうかな、などと考えている。
+
+また、Wercker や Jenkins との組み合わせではなく、単体でも利用できるようにしたい、と目論んでいるが、そのための機能はまだまだ不足している。
+
+直近では、結果を集約するサーバが必要だと感じており、walter-server 的な何かを開発しようと目論んでいるんだけど、イメージ的には [Ukigumo-Server](https://github.com/ukigumo/Ukigumo-Server) が近い、というか、パクらせてもらおうと考えている。
+
+## 最後に
+
+Walter は [GitHub で公開されている](https://github.com/walter-cd/walter) ので、興味ある方はぜひ。
