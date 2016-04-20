@@ -31,29 +31,41 @@ Infrastructure as Code が何かについては、既に色んな人が色んな
 
 Infrastructure as Code という言葉が現れ、今のように定着するようになるまでの大まかな流れを振り返ると、その起源は1993年に登場した [CFEngine](https://cfengine.com/) にまで遡れるだろう。もちろん当時は Infrastructure as Code という言葉はなかったが、Puppet や Chef といった Configuration Management Tool と呼ばれるものの元祖であり、現在の Infrastructure as Code の流れに与えた影響は計り知れない。
 
-Infrastructure as Code という言葉の大元の出自は調べてみてもわからなかったが、2005 年に Puppet が登場し、[Puppet: Next-Generation Configuration Management](https://www.usenix.org/publications/login/february-2006-volume-31-number-1/puppet-next-generation-configuration-management) 
+Infrastructure as Code という言葉の大元の出自は調べてみてもわからなかったが、2005年に Puppet が登場したことが、この言葉が現れるきっかけとなったと思ってよさそう。
+
+Chef がきっかけじゃないの？と思う人がいるかもしれないけど、Infrastructure as Code という言葉がどのタイミングで現れたのか遡ってみると、一番古い資料では、現在 Chef 社の CTO である Adam Jacob 氏 が、2008年4月25日に公開したスライド [Why Startups Need Automated Infrastructures の 24ページ目](http://www.slideshare.net/adamhjk/why-startups-need-automated-infrastructures/24-Steps_to_Launch_Configuration_Management) が見つかる。
+
+Chef のリリースは2009年であり、このスライドには Puppet は載っているけれど Chef は載っていない。また、Adam Jcob 氏の所属が HJK Solutions となっており、Chef 社の前身である Opscode 社を立ち上げる前であることが窺える。
+
+なので流れ的には、CFEngine の影響を受けた Puppet が登場 → Puppet が広く受け入れられる → Puppet のような Config Management 手法を Infrastructure as Code と呼ぼうと誰かが言った（もしかして Adam Jcob 氏？） → Infrastructure as Code の流れを受け Adam Jcob 氏が Chef を開発した、といった感じなのではないかと。
+
+ただ、スライドのタイトルに「Automated」とある通り、Infrastructure as Code のメリットは、当初は「自動化」に焦点が当てられていたものと思われる。
+
+それが現在のように、ソフトウェアシステムのプラクティスをインフラに適用する、という意味合いに変化したのは、DevOps という考え方と結びついてきた結果だろう。
+
+DevOps という言葉は、[Patrick Debois](http://www.jedi.be/) 氏が主催した [Devopsdays Ghent 2009](http://www.devopsdays.org/events/2009-ghent/) が発端であり、同氏は Agile 2008 Conference で [Agile infrastructures and operations: how infra-gike are you? (PDF)](http://www.jedi.be/presentations/IEEE-Agile-Infrastructure.pdf) という発表を行っている。このことからも、DevOps はアジャイルの流れを汲んでいることが窺える。なので、Infrastructure as Code が DevOps と結びついてきた結果、アジャイル的なプラクティスをインフラにも適用する、という流れが生まれたのだろう。
+
+Infrastructure as Code という言葉の出始めは2008年、DevOps は2009年だが、2009年当時にすぐに Infrastructure as Code が DevOps と結びついて今のような意味合いとなったわけではない。2009年6月に公開されたスライド [10+ Deploys Per Day: Dev and Ops Cooperation at Flickr の22ページ目](http://www.slideshare.net/jallspaw/10-deploys-per-day-dev-and-ops-cooperation-at-flickr/22-CFengineChef_BCfg2_FAI1_Automated_infrastructure) でも「Automated infrastructure」とあることから、この当時もまだ、主にインフラの自動化に焦点が当てられていたようだ。
+
+単なる自動化から、ソフトウェアシステムのプラクティス適用、という流れに変わったのは、2011年6月に O'Reilly Media から出た [Test-Driven Infrastructure with Chef](http://shop.oreilly.com/product/0636920020042.do) がきっかけだと思われる（ちなみに現在は第二版が出ている）。この本が「Test-Driven Infrastructure」という具体的なプラクティスが認知され広まるきっかけとなったのだろう。
+
+「テスト駆動」という具体的なプラクティスが登場したことにより、「継続的インテグレーション」や「継続的デプロイ」といった他のプラクティスにも広がっていき、Infrastructure as Code が今のような意味合いとして捉えられるようになった。
+
+拙作のServerspecもこの流れを後押しするのに一役買った、と思っている。
+
+日本で Infrastructure as Code という言葉が広く認知されたきっかけは、伊藤直也氏による [入門Chef Solo - Infrastructure as Code](http://d.hatena.ne.jp/naoya/20130313/1363129532) がきっかけではないだろうか。
 
 
-Puppet
 
-Agile infrastructure and operations
+また、Configuration Management 以外の領域
 
-Chefの登場 何年だっけ？
+EC2 のような IaaS が広まるにつて
 
-EC2
+日本ではどうか
 
 naoya さんの Kindle 本
 
-DevOps
 
-
-
-
-冒頭に「Infrastructure as Code という言葉が現れてから少なくとも8年ほど経過」と書いている。その根拠は、現在 Chef 社の CTO である Adam Jacob 氏 が、2008年4月25日に公開したスライド [Why Startups Need Automated Infrastructures の 24ページ目](http://www.slideshare.net/adamhjk/why-startups-need-automated-infrastructures/24-Steps_to_Launch_Configuration_Management) に「Infrastructure as Code」という記載があるから。
-
-これより古い資料は見つけられなかった。おそらく2008年あたりに出てきた言葉なのだろう。Adam Jacob 氏がこの言葉の発案者なのかそうでないのかは、調べてみてもわからなかった。
-
-この時点では、スライドのタイトルに「Automated」とある通り、Infrastructure as Code のメリットは「自動化」に焦点が当てられていたものと思われる。
 
 少し遡って、2007年6月から約1年にわたって [gihyo.jp](http://gihyo.jp/) で [オープンソースなシステム自動管理ツール Puppet](http://gihyo.jp/admin/serial/01/puppet) という連載記事を書かせてもらっていたが、この時の自分も、主に自動化に焦点を当てており、現在の Infrastructure as Code のプラクティスのひとつである「バージョン管理」については、軽く触れるに留め、前面に押し出してはいなかった。
 
@@ -66,22 +78,12 @@ DevOps
 
 ![](https://pbs.twimg.com/media/BxzvOikCIAEcTGR.jpg:large)
 
-2011年6月には、O'Reilly Media から [Test-Driven Infrastructure with Chef](http://shop.oreilly.com/product/0636920020042.do) の第一版が出ている（現在は第二版が出ている）。この頃から「テスト駆動インフラ」という概念が出始めた模様。
+
 
 また、[DevOpsDays Tokyo 2012に参加してきたので聞いたこととか思ったことまとめ - As a Futurist...](https://blog.riywo.com/2012/05/27/145310/) という2012年5月のエントリには「インフラCI」という言葉が出てきており、自分がこの言葉を見聞きしたのは、これが初めてだったように記憶してる。
 
 自分が Serverspec をリリースしたのは2013年3月。「テスト駆動インフラ」や「インフラCI」をやろうとしたけど、既存のツールでは用途に合わなかったため、自分で開発することにした。
 
-Infrastructure as Code は、単にインフラをコードで記述して自動化するだけではなく、ソフトウェアシステムのプラクティスをインフラにも適用することだ、という現在の考え方は、既に存在していたテスト駆動インフラやインフラCIという概念が広まり、それにアジャイルや DevOps が絡むことによってできあがった考え方だろう。それを推し進めるのに Serverspec は一役買ったと思っている。
-
-更に継続的デプロイにまで発展
-Agile Infrastructure/Agile Operations
-アジャイル -> テスト駆動や継続的インテグレーション
-DevOps -> Dev と Ops の融合
-元々syadminから注目されてたのが、アジャイルやDevOps方面からも注目
-
-
-元々 Configuration Management の領域で生まれた言葉であり、今でも IaC と言えば Chef, Ansible, Puppet, Itame あたりの CMT を真っ先に思い浮かべる人も多いだろうが、現在は Configuration Management 以外の領域、特に IaaS あたりにも適用できる。これは Terraform といったツールの登場が大きい。領域については次の項で詳しく見る。
 
 
 
@@ -89,7 +91,11 @@ DevOps -> Dev と Ops の融合
 
 ----
 
-## Infrastructure as Code 適用領域の分類
+## Infrastructure as Code 適用領域
+
+
+元々 Configuration Management の領域で生まれた言葉であり、今でも IaC と言えば Chef, Ansible, Puppet, Itame あたりの CMT を真っ先に思い浮かべる人も多いだろうが、現在は Configuration Management 以外の領域、特に IaaS あたりにも適用できる。これは Terraform といったツールの登場が大きい。領域については次の項で詳しく見る。
+
 
 上述のスライドの、Infrastructure as Code という言葉が書かれたページ上には、Puppet, Cfengine, Bcfg2 といったいわゆる「Configuration Management Tools」が挙げられているように、元々は Infrastructure as Code ＝ Configuration Managemennt Tools という図式であった。今でもおそらく、Infrastructure as Code と言えば、Chef、Puppet、Ansible、Itamae といった Configuration Management Tools を真っ先に思い浮かべる人が多いだろう。
 
@@ -161,3 +167,5 @@ Twelve-factor app
 
 
 https://coreos.com/blog/introducing-ignition.html
+
+https://speakerdeck.com/mizzy/future-of-server-provisioning-at-developers-summit-2014
