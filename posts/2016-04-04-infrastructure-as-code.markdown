@@ -39,7 +39,13 @@ Chef のリリースは2009年であり、このスライドには Puppet は載
 
 なので流れ的には、CFEngine の影響を受けた Puppet が登場 → Puppet が広く受け入れられる → Puppet のような Config Management 手法を Infrastructure as Code と呼ぼうと誰かが言った（もしかして Adam Jcob 氏？） → Infrastructure as Code の流れを受け Adam Jcob 氏が Chef を開発した、といった感じなのではないかと。
 
-ただ、スライドのタイトルに「Automated」とある通り、Infrastructure as Code のメリットは、当初は「自動化」に焦点が当てられていたものと思われる。
+英語版が2010年6月、日本語版が2011年5月に出版された書籍『[ウェブオペレーション](http://www.oreilly.co.jp/books/9784873114934/)』で、Adam Jacob 氏は Infrastructure as Code を**「ソースコードリポジトリ・アプリケーションデータのバックアップ・サーバリソースからビジネスを復旧できるようにすること」**と述べており、ディザスタリカバリ的な視点から Infrastructure as Code を捉えていることが窺える。
+
+ちなみに、以下は ChefConf 2014 で Adam Jcob 氏と撮影したツーショット写真。
+
+![](https://pbs.twimg.com/media/BxzvOikCIAEcTGR.jpg:large)
+
+ただ、Adam Jcob 氏のスライドのタイトルには「Automated」とある通り、Infrastructure as Code のメリットは、当初は「自動化」に焦点が当てられていたものと思われる。
 
 それが現在のように、ソフトウェアシステムのプラクティスをインフラに適用する、という意味合いに変化したのは、DevOps という考え方と結びついてきた結果だろう。
 
@@ -51,47 +57,53 @@ Infrastructure as Code という言葉の出始めは2008年、DevOps は2009年
 
 「テスト駆動」という具体的なプラクティスが登場したことにより、「継続的インテグレーション」や「継続的デプロイ」といった他のプラクティスにも広がっていき、Infrastructure as Code が今のような意味合いとして捉えられるようになった。
 
-拙作のServerspecもこの流れを後押しするのに一役買った、と思っている。
+2013年3月に登場した [Serverspec](http://serverspec.org/) はこの流れを加速するのに一役買っている。
 
-日本で Infrastructure as Code という言葉が広く認知されたきっかけは、伊藤直也氏による [入門Chef Solo - Infrastructure as Code](http://d.hatena.ne.jp/naoya/20130313/1363129532) がきっかけではないだろうか。
+----
 
+## 日本国内での Infrastructure as Code
 
+日本で Infrastructure as Code という言葉が広く認知されたきっかけは、伊藤直也氏によって2013年3月に出版された [入門Chef Solo - Infrastructure as Code](http://d.hatena.ne.jp/naoya/20130313/1363129532) ではないだろうか。
 
-また、Configuration Management 以外の領域
+少し遡って、2007年6月から約1年にわたって [gihyo.jp](http://gihyo.jp/) で [オープンソースなシステム自動管理ツール Puppet](http://gihyo.jp/admin/serial/01/puppet) という連載記事を書かせてもらっていたが、この時の自分は、主に自動化に焦点を当てており、現在の Infrastructure as Code のプラクティスのひとつである「バージョン管理」については、軽く触れるに留め、前面に押し出してはいなかった。
 
-EC2 のような IaaS が広まるにつて
+更に少し前、Puppet を使い始めた流れで、Puppet マニフェスト適用後のサーバの状態をテストするための、[Assurer](http://tokyo2007.yapcasia.org/sessions/2007/02/assurer_a_pluggable_server_tes.html) という Perl 製のツールを開発していた。その時に「テスト駆動サーバ構築」という言葉を考え出しており、今の「テスト駆動インフラ」と同じ概念を、9年ほど前に既に構想していた。[こちらのブログエントリのコメント](http://d.hatena.ne.jp/dayflower/20070405/1175782564#c1175823666) にその証拠が残っている。
 
-日本ではどうか
-
-naoya さんの Kindle 本
-
-
-
-少し遡って、2007年6月から約1年にわたって [gihyo.jp](http://gihyo.jp/) で [オープンソースなシステム自動管理ツール Puppet](http://gihyo.jp/admin/serial/01/puppet) という連載記事を書かせてもらっていたが、この時の自分も、主に自動化に焦点を当てており、現在の Infrastructure as Code のプラクティスのひとつである「バージョン管理」については、軽く触れるに留め、前面に押し出してはいなかった。
-
-更に少し前、Puppet を使い始めた流れで、Puppet マニフェスト適用後のサーバの状態をテストするための、Assurer という Perl 製のツールを開発していた。その時に「テスト駆動サーバ構築」という言葉を考え出しており、今の「テスト駆動インフラ」と同じ概念を、9年ほど前に既に構想していた。[こちらのブログエントリのコメント](http://d.hatena.ne.jp/dayflower/20070405/1175782564#c1175823666) にその証拠が残っている。
-
-
-英語版が2010年6月、日本語版が2011年5月に出版された書籍『[ウェブオペレーション](http://www.oreilly.co.jp/books/9784873114934/)』で、Adam Jacob 氏は Infrastructure as Code を**「ソースコードリポジトリ・アプリケーションデータのバックアップ・サーバリソースからビジネスを復旧できるようにすること」**と述べており、ディザスタリカバリ的な視点から Infrastructure as Code を捉えていることが窺える。
-
-ちなみに、以下は ChefConf 2014 で Adam Jcob 氏と撮影したツーショット写真。
-
-![](https://pbs.twimg.com/media/BxzvOikCIAEcTGR.jpg:large)
-
-
-
-また、[DevOpsDays Tokyo 2012に参加してきたので聞いたこととか思ったことまとめ - As a Futurist...](https://blog.riywo.com/2012/05/27/145310/) という2012年5月のエントリには「インフラCI」という言葉が出てきており、自分がこの言葉を見聞きしたのは、これが初めてだったように記憶してる。
+また、[DevOpsDays Tokyo 2012に参加してきたので聞いたこととか思ったことまとめ - As a Futurist...](https://blog.riywo.com/2012/05/27/145310/) という2012年5月のエントリには「インフラCI」という言葉が出てきており、まだ国内で Infrastructure as Code が主に自動化の文脈でしか語られていなかった頃に、既にソフトウェアプラクティスの応用としての Infrastructure as Code を実践していた岩永亮介氏の慧眼には恐れ入る。
 
 自分が Serverspec をリリースしたのは2013年3月。「テスト駆動インフラ」や「インフラCI」をやろうとしたけど、既存のツールでは用途に合わなかったため、自分で開発することにした。
 
+2013年5月
+http://d.hatena.ne.jp/naoya/20130520/1369054828
 
+2013年8月
+http://gihyo.jp/magazine/wdpress/archive/2013/vol76
+Emerging Web Technology研究室
+【第3回】serverspecによるテスト駆動インフラ構築
 
+2014年4月
+http://gihyo.jp/magazine/wdpress/archive/2014/vol80
+特集2
+実践テスト駆動インフラ&CI
+Infrastructure as Codeがもたらすワークフローの変革
 
+2015年2月
+http://gihyo.jp/magazine/wdpress/archive/2015/vol85
+特集1 [実践]AWS自動化 コードで構築・運用しよう!
+
+2016年2月
+http://gihyo.jp/book/2016/978-4-7741-7993-3
+サーバ/インフラエンジニア養成読本 DevOps編
+[Infrastructure as Code を実践するノウハウが満載!]
 
 
 ----
 
 ## Infrastructure as Code 適用領域
+
+また、Configuration Management 以外の領域
+
+EC2 のような IaaS が広まるにつて
 
 
 元々 Configuration Management の領域で生まれた言葉であり、今でも IaC と言えば Chef, Ansible, Puppet, Itame あたりの CMT を真っ先に思い浮かべる人も多いだろうが、現在は Configuration Management 以外の領域、特に IaaS あたりにも適用できる。これは Terraform といったツールの登場が大きい。領域については次の項で詳しく見る。
@@ -108,10 +120,6 @@ naoya さんの Kindle 本
 ----
 
 ## Infrastructure as Code を支えるツールやサービス
-
-----
-
-## Infrastructure as Code のプラクティス
 
 ----
 
@@ -169,3 +177,5 @@ Twelve-factor app
 https://coreos.com/blog/introducing-ignition.html
 
 https://speakerdeck.com/mizzy/future-of-server-provisioning-at-developers-summit-2014
+
+イベント
