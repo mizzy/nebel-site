@@ -13,7 +13,7 @@ date: 2017-03-17 12:00:00 +0900
 * [Amazon の商品ページ](https://www.amazon.co.jp/dp/4873117968)
 
 
-翻訳は数々の技術書、例えば最近だと、[入門 Python 3](https://www.amazon.co.jp/dp/4873117380) とか [SOFT SKILLS](https://www.amazon.co.jp/dp/4822251551) とか [詳解 システム・パフォーマンス](https://www.amazon.co.jp/dp/4873117909) などを翻訳されている、長尾高弘さんです。
+翻訳は数々の技術書、例えば最近だと、[入門 Python 3](https://www.amazon.co.jp/dp/4873117380) とか [SOFT SKILLS](https://www.amazon.co.jp/dp/4822251551) とか [詳解 システム・パフォーマンス](https://www.amazon.co.jp/dp/4873117909) などを翻訳されている、[長尾 高弘](https://www.amazon.co.jp/%E9%95%B7%E5%B0%BE-%E9%AB%98%E5%BC%98/e/B00D7GBFIU/) さんです。
 
 どんな本かというと、オライリージャパンのサイトにある紹介文を引用すると、こんな感じです。
 
