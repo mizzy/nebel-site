@@ -1,0 +1,122 @@
+---
+title: OBD-IIアダプタ経由で車両情報を Mac から取得してみる
+date: 2017-09-02 00:42:40 +0900
+---
+
+最近車に乗ることが多く、ほぼ毎日乗っているせいか、コネクテッドカー関連の技術に興味が沸いてきた。ので、調べたことや試したことなんかをメモしていく。
+
+まずは車両情報をパソコンから取得することにトライ。調べてみると、車両情報をパソコンやスマホから取得するためには、車に搭載された [OBD-II](https://ja.wikipedia.org/wiki/%E8%87%AA%E5%8B%95%E8%BB%8A%E3%81%AE%E8%87%AA%E5%B7%B1%E8%A8%BA%E6%96%AD%E6%A9%9F%E8%83%BD#OBD2) ポートに、[ELM Electronics 社](https://www.elmelectronics.com/) 製の ELM327 というチップを積んだアダプタを挿し、Bluetooth や Wi-Fi を経由して取得する、というやり方が一般的なようだ。
+
+
+というわけで、[Bluetooth 版](https://www.amazon.co.jp/gp/product/B00J7CC4T2) （写真左）と [Wi-Fi 版](https://www.amazon.co.jp/gp/product/B01IHV5VFM)（写真右）を買ってみた。 
+
+{% img /images/2017/09/elm327.jpg ELM327 %}
+
+まずは Bluetooth 版。macOS Sierra の場合、ペアリングすると `/dev/tty.OBDII-Port` というデバイスファイルが見えるようになるので、`screen` コマンドで接続して対話する。
+
+
+```
+$ screen /dev/tty.OBDII-Port
+>ONNECTED
+```
+
+正しく改行され表示されるよう、ラインフィードをオンにする。
+
+
+```
+>atl1
+OK
+```
+
+識別コードを表示させると、ELM327のバージョンが表示される。
+
+
+```
+>ati
+ELM327 v1.5
+```
+
+プロトコルを表示させてみる。[ELM327 は様々なプロトコルに対応している](https://www.elmelectronics.com/products/ics/obd/) が、この車が対応しているプロトコルは ISO 15765-4 (CAN 11/500) で、自動で認識しているようだ。
+
+```
+>atdp
+AUTO, ISO 15765-4 (CAN 11/500)
+```
+
+他に使える AT コマンドについては、 [ELM327 がサポートしている AT コマンド一覧（PDF）](https://www.sparkfun.com/datasheets/Widgets/ELM327_AT_Commands.pdf) を見ると良い。
+
+次に車両情報を取得してみる。OBD-IIポートから情報を取得するには、PID(Parameter ID) と呼ばれるコードを入力する。[PID の一覧はここに載っている](https://en.wikipedia.org/wiki/OBD-II_PIDs)。
+
+ここにある PID をすべての車がサポートしているわけではないし、メーカーや車独自の PID もあるらしい。
+
+[標準で定められた PID の一覧はここに載っている](https://en.wikipedia.org/wiki/OBD-II_PIDs#Standard_PIDs)。
+
+これを見ると、PID には [Mode](https://en.wikipedia.org/wiki/OBD-II_PIDs#Modes) という大まかなカテゴリがあり、Mode につづいて必要な情報の PID を入力するようだ。例えば、対応している PID の一覧を取得するためのコードは、Mode 01、PID 00 なので、0100 と入力する。
+
+```
+>0100
+41 00 98 18 00 01
+41 00 BE 3E B8 13
+```
+
+[Wikipedia ページの Query の項目](https://en.wikipedia.org/wiki/OBD-II_PIDs#Query) には、先頭に「Number of additional data bytes」というのがあるけど、これはなくてもいい？よくわからない。
+
+レスポンスのフォーマットも [Wikipedia に載っている](https://en.wikipedia.org/wiki/OBD-II_PIDs#Response)。こちらも先頭に「Number of additional data bytes」というのがあるけど、実際に試したレスポンスには含まれてなさそう。
+
+レスポンスの最初の `41` は 40 に Mode を足した値で、その次の `00` は Mode を含まない PID をそのまま返しているので、実際に読むべき値はその次の `98 18 00 01` と `BE 3E B8 13` になる。レスポンスが2行になっているのは、おそらく2つの ECU(Engine Control Unit) から値を取得しているからだろう。どうやら片方がエンジン系ECU、片方がトランスミッション系ECUらしいのだが、この辺りもよくわかってない。
+
+レスポンスは、PID 01〜20 の中で対応しているものをビットエンコードしたもので、読み方は [Wikipedia を参照](https://en.wikipedia.org/wiki/OBD-II_PIDs#Mode_1_PID_00)。
+
+Engine coolant temperature の取得はコード `0105` で行う。`41 05` を除いた `58` が見るべき値だが、これは 16進数なので10進数では 88 になるが、[Wikipedia でこの PID の Formula](https://en.wikipedia.org/wiki/OBD-II_PIDs#Mode_01) を見ると「A - 40」と書かれているので、88 - 40 = 44℃ が実際に知りたかった値となる。
+
+```
+>0105
+41 05 58
+41 05 58
+```
+
+Wi-Fi版のものは、車に挿してイグニッションオンにすると、WiFi_OBDII という SSID が表示されるので、接続してやる。
+
+{% img /images/2017/09/wifi-obd2.jpg WiFi_OBDII %}
+
+すると、192.168.0.10:35000 に繋いで対話できるので、telnet や nc コマンド等で接続して対話する。
+
+ATコマンドは Bluetooth 版と同様。
+
+```
+$ telnet 192.168.0.10 35000
+Trying 192.168.0.10...
+Connected to 192.168.0.10.
+Escape character is '^]'.
+atl1
+OK
+
+>ati
+ELM327 v1.5
+
+>atdp
+AUTO,ISO 15765-4 (CAN 11/500)
+```
+
+車両情報を取得してみると、レスポンスが Bluetooth 版と異なる。
+
+```
+>0100
+7E8064100BE3EB813
+7E906410098180001
+
+>0105
+7E903410585
+7E803410585
+
+>0120
+7E8064120A007A011
+7E906412000000001
+```
+
+`7E806` や `7E903` といった部分が、Bluetooth 版のレスポンスにはないが、これはどうやら [CAN](https://ja.wikipedia.org/wiki/Controller_Area_Network) というプロトコルのデータフレームに含まれているもののようだ。 
+
+[CAN通信におけるデータ送信の仕組みとは？ (1/3) - MONOist（モノイスト）](http://monoist.atmarkit.co.jp/mn/articles/0807/09/news140.html) を見ると、`7E8` や `7E9` が識別のための ID、続く `06` や `03` はコントロールフィール中のデータレングスコードで、その後に続くデータフィールドの長さを表しているようだ。
+
+内部的には ECU 同士や ECU と OBD-IIアダプタ間では CAN で通信していて、Bluetooth 版アダプタは、CAN のデータフレームのうち、データフィールドしか出力しないけど、Wi-Fi版アダプタは、ID やコントロールフィールドも出力している、ということなのだろう。
+
