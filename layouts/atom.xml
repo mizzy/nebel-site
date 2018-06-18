@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Gosuke Miyashita]]></title>
-  <link href="http://mizzy.org/atom.xml" rel="self"/>
-  <link href="http://mizzy.org/"/>
+  <link href="https://mizzy.org/atom.xml" rel="self"/>
+  <link href="https://mizzy.org/"/>
   <updated>{{ feeds[0].date }}</updated>
-  <id>http://mizzy.org/</id>
+  <id>https://mizzy.org/</id>
   <author>
     <name><![CDATA[Gosuke Miyashita]]></name>
     
@@ -15,9 +15,9 @@
 {% for feed in feeds %}
   <entry>
     <title type="html"><![CDATA[{{ feed.title }}]]></title>
-    <link href="http://mizzy.org{{ feed.link }}/" />
+    <link href="https://mizzy.org{{ feed.link }}/" />
     <updated>{{ feed.date }}</updated>
-    <id>http://mizzy.org{{ feed.link}}/</id>
+    <id>https://mizzy.org{{ feed.link}}/</id>
     <content type="html"><![CDATA[
 {{ feed.content }}
 ]]></content>
