@@ -49,7 +49,7 @@ Ref: [さくらインターネット研究所の客員研究員になった](htt
 <blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">学位を授与された <a href="https://t.co/xLrwjJHeQQ">pic.twitter.com/xLrwjJHeQQ</a></p>&mdash; Gosuke Miyashita (mizzy) (@gosukenator) <a href="https://twitter.com/gosukenator/status/1112313582186725376?ref_src=twsrc%5Etfw">March 31, 2019</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-入学時と卒業に書いたエントリはこちら。
+入学時と卒業時に書いたエントリはこちら。
 
 - [37歳で大学生になりました - Gosuke Miyashita](https://mizzy.org/blog/2012/04/14/1/)
 - [44歳で大学を卒業しました - Gosuke Miyashita](https://mizzy.org/blog/2019/03/15/1/)
