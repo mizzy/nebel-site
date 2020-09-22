@@ -67,12 +67,12 @@
   {{ content }}
 
   <div class="pagination">
-    {% if next_page %}
-    <a href="{{ next_page.link }}" rel="next">next post</a>
-    {% endif %}
-    
     {% if prev_page %}
-    <a href="{{ prev_page.link }}">previous post</a>
+    <a href="{{ prev_page.link }}">↑ newer post</a>
+    {% endif %}
+
+    {% if next_page %}
+    <a href="{{ next_page.link }}" rel="next">older post ↓</a>
     {% endif %}
   </div>
 
