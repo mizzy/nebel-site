@@ -6,3 +6,5 @@ public
 .bundle
 .DS_Store
 vendor
+.idea
+

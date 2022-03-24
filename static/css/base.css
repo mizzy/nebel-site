@@ -116,7 +116,8 @@ a {
       background-color: #eeeeee;
       border: 1px solid #777777;
       border-radius: 3px;
-      padding: 2px 3px; }
+      padding: 2px 3px;
+      margin: 2px 3px; }
   .content img {
     padding: 3px;
     border: 1px solid #eeeeee;
@@ -206,6 +207,7 @@ a {
     font-weight: bold; }
   .content .talk-design .color .white {
     color: #fff; }
+  .content a { margin: 2px 3px; }
  
 pre { 
       font-size: 12px;
